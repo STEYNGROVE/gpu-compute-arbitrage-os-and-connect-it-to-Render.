@@ -46,7 +46,6 @@ import { SystemMemoryModal } from './components/SystemMemoryModal';
 import { PlatformSettingsModal } from './components/PlatformSettingsModal';
 import { GroqAiConsoleModal } from './components/GroqAiConsoleModal';
 import { ChatGptGitHubModal } from './components/ChatGptGitHubModal';
-import { RenderDeployHookModal } from './components/RenderDeployHookModal';
 import { getAuthToken, setAuthToken, authenticatedFetch } from './apiSession';
 
 export const API_AUTH_HEADERS = {
@@ -90,7 +89,6 @@ export default function App() {
   const [isPlatformSettingsOpen, setIsPlatformSettingsOpen] = useState<boolean>(false);
   const [isGroqAiOpen, setIsGroqAiOpen] = useState<boolean>(false);
   const [isChatGptModalOpen, setIsChatGptModalOpen] = useState<boolean>(false);
-  const [isDeployHookOpen, setIsDeployHookOpen] = useState<boolean>(false);
   const [selectedGroqOpportunity, setSelectedGroqOpportunity] = useState<ArbitrageOpportunity | null>(null);
   const [selectedOpportunity, setSelectedOpportunity] = useState<ArbitrageOpportunity | null>(null);
 
@@ -836,7 +834,6 @@ export default function App() {
         onOpenPlatformSettings={() => setIsPlatformSettingsOpen(true)}
         onOpenGroqAi={() => setIsGroqAiOpen(true)}
         onOpenChatGptBridge={() => setIsChatGptModalOpen(true)}
-        onOpenDeployHook={() => setIsDeployHookOpen(true)}
         discoveryWorkersCount={discoveryWorkers.length}
         optimizerWorkersCount={optimizerWorkers.length}
         binanceUid={binanceAccount.binanceUid}
@@ -987,13 +984,6 @@ export default function App() {
         <ChatGptGitHubModal
           isOpen={isChatGptModalOpen}
           onClose={() => setIsChatGptModalOpen(false)}
-        />
-      )}
-
-      {isDeployHookOpen && (
-        <RenderDeployHookModal
-          isOpen={isDeployHookOpen}
-          onClose={() => setIsDeployHookOpen(false)}
         />
       )}
 

@@ -27,7 +27,7 @@ export function getPgPool(): pg.Pool {
     const port = Number(process.env.PGPORT) || 5432;
     const database = process.env.PGDATABASE || 'arbitrage_v13';
     const user = process.env.PGUSER || 'postgres';
-    const password = process.env.PGPASSWORD || process.env.DB_PASSWORD || 'your_secure_password';
+    const password = process.env.PGPASSWORD || process.env.DB_PASSWORD || (process.env.RENDER ? '' : 'your_secure_password');
 
     poolInstance = new Pool({
       host,
@@ -401,17 +401,6 @@ export async function checkDatabaseReadiness(): Promise<{
 }> {
   const startTime = Date.now();
   const database = process.env.PGDATABASE || 'arbitrage_v13';
-
-  // In sandbox or environments without PGHOST/DATABASE_URL configured, operate in standby without failing
-  if (!process.env.PGHOST && !process.env.DATABASE_URL) {
-    return {
-      isReady: false,
-      database,
-      latencyMs: 0,
-      error: 'Standby local storage active (PGHOST not configured)',
-    };
-  }
-
   try {
     const pool = getPgPool();
     const client = await pool.connect();
@@ -430,7 +419,7 @@ export async function checkDatabaseReadiness(): Promise<{
       isReady: false,
       database,
       latencyMs: Date.now() - startTime,
-      error: `PostgreSQL connection offline (code=${String(err?.code || 'STANDBY')})`,
+      error: `PostgreSQL readiness failed (code=${String(err?.code || (String(err?.message || '').includes('configuration incomplete') ? 'CONFIG_INCOMPLETE' : 'UNKNOWN'))})`,
     };
   }
 }
@@ -479,20 +468,8 @@ export async function runSchemaMigrations(): Promise<MigrationResult> {
     { schema: 'fleet_orchestration', table: 'dead_letter_queue_quarantine', status: 'SYNCHRONIZED' },
   ];
 
-  if (!process.env.PGHOST && !process.env.DATABASE_URL) {
-    return {
-      success: false,
-      database,
-      relationsMigrated: 0,
-      totalSchemas: 0,
-      appliedAt: new Date().toISOString(),
-      executionTimeMs: 0,
-      tables: relationsList.map((t) => ({ ...t, status: 'STANDBY_LOCAL' })),
-      error: 'Standby local storage active (PGHOST not configured)',
-    };
-  }
-
   try {
+    // Attempt actual migration on PostgreSQL instance
     const pool = getPgPool();
     const client = await pool.connect();
     try {
@@ -512,7 +489,8 @@ export async function runSchemaMigrations(): Promise<MigrationResult> {
       tables: relationsList,
     };
   } catch (error: any) {
-    console.info(`[PostgreSQL Standby] Schema migration deferred: code=${String(error?.code || 'STANDBY')}`);
+    console.warn(`[PostgreSQL] Migration failed: code=${String(error?.code || 'UNKNOWN')}`);
+    // Return honest failure result with zero fake relations migrated
     return {
       success: false,
       database,
@@ -520,8 +498,8 @@ export async function runSchemaMigrations(): Promise<MigrationResult> {
       totalSchemas: 0,
       appliedAt: new Date().toISOString(),
       executionTimeMs: Date.now() - startTime,
-      tables: relationsList.map((t) => ({ ...t, status: 'STANDBY_LOCAL' })),
-      error: `PostgreSQL migration deferred (code=${String(error?.code || 'STANDBY')})`,
+      tables: relationsList.map((t) => ({ ...t, status: 'CONNECTION_FAILED' })),
+      error: `PostgreSQL migration failed (code=${String(error?.code || 'UNKNOWN')})`,
     };
   }
 }
