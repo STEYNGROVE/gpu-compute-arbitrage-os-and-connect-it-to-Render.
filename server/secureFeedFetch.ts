@@ -53,7 +53,15 @@ export function isPublicIPv4(ip: string): boolean {
   return !SPECIAL.some(([base, bits]) => inCidr(ip, base, bits));
 }
 
-export async function secureFeedFetch(input: string): Promise<string> {
+export type FeedDnsResolver = (
+  hostname: string,
+  options: { all: true; verbatim: true }
+) => Promise<Array<{ address: string; family: number }>>;
+
+export async function secureFeedFetch(
+  input: string,
+  resolveDns: FeedDnsResolver = lookup
+): Promise<string> {
   const url = new URL(input);
 
   if (url.protocol !== 'https:' ||
@@ -78,7 +86,7 @@ export async function secureFeedFetch(input: string): Promise<string> {
   const deadline = AbortSignal.timeout(TIMEOUT_MS);
 
   const addresses = await Promise.race([
-    lookup(hostname, { all: true, verbatim: true }),
+    resolveDns(hostname, { all: true, verbatim: true }),
     new Promise<never>((_, reject) => {
       deadline.addEventListener('abort', () => {
         reject(new Error('FEED_DNS_TIMEOUT'));
