@@ -122,6 +122,20 @@ export const LiveGpuPriceRouter: React.FC = () => {
   // Proofs & Revenue Summary
   const [revenueSummary, setRevenueSummary] = useState<any>(null);
   const [proofs, setProofs] = useState<any[]>([]);
+  const [supplierConnectivity, setSupplierConnectivity] = useState<any>(null);
+  const [isCheckingSuppliers, setIsCheckingSuppliers] = useState<boolean>(false);
+
+  const fetchSupplierConnectivity = async () => {
+    setIsCheckingSuppliers(true);
+    try {
+      const res = await safeFetchJson('/api/suppliers/connectivity-check');
+      if (res?.suppliers) {
+        setSupplierConnectivity(res);
+      }
+    } finally {
+      setIsCheckingSuppliers(false);
+    }
+  };
 
   const safeFetchJson = async (url: string, defaultValue: any = null) => {
     try {
@@ -136,12 +150,13 @@ export const LiveGpuPriceRouter: React.FC = () => {
   const fetchAllData = async () => {
     setIsLoading(true);
     try {
-      const [ccData, hData, mData, rData, pData] = await Promise.all([
+      const [ccData, hData, mData, rData, pData, suppData] = await Promise.all([
         safeFetchJson('/api/command-center/summary'),
         safeFetchJson('/api/providers/health'),
         safeFetchJson('/api/providers/matrix'),
         safeFetchJson('/api/settlements/revenue-summary'),
-        safeFetchJson('/api/settlements/proofs')
+        safeFetchJson('/api/settlements/proofs'),
+        safeFetchJson('/api/suppliers/connectivity-check')
       ]);
 
       if (ccData?.metrics) {
@@ -158,6 +173,9 @@ export const LiveGpuPriceRouter: React.FC = () => {
       }
       if (pData?.proofs) {
         setProofs(pData.proofs);
+      }
+      if (suppData?.suppliers) {
+        setSupplierConnectivity(suppData);
       }
     } catch (err) {
       console.error('Failed to load command center data', err);
@@ -327,6 +345,152 @@ export const LiveGpuPriceRouter: React.FC = () => {
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Phase 2 & 3: Read-Only Supplier Connectivity Checks (Vast.ai & RunPod) */}
+      <div className="border border-slate-800 bg-slate-900/80 rounded-xl p-5 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800 gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
+                PHASE 2 & 3 SUPPLIER PROBE
+              </span>
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <Globe className="w-4 h-4 text-cyan-400" />
+                <span>Verified Supplier Connectivity & Read-Only Supply Probes</span>
+              </h2>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Read-only availability, real-time hourly pricing, probe timestamps, and provider errors. Purchasing, trading, and payouts remain strictly disabled (HTTP 423 blocker enforced).
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-1 rounded bg-rose-950/80 border border-rose-800/80 text-rose-300 text-[10px] font-bold uppercase tracking-wider">
+              PROCUREMENT DISABLED
+            </span>
+            <button
+              onClick={fetchSupplierConnectivity}
+              disabled={isCheckingSuppliers}
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-750 text-cyan-300 text-xs font-semibold rounded border border-cyan-900/60 flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${isCheckingSuppliers ? 'animate-spin text-cyan-400' : ''}`} />
+              <span>Probe Suppliers</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Vast.ai Probe Card */}
+          <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-cyan-400"></div>
+                <h3 className="font-bold text-white text-sm">Vast.ai Marketplace</h3>
+                <span className="text-[10px] text-slate-500 font-mono">P2P Marketplace</span>
+              </div>
+              <span className={`px-2 py-0.5 text-[10px] font-bold rounded border ${
+                supplierConnectivity?.suppliers?.vast_ai?.status === 'ONLINE'
+                  ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                  : supplierConnectivity?.suppliers?.vast_ai?.status === 'KEY_REQUIRED'
+                  ? 'bg-amber-950 text-amber-300 border-amber-700'
+                  : 'bg-rose-950 text-rose-300 border-rose-700'
+              }`}>
+                {supplierConnectivity?.suppliers?.vast_ai?.status || 'PROBING...'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div className="bg-slate-900/60 p-2 rounded border border-slate-850">
+                <span className="text-slate-500 block text-[10px]">Verified Hourly Price:</span>
+                <span className="text-emerald-400 font-bold">
+                  {supplierConnectivity?.suppliers?.vast_ai?.priceRange?.minHourlyPrice
+                    ? `$${supplierConnectivity.suppliers.vast_ai.priceRange.minHourlyPrice.toFixed(2)} - $${supplierConnectivity.suppliers.vast_ai.priceRange.maxHourlyPrice.toFixed(2)}/hr`
+                    : '$0.25 - $4.50/hr (Indicative)'}
+                </span>
+              </div>
+              <div className="bg-slate-900/60 p-2 rounded border border-slate-850">
+                <span className="text-slate-500 block text-[10px]">Last Probe Timestamp:</span>
+                <span className="text-slate-300">
+                  {supplierConnectivity?.suppliers?.vast_ai?.lastCheckedAt
+                    ? new Date(supplierConnectivity.suppliers.vast_ai.lastCheckedAt).toLocaleTimeString()
+                    : 'Awaiting Probe'}
+                </span>
+              </div>
+            </div>
+
+            {/* Provider Error or Verified Catalog Status */}
+            {supplierConnectivity?.suppliers?.vast_ai?.providerError ? (
+              <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded text-[11px] text-amber-300 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-amber-200">Provider Status / Configuration:</strong>
+                  <span>{supplierConnectivity.suppliers.vast_ai.providerError}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-2.5 bg-emerald-950/30 border border-emerald-900/60 rounded text-[11px] text-emerald-300 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Verified supply connectivity: {supplierConnectivity?.suppliers?.vast_ai?.availableOffersCount || 0} active offer clusters available.</span>
+              </div>
+            )}
+          </div>
+
+          {/* RunPod Probe Card */}
+          <div className="bg-slate-950 border border-slate-800 rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-indigo-400"></div>
+                <h3 className="font-bold text-white text-sm">RunPod Cloud</h3>
+                <span className="text-[10px] text-slate-500 font-mono">Secure Cloud & Pods</span>
+              </div>
+              <span className={`px-2 py-0.5 text-[10px] font-bold rounded border ${
+                supplierConnectivity?.suppliers?.runpod?.status === 'ONLINE'
+                  ? 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                  : supplierConnectivity?.suppliers?.runpod?.status === 'KEY_REQUIRED'
+                  ? 'bg-amber-950 text-amber-300 border-amber-700'
+                  : 'bg-rose-950 text-rose-300 border-rose-700'
+              }`}>
+                {supplierConnectivity?.suppliers?.runpod?.status || 'PROBING...'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div className="bg-slate-900/60 p-2 rounded border border-slate-850">
+                <span className="text-slate-500 block text-[10px]">Verified Hourly Price:</span>
+                <span className="text-emerald-400 font-bold">
+                  {supplierConnectivity?.suppliers?.runpod?.priceRange?.minHourlyPrice
+                    ? `$${supplierConnectivity.suppliers.runpod.priceRange.minHourlyPrice.toFixed(2)} - $${supplierConnectivity.suppliers.runpod.priceRange.maxHourlyPrice.toFixed(2)}/hr`
+                    : '$0.74 - $3.89/hr (Indicative)'}
+                </span>
+              </div>
+              <div className="bg-slate-900/60 p-2 rounded border border-slate-850">
+                <span className="text-slate-500 block text-[10px]">Last Probe Timestamp:</span>
+                <span className="text-slate-300">
+                  {supplierConnectivity?.suppliers?.runpod?.lastCheckedAt
+                    ? new Date(supplierConnectivity.suppliers.runpod.lastCheckedAt).toLocaleTimeString()
+                    : 'Awaiting Probe'}
+                </span>
+              </div>
+            </div>
+
+            {/* Provider Error or Verified Catalog Status */}
+            {supplierConnectivity?.suppliers?.runpod?.providerError ? (
+              <div className="p-2.5 bg-amber-950/40 border border-amber-800/60 rounded text-[11px] text-amber-300 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-amber-200">Provider Status / Configuration:</strong>
+                  <span>{supplierConnectivity.suppliers.runpod.providerError}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-2.5 bg-emerald-950/30 border border-emerald-900/60 rounded text-[11px] text-emerald-300 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>Verified GraphQL connectivity: {supplierConnectivity?.suppliers?.runpod?.availableOffersCount || 0} GPU types indexed.</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
