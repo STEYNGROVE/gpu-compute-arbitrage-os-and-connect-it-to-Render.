@@ -32,6 +32,10 @@ jobs:
 
       - name: Secure Feed Regression Tests
         run: NODE_ENV=test npx tsx test/secureFeedIntegrationSuite.ts
+        - name: Verify advanced HTTPS security
+          run: |
+            NODE_ENV=test npx tsx test/secureFeedDnsIsolationSuite.ts
+            NODE_ENV=test npx tsx test/secureFeedTransportSuite.ts
 
       - name: Compile Production Bundle (Client Assets + Bundled Server)
         run: npm run build
