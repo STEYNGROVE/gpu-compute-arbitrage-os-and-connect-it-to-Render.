@@ -16,25 +16,25 @@
   "provisions": [],
   "auditEvents": [
     {
-      "id": "audit-1793778905152-086d72",
-      "timestamp": "2026-11-04T07:55:05.152Z",
+      "id": "audit-1793783796601-22efc8",
+      "timestamp": "2026-11-04T09:16:36.601Z",
       "eventType": "DECISION_EVAL",
       "severity": "INFO",
-      "message": "Pipeline A Discovery & Pipeline B Capital Gate Evaluated: 39 real opportunities discovered (22 profitable requiring $231.12 total capital, 0 executable now, 3 capital-blocked). Verified operating capital: $25.00 USD.",
+      "message": "Pipeline A Discovery & Pipeline B Capital Gate Evaluated: 41 real opportunities discovered (18 profitable requiring $172.48 total capital, 0 executable now, 0 capital-blocked). Verified operating capital: $25.00 USD.",
       "details": {
-        "realOpportunities": 39,
-        "profitable": 22,
+        "realOpportunities": 41,
+        "profitable": 18,
         "executableNow": 0,
-        "capitalBlocked": 3,
-        "providerBlocked": 5,
-        "customerRequired": 22,
+        "capitalBlocked": 0,
+        "providerBlocked": 0,
+        "customerRequired": 18,
         "verifiedAvailableCapitalUsd": 25,
-        "totalRequiredCapitalForProfitableUsd": 231.12,
-        "totalCapitalShortfallForProfitableUsd": 206.12,
-        "totalExpectedNetProfitForProfitableUsd": 233.17,
+        "totalRequiredCapitalForProfitableUsd": 172.48,
+        "totalCapitalShortfallForProfitableUsd": 147.48,
+        "totalExpectedNetProfitForProfitableUsd": 119.3,
         "zeroCapitalMode": false
       },
-      "verifiedSignature": "086d72c959c7ba93cb4245b6ec4fc6dcca6214d7a5d5807dce64c374f359cfa6"
+      "verifiedSignature": "22efc8ae6df7cbec8dcc386599d29bcf0422fcde34184f7a60c084e76eacd88b"
     },
     {
       "id": "audit-1791797546716-519cba",
