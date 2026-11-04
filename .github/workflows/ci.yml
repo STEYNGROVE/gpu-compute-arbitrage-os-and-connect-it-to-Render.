@@ -58,5 +58,8 @@ jobs:
       - name: TLS Certificate Security Tests
         run: NODE_ENV=test npx tsx test/secureFeedTlsSuite.ts
 
+      - name: Feed Timeout Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedTimeoutSuite.ts
+
       - name: Compile Production Bundle
         run: npm run build
