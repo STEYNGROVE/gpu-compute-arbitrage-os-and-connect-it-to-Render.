@@ -30,5 +30,8 @@ jobs:
       - name: Execute Automated Regression & Security Test Suites
         run: npm test
 
+      - name: Secure Feed Regression Tests
+        run: NODE_ENV=test npx tsx test/secureFeedIntegrationSuite.ts
+
       - name: Compile Production Bundle (Client Assets + Bundled Server)
         run: npm run build
