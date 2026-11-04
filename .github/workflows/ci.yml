@@ -2,9 +2,15 @@ name: CI / Automated Verification Pipeline
 
 on:
   push:
-    branches: [ main, feature/security-hardening-v2 ]
+    branches:
+      - main
+      - feature/security-hardening-v2
+      - test/advanced-https-security
+
   pull_request:
-    branches: [ main, feature/security-hardening-v2 ]
+    branches:
+      - main
+      - feature/security-hardening-v2
 
 jobs:
   verify:
@@ -19,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
@@ -27,15 +33,17 @@ jobs:
       - name: Typecheck & Static Analysis
         run: npm run lint
 
-      - name: Execute Automated Regression & Security Test Suites
+      - name: Execute Automated Regression Tests
         run: npm test
 
       - name: Secure Feed Regression Tests
         run: NODE_ENV=test npx tsx test/secureFeedIntegrationSuite.ts
-        - name: Verify advanced HTTPS security
-          run: |
-            NODE_ENV=test npx tsx test/secureFeedDnsIsolationSuite.ts
-            NODE_ENV=test npx tsx test/secureFeedTransportSuite.ts
 
-      - name: Compile Production Bundle (Client Assets + Bundled Server)
+      - name: DNS Isolation Tests
+        run: NODE_ENV=test npx tsx test/secureFeedDnsIsolationSuite.ts
+
+      - name: HTTPS Transport Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedTransportSuite.ts
+
+      - name: Compile Production Bundle
         run: npm run build
