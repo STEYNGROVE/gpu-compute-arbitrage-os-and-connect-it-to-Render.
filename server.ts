@@ -164,6 +164,20 @@ function rateLimit(limit = 120, windowMs = 60000) {
 
 app.use(rateLimit(200, 60000));
 
+// Private deployment: fail closed for every internal API endpoint, including
+// legacy routes that were previously registered without authentication.
+// Authentication endpoints remain available for login and session validation.
+app.use('/api', (req, res, next) => {
+  const route = req.path;
+  if (route === '/auth/login' || route === '/auth/logout' ||
+      route === '/auth/session' || route === '/auth/session-token' ||
+      route === '/health' || route === '/healthz') return next();
+  // Webhooks must retain their existing signature verification. Block all
+  // other anonymous API traffic until an authenticated owner session exists.
+  return requireOwnerAuth(req, res, next);
+});
+
+
 // Persistent Ledger Interface
 interface LedgerRecord {
   id: string;

@@ -3,7 +3,7 @@
     "liveInitialBalance": 15,
     "liveCurrentBalance": 15,
     "liveDeployedCapital": 58.94,
-    "reinvestmentVaultBalance": 0,
+    "reinvestmentVaultBalance": 3175.86,
     "treasuryStatus": "VERIFIED_FUNDED",
     "realBankCashBalance": 15,
     "simulatedReserve": 0,
@@ -16,25 +16,25 @@
   "provisions": [],
   "auditEvents": [
     {
-      "id": "audit-1793769703068-8ee069",
-      "timestamp": "2026-11-04T05:21:43.068Z",
+      "id": "audit-1793776287147-44b714",
+      "timestamp": "2026-11-04T07:11:27.147Z",
       "eventType": "DECISION_EVAL",
       "severity": "INFO",
-      "message": "Pipeline A Discovery & Pipeline B Capital Gate Evaluated: 16 real opportunities discovered (16 profitable requiring $153.64 total capital, 0 executable now, 3 capital-blocked). Verified operating capital: $15.00 USD.",
+      "message": "Pipeline A Discovery & Pipeline B Capital Gate Evaluated: 42 real opportunities discovered (24 profitable requiring $479.28 total capital, 0 executable now, 3 capital-blocked). Verified operating capital: $25.00 USD.",
       "details": {
-        "realOpportunities": 16,
-        "profitable": 16,
+        "realOpportunities": 42,
+        "profitable": 24,
         "executableNow": 0,
         "capitalBlocked": 3,
-        "providerBlocked": 3,
-        "customerRequired": 16,
-        "verifiedAvailableCapitalUsd": 15,
-        "totalRequiredCapitalForProfitableUsd": 153.64,
-        "totalCapitalShortfallForProfitableUsd": 138.64,
-        "totalExpectedNetProfitForProfitableUsd": 411,
+        "providerBlocked": 5,
+        "customerRequired": 24,
+        "verifiedAvailableCapitalUsd": 25,
+        "totalRequiredCapitalForProfitableUsd": 479.28,
+        "totalCapitalShortfallForProfitableUsd": 454.28,
+        "totalExpectedNetProfitForProfitableUsd": 254.81,
         "zeroCapitalMode": false
       },
-      "verifiedSignature": "8ee0692e9452c7aefcf9c4421b0a64e64c03ac2b3f9f0f634afe77e9a90817df"
+      "verifiedSignature": "44b7146b50161da3c51a78fa3b72def8343b08e3591e7cacaddbdf12286c129b"
     },
     {
       "id": "audit-1791797546716-519cba",
