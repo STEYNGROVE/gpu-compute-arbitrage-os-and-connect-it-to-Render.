@@ -74,13 +74,15 @@ export async function secureFeedFetch(input: string): Promise<string> {
   }
 
   // Resolve once. Reject if ANY returned address is unsafe.
+  // One deadline covers DNS resolution and HTTPS.
+  const deadline = AbortSignal.timeout(TIMEOUT_MS);
+
   const addresses = await Promise.race([
     lookup(hostname, { all: true, verbatim: true }),
     new Promise<never>((_, reject) => {
-      setTimeout(
-        () => reject(new Error('FEED_DNS_TIMEOUT')),
-        TIMEOUT_MS
-      );
+      deadline.addEventListener('abort', () => {
+        reject(new Error('FEED_DNS_TIMEOUT'));
+      }, { once: true });
     })
   ]);
 
@@ -103,6 +105,7 @@ export async function secureFeedFetch(input: string): Promise<string> {
     const req = https.request(url, {
       method: 'GET',
       agent: false,
+      signal: deadline,
       timeout: TIMEOUT_MS,
       headers: {
         Accept: 'application/rss+xml, application/atom+xml, application/xml',
@@ -145,12 +148,6 @@ export async function secureFeedFetch(input: string): Promise<string> {
 
       response.on('error', fail);
     });
-
-    const deadline = setTimeout(() => {
-      req.destroy(new Error('FEED_TIMEOUT'));
-    }, TIMEOUT_MS);
-
-    req.on('close', () => clearTimeout(deadline));
 
     req.on('timeout', () => {
       req.destroy(new Error('FEED_TIMEOUT'));
