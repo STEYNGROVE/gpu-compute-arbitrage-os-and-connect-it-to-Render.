@@ -60,6 +60,8 @@ jobs:
 
       - name: Socket Security Tests
         run: NODE_ENV=test npx tsx test/secureFeedSocketSuite.ts
+      - name: Final Network Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedFinalNetworkSuite.ts
       - name: Feed Timeout Security Tests
         run: NODE_ENV=test npx tsx test/secureFeedTimeoutSuite.ts
 
