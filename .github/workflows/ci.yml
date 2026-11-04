@@ -45,5 +45,31 @@ jobs:
       - name: HTTPS Transport Security Tests
         run: NODE_ENV=test npx tsx test/secureFeedTransportSuite.ts
 
+      - name: DNS Pinning Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedDnsPinningSuite.ts
+
+      - name: DNS Edge Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedDnsEdgeSuite.ts
+
+      - name: Generate Temporary TLS Test Certificate
+        run: |
+          mkdir -p test/fixtures/tls
+          openssl req -x509 -newkey rsa:2048 -nodes -keyout test/fixtures/tls/server.key -out test/fixtures/tls/server.crt -days 1 -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost"
+      - name: TLS Certificate Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedTlsSuite.ts
+
+      - name: Socket Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedSocketSuite.ts
+      - name: Final Network Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedFinalNetworkSuite.ts
+      - name: Feed Timeout Security Tests
+        run: NODE_ENV=test npx tsx test/secureFeedTimeoutSuite.ts
+
+      - name: Node 24 HTTPS Socket Lookup Tests
+        run: NODE_ENV=test npx tsx test/secureFeedNode24LookupSuite.ts
+
+      - name: Node 24 Production DNS Lookup Tests
+        run: NODE_ENV=test npx tsx test/secureFeedNode24ProductionSuite.ts
+
       - name: Compile Production Bundle
         run: npm run build
