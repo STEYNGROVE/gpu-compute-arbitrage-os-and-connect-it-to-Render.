@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import { registerCommercialIntake } from './server/commercialIntake.js';
 import { createServer as createViteServer } from 'vite';
 import { db } from './server/databaseEngine.js';
 import { hardwareProvisioner } from './server/providerProvisioner.js';
@@ -164,6 +165,19 @@ function rateLimit(limit = 120, windowMs = 60000) {
 
 app.use(rateLimit(200, 60000));
 
+// Phase 2/3: Public enquiry intake only. No execution, no payments.
+app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
+registerCommercialIntake(app, requireOwnerAuth);
+// Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
+// This release intentionally has no mechanism to turn them on via environment variables.
+app.use('/api', (req, res, next) => {
+  if (req.method !== 'GET' && /^(\/compute\/(execute-deal|settle-deal|abort-job)|\/provisioning\/|\/treasury\/|\/capital\/|\/kill-switch\/disengage|\/autonomous\/deploy|\/zero-funded\/spending-gate)/.test(req.path)) {
+    return res.status(423).json({ error: 'FINANCIAL_EXECUTION_DISABLED_PHASE_2_3' });
+  }
+  next();
+});
+
+
 // Private deployment: fail closed for every internal API endpoint, including
 // legacy routes that were previously registered without authentication.
 // Authentication endpoints remain available for login and session validation.
@@ -171,7 +185,8 @@ app.use('/api', (req, res, next) => {
   const route = req.path;
   if (route === '/auth/login' || route === '/auth/logout' ||
       route === '/auth/session' || route === '/auth/session-token' ||
-      route === '/health' || route === '/healthz') return next();
+      route === '/health' || route === '/healthz' ||
+      route === '/public/quote-info' || route === '/public/quote-request') return next();
   // Webhooks must retain their existing signature verification. Block all
   // other anonymous API traffic until an authenticated owner session exists.
   return requireOwnerAuth(req, res, next);
