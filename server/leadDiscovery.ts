@@ -1,6 +1,8 @@
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import crypto from 'crypto';
+import { secureFeedFetch } from './secureFeedFetch.js';
+import fs from 'node:fs';
 
 // Evidence-backed discovery: candidate URLs are not customers, contracts or revenue.
 // Explicitly configured public RSS/Atom feeds only; no scraping, spam or outbound email.
@@ -18,7 +20,14 @@ export const inMemoryLeadsStore: AcquisitionLeadRecord[] = [];
 const db = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL.includes('localhost') ? undefined : { rejectUnauthorized: false },
+      ssl: new URL(process.env.DATABASE_URL).hostname === 'localhost'
+        ? undefined
+        : {
+            rejectUnauthorized: true,
+            ...(process.env.DATABASE_SSL_CA
+              ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
+              : {})
+          },
       max: 2
     })
   : null;
@@ -117,15 +126,7 @@ async function scan() {
     }
     let inserted = 0;
     try {
-      const r = await fetch(feed, {
-        headers: { Accept: 'application/rss+xml, application/atom+xml, application/xml' },
-        signal: AbortSignal.timeout(9000),
-        redirect: 'error'
-      });
-      if (!r.ok) throw Error('FEED_HTTP_' + r.status);
-      const length = Number(r.headers.get('content-length') || 0);
-      if (length > 1024 * 1024) throw Error('FEED_TOO_LARGE');
-      const xml = (await r.text()).slice(0, 1024 * 1024);
+      const xml = await secureFeedFetch(feed);
       const entries = Array.from(xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)).slice(0, MAX_ENTRIES);
       for (const m of entries) {
         const entry = m[2];
