@@ -2,9 +2,9 @@ name: CI / Automated Verification Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/security-hardening-v2 ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feature/security-hardening-v2 ]
 
 jobs:
   verify:
