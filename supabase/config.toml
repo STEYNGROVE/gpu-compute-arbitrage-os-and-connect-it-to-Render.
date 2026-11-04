@@ -1,0 +1,20 @@
+# Supabase CLI Configuration — GPU Compute Arbitrage OS
+project_id = "dbqogkfrbvlvftoeydgq"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[auth]
+enabled = true
+site_url = "https://ais-pre-2uiryyaczd7oql3d6jonll-879175155856.europe-west2.run.app"
+additional_redirect_urls = ["https://ais-dev-2uiryyaczd7oql3d6jonll-879175155856.europe-west2.run.app"]
+jwt_expiry = 3600
+enable_signup = true
