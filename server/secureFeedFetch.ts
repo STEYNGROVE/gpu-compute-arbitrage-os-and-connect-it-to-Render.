@@ -58,9 +58,12 @@ export type FeedDnsResolver = (
   options: { all: true; verbatim: true }
 ) => Promise<Array<{ address: string; family: number }>>;
 
+export type FeedHttpsTransport = typeof https.request;
+
 export async function secureFeedFetch(
   input: string,
-  resolveDns: FeedDnsResolver = lookup
+  resolveDns: FeedDnsResolver = lookup,
+  requestHttps: FeedHttpsTransport = https.request
 ): Promise<string> {
   const url = new URL(input);
 
@@ -110,7 +113,7 @@ export async function secureFeedFetch(
       }
     };
 
-    const req = https.request(url, {
+    const req = requestHttps(url, {
       method: 'GET',
       agent: false,
       signal: deadline,
