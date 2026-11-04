@@ -85,10 +85,16 @@ async function main() {
 
   const started = Date.now();
 
-  await assert.rejects(
-    secureFeedFetch(url, stalledDns),
-    /FEED_DNS_TIMEOUT/
-  );
+  const keepAlive = setInterval(() => {}, 1000);
+
+  try {
+    await assert.rejects(
+      secureFeedFetch(url, stalledDns),
+      /FEED_DNS_TIMEOUT/
+    );
+  } finally {
+    clearInterval(keepAlive);
+  }
 
   const elapsed = Date.now() - started;
 
