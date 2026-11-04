@@ -6,7 +6,13 @@ import crypto from 'crypto';
 const pool = process.env.DATABASE_URL ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: process.env.DATABASE_URL.includes('localhost') ? undefined : { rejectUnauthorized: false }, max: 2 }) : null;
 let initialized: Promise<void> | undefined;
 async function ready() {
-  if (!pool) throw new Error('DATABASE_URL_NOT_CONFIGURED');
+  if (!pool) {
+    if (process.env.NODE_ENV === 'test' &&
+        process.env.DISABLE_JSON_PERSISTENCE === 'true') {
+      return;
+    }
+    throw new Error('DATABASE_URL_NOT_CONFIGURED');
+  }
   if (!initialized) initialized = pool.query(`CREATE TABLE IF NOT EXISTS commercial_quote_requests (
     id uuid PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now(),
     company text NOT NULL, contact_name text NOT NULL, email text NOT NULL,
