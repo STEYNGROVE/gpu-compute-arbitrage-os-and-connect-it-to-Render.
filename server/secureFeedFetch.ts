@@ -123,8 +123,12 @@ export async function secureFeedFetch(
         'Accept-Encoding': 'identity',
         'User-Agent': 'GPU-OS-ReadOnly-Discovery/1.0'
       },
-      lookup: (_host, _options, callback) => {
-        callback(null, selected, 4);
+      lookup: (_host, options, callback) => {
+        if (typeof options === 'object' && options.all) {
+          callback(null, [{ address: selected, family: 4 }]);
+        } else {
+          callback(null, selected, 4);
+        }
       },
       rejectUnauthorized: true,
       servername: hostname
