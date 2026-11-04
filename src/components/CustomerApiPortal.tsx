@@ -18,73 +18,11 @@ import {
   RefreshCw,
   Sliders,
   ChevronDown,
-  ChevronUp,
-  Inbox,
-  Clock,
-  UserCheck
+  ChevronUp
 } from 'lucide-react';
 import { GpuModel, WorkloadType, DemandClass, GPU_WORKLOAD_CATALOG, getGpuWorkloadSpec } from '../types';
 
 export const CustomerApiPortal: React.FC = () => {
-  // Commercial Leads & Enquiries State (Phase 2 & 3)
-  interface CommercialLead {
-    id: string;
-    created_at: string;
-    company: string;
-    contact_name: string;
-    email: string;
-    workload: string;
-    gpu_model: string;
-    gpu_count: number;
-    hours: number;
-    notes: string;
-    status: 'NEW' | 'REVIEWING' | 'QUOTED' | 'CLOSED';
-  }
-
-  const [enquiries, setEnquiries] = useState<CommercialLead[]>([]);
-  const [isLoadingEnquiries, setIsLoadingEnquiries] = useState(false);
-  const [enquiryFilter, setEnquiryFilter] = useState<'ALL' | 'NEW' | 'REVIEWING' | 'QUOTED' | 'CLOSED'>('ALL');
-  const [enquiryFeedback, setEnquiryFeedback] = useState<string | null>(null);
-
-  const fetchCommercialEnquiries = useCallback(async () => {
-    setIsLoadingEnquiries(true);
-    try {
-      const res = await fetch('/api/commercial/requests', { credentials: 'include' });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data.requests)) {
-          setEnquiries(data.requests);
-        }
-      }
-    } catch (e) {
-      console.warn('[CustomerApiPortal] Notice: Failed to fetch commercial requests:', e);
-    } finally {
-      setIsLoadingEnquiries(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCommercialEnquiries();
-  }, [fetchCommercialEnquiries]);
-
-  const updateEnquiryStatus = async (id: string, newStatus: 'NEW' | 'REVIEWING' | 'QUOTED' | 'CLOSED') => {
-    try {
-      const res = await fetch(`/api/commercial/requests/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ status: newStatus })
-      });
-      if (res.ok) {
-        setEnquiries(prev => prev.map(item => item.id === id ? { ...item, status: newStatus } : item));
-        setEnquiryFeedback(`Updated lead ${id.slice(0, 8)} to ${newStatus}`);
-        setTimeout(() => setEnquiryFeedback(null), 3000);
-      }
-    } catch (e) {
-      console.warn('[CustomerApiPortal] Failed to update lead status:', e);
-    }
-  };
-
   const {
     apiKeys,
     generateNewApiKey,
