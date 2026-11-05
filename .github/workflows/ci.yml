@@ -71,5 +71,11 @@ jobs:
       - name: Node 24 Production DNS Lookup Tests
         run: NODE_ENV=test npx tsx test/secureFeedNode24ProductionSuite.ts
 
+      - name: Security check
+        run: npm run security:check
+
+      - name: TypeScript validation
+        run: npm run typecheck
+
       - name: Compile Production Bundle
         run: npm run build
