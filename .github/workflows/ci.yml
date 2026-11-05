@@ -6,6 +6,7 @@ on:
       - main
       - feature/security-hardening-v2
       - test/advanced-https-security
+      - test/final-network-security
 
   pull_request:
     branches:
