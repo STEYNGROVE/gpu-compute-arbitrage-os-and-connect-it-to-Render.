@@ -3,7 +3,11 @@ import fs from 'fs';
 
 // 1. LOAD ENVIRONMENT FIRST BEFORE ANY MODULE READS SECRETS
 const initialEnv = { ...process.env };
-dotenv.config();
+if (process.env.NODE_ENV !== 'test') {
+  dotenv.config();
+} else {
+  console.log('[BOOTSTRAP] Test mode: local .env loading disabled');
+}
 
 // Normalize AWS Secrets Manager JSON-wrapped secrets if injected directly into process.env
 for (const envVarName of [
