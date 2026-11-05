@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import {
   outboxRepo,
@@ -136,7 +137,8 @@ export class OutboxWorker {
         await this.processEvent(event);
       }
 
-      this.lastSuccessAt = new Date();
+      // A processed batch is not proof of successful execution.
+      // Success timestamps are updated only after verified success.
       return events.length;
     } catch (err: any) {
       this.lastError = err.message;
@@ -148,6 +150,10 @@ export class OutboxWorker {
   private async processEvent(event: any): Promise<void> {
     const eventId = event.id;
     try {
+      // Simulation-only release: reject all operational events
+      // before advancing the database state to PROCESSING.
+      assertLiveOperationsAllowed();
+
       // Advance to PROCESSING
       await pgDbService.query(
         `UPDATE outbox_events SET status = 'PROCESSING' WHERE id = $1`,
@@ -156,6 +162,7 @@ export class OutboxWorker {
 
       switch (event.eventType) {
         case 'PROVISION_GPU_INSTANCE': {
+    assertLiveOperationsAllowed();
           await this.handleProvisionGpuInstance(event.payload);
           break;
         }
@@ -171,8 +178,9 @@ export class OutboxWorker {
         }
 
         default:
-          console.log(`[OUTBOX WORKER] Completed generic outbox task: ${event.eventType}`);
-          break;
+          throw new Error(
+            `SIMULATION_LOCKDOWN: Unsupported outbox event type: ${event.eventType}`
+          );
       }
 
       // Mark SUCCEEDED upon successful execution of actual action
@@ -442,11 +450,15 @@ export class OutboxWorker {
   }
 
   private async handleReconcileTreasury(payload: Record<string, unknown>): Promise<void> {
-    console.log('[OUTBOX WORKER] Handled async treasury reconciliation event.');
+    throw new Error(
+      'SIMULATION_LOCKDOWN: Treasury reconciliation is not implemented.'
+    );
   }
 
   private async handleKillSwitchSync(payload: Record<string, unknown>): Promise<void> {
-    console.log('[OUTBOX WORKER] Handled emergency kill switch sync event.');
+    throw new Error(
+      'SIMULATION_LOCKDOWN: Kill switch synchronization is not implemented.'
+    );
   }
 
   /**

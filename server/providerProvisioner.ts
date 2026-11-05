@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { toMinorUnits, fromMinorUnits } from './moneyUtils.js';
 
@@ -225,6 +226,7 @@ export class HardwareProviderProvisioner {
   }
 
   public async provisionComputeHardware(req: ProvisionRequest): Promise<ProvisionResult> {
+    assertLiveOperationsAllowed();
     const { provider, offerId, gpuModel, gpuCount, isLiveMode, workloadType, customerName, idempotencyKey } = req;
 
     // Reject any non-LIVE invocation: HardwareProviderProvisioner is strictly for authoritative LIVE hardware execution.
@@ -658,7 +660,9 @@ export class HardwareProviderProvisioner {
     provider: 'vast_ai' | 'runpod' | 'lambda',
     instanceId: string,
     isLiveMode: boolean = true
-  ): Promise<{ success: boolean; status: 'TERMINATED' | 'TERMINATION_PENDING' | 'UNKNOWN'; terminatedAt: string; message: string }> {
+  ): Promise<{
+     success: boolean; status: 'TERMINATED' | 'TERMINATION_PENDING' | 'UNKNOWN'; terminatedAt: string; message: string }> {
+    assertLiveOperationsAllowed();
     const now = new Date().toISOString();
     const effectiveLiveMode = isLiveMode || process.env.REALITY_LEVEL === 'LIVE' || process.env.NODE_ENV === 'production';
 
