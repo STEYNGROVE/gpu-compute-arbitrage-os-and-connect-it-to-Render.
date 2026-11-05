@@ -184,6 +184,14 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
 
   app.get('/api/acquisition/leads', owner, async (_req, res) => {
     try {
+      if (process.env.NODE_ENV === 'test' &&
+          process.env.LEAD_TEST_IN_MEMORY === 'true') {
+        return res.json({
+          leads: inMemoryLeadsStore,
+          verifiedCustomers: 0,
+          realizedRevenueUsd: 0
+        });
+      }
       await ready();
       if (db) {
         const r = await db.query(
@@ -203,6 +211,20 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
       return res.status(400).json({ error: 'INVALID_STATUS' });
     }
     try {
+      if (process.env.NODE_ENV === 'test' &&
+          process.env.LEAD_TEST_IN_MEMORY === 'true') {
+        const match = inMemoryLeadsStore.find(
+          (l) => l.id === req.params.id
+        );
+        if (!match) {
+          return res.status(404).json({ error: 'NOT_FOUND' });
+        }
+        match.status = status;
+        return res.status(200).json({
+          id: match.id,
+          status: match.status
+        });
+      }
       await ready();
       if (db) {
         const r = await db.query('UPDATE acquisition_leads SET status=$1 WHERE id=$2 RETURNING id,status', [
