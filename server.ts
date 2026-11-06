@@ -8,6 +8,7 @@ import { registerPreapprovedWorkloads } from './server/preapprovedWorkloads.js';
 import { registerOwnerOperations } from './server/ownerOperations.js';
 import { registerOwnerCommandCentre } from './server/ownerCommandCentre.js';
 import { registerOwnerSalesWorkspace } from './server/ownerSalesWorkspace.js';
+import { registerCustomerIntelligence } from './server/customerIntelligence.js';
 import { registerLeadDiscovery } from './server/leadDiscovery.js';
 import { createServer as createViteServer } from 'vite';
 import { db } from './server/databaseEngine.js';
@@ -177,6 +178,7 @@ registerPreapprovedWorkloads(app, requireOwnerAuth);
   registerOwnerOperations(app, requireOwnerAuth);
 registerOwnerCommandCentre(app, requireOwnerAuth);
 registerOwnerSalesWorkspace(app, requireOwnerAuth);
+registerCustomerIntelligence(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.
