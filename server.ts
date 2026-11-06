@@ -1,3 +1,4 @@
+import { registerGpuHunterX } from './server/gpuHunterX.js';
 import './server/bootstrap.js';
 import express from 'express';
 import path from 'path';
@@ -179,6 +180,7 @@ registerPreapprovedWorkloads(app, requireOwnerAuth);
 registerOwnerCommandCentre(app, requireOwnerAuth);
 registerOwnerSalesWorkspace(app, requireOwnerAuth);
 registerCustomerIntelligence(app, requireOwnerAuth);
+registerGpuHunterX(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.
