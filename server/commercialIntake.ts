@@ -4,14 +4,27 @@ import crypto from 'crypto';
 import fs from 'node:fs';
 
 // Separate, untrusted customer-intake channel. Never triggers procurement or payment.
-const pool = process.env.DATABASE_URL ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: new URL(process.env.DATABASE_URL).hostname === 'localhost'
+const databaseHost = process.env.DATABASE_URL
+  ? new URL(process.env.DATABASE_URL).hostname
+  : '';
+
+const isRenderPrivateDb =
+  /^dpg-[a-z0-9-]+-a$/.test(databaseHost);
+
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: databaseHost === 'localhost' || isRenderPrivateDb
         ? undefined
         : {
             rejectUnauthorized: true,
             ...(process.env.DATABASE_SSL_CA
               ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
               : {})
-          }, max: 2 }) : null;
+          },
+      max: 2
+    })
+  : null;
 let initialized: Promise<void> | undefined;
 async function ready() {
   if (!pool) {
