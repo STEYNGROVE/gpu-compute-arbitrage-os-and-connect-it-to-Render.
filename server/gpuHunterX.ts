@@ -38,6 +38,29 @@ function score(b: { evidence:string; workload:string; deadline:string; budgetEvi
   return {score: Math.min(100,points),reasons};
 }
 export function registerGpuHunterX(app:Express, owner:Auth) {
+  // Unified, read-only view. Existing registries remain intact.
+  app.get('/api/owner/gpu-hunter-x/unified', owner, async (_req,res)=>{
+    try {
+      await ready();
+      const [hunter, acquisition, intelligence] = await Promise.all([
+        pool!.query('SELECT id,company,source_url,evidence,workload,score,status,created_at FROM gpu_hunter_opportunities ORDER BY created_at DESC LIMIT 200'),
+        pool!.query("SELECT id,title,source_url,source_feed,status,discovered_at FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 200"),
+        pool!.query('SELECT id,company,source_url,evidence,workload,status,created_at FROM customer_intelligence_leads ORDER BY created_at DESC LIMIT 200')
+      ]);
+      const merged = new Map<string, Record<string,unknown>>();
+      for (const x of acquisition.rows) merged.set(x.source_url, {sourceUrl:x.source_url,title:x.title,sourceFeed:x.source_feed,origin:['ACQUISITION'],status:x.status,discoveredAt:x.discovered_at,verifiedCustomer:false});
+      for (const x of intelligence.rows) {
+        const prev=merged.get(x.source_url)||{};
+        merged.set(x.source_url,{...prev,sourceUrl:x.source_url,company:x.company,evidence:x.evidence,workload:x.workload,origin:[...((prev.origin as string[])||[]),'CUSTOMER_INTELLIGENCE'],intelligenceStatus:x.status,verifiedCustomer:false});
+      }
+      for (const x of hunter.rows) {
+        const prev=merged.get(x.source_url)||{};
+        merged.set(x.source_url,{...prev,sourceUrl:x.source_url,company:x.company,evidence:x.evidence,workload:x.workload,score:x.score,origin:[...((prev.origin as string[])||[]),'GPU_HUNTER_X'],hunterStatus:x.status,verifiedCustomer:false});
+      }
+      res.setHeader('Cache-Control','no-store');
+      res.json({mode:'SIMULATION_ONLY',automatedOutreachEnabled:false,procurementEnabled:false,verifiedCustomers:0,realizedRevenueUsd:0,discoveryTrigger:'/api/acquisition/discover',opportunities:Array.from(merged.values()).slice(0,300)});
+    } catch (_e) {res.status(503).json({error:'UNIFIED_OPPORTUNITY_STORAGE_UNAVAILABLE'});}
+  });
   app.get('/api/owner/gpu-hunter-x',owner,async (_req,res)=>{
     try {await ready(); const q=await pool!.query('SELECT id,company,source_url,evidence,workload,contact_channel,deadline,budget_evidence,score,score_reasons,status,created_at FROM gpu_hunter_opportunities ORDER BY score DESC,created_at DESC LIMIT 200');
       res.setHeader('Cache-Control','no-store'); res.json({mode:'SIMULATION_ONLY',automatedOutreachEnabled:false,procurementEnabled:false,discoveryMode:'MANUAL_EVIDENCE_IMPORT',verifiedCustomers:0,realizedRevenueUsd:0,opportunities:q.rows});
