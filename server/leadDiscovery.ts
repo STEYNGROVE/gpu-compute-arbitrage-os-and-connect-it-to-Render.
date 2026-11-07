@@ -86,7 +86,11 @@ async function ready() {
             CHECK(status IN ('CANDIDATE','REVIEWING','QUALIFIED','REJECTED'))
           )`
         )
-        .then(() => undefined)
+        .then(async () => {
+          await db!.query(
+            'ALTER TABLE acquisition_leads ADD COLUMN IF NOT EXISTS description text'
+          );
+        })
         .catch((e) => {
           initialized = undefined;
           throw e;
@@ -146,8 +150,14 @@ async function scan() {
 
         if (db) {
           const q = await db.query(
-            'INSERT INTO acquisition_leads(id,title,source_url,source_feed) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING',
-            [id, title, url, feed]
+            `INSERT INTO acquisition_leads
+             (id,title,source_url,source_feed,description)
+             VALUES($1,$2,$3,$4,$5)
+             ON CONFLICT(source_url) DO UPDATE
+             SET description=EXCLUDED.description
+             WHERE acquisition_leads.description IS NULL
+                OR acquisition_leads.description=''`,
+            [id,title,url,feed,description]
           );
           inserted += q.rowCount || 0;
         } else {
@@ -195,7 +205,7 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
       await ready();
       if (db) {
         const r = await db.query(
-          'SELECT id,title,source_url,source_feed,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
+          'SELECT id,title,source_url,source_feed,description,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
         );
         return res.json({ leads: r.rows, verifiedCustomers: 0, realizedRevenueUsd: 0 });
       }

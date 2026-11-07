@@ -81,62 +81,65 @@ function rankDiscoveredLead(title: string) {
 // Evidence-based preliminary ranking.
 // No customer, contract or revenue verification is implied.
 
-function qualifyCandidate(title: string, sourceFeed: string) {
-  const t = title.toLowerCase();
+
+// GPU_EVIDENCE_V3
+function qualifyCandidate(
+  title: string,
+  sourceFeed: string,
+  description: string = ''
+) {
+  const t = (title + ' ' + description).toLowerCase();
   const feed = sourceFeed.toLowerCase();
-
-  let score = 0;
   const reasons: string[] = [];
-  const missing: string[] = [
-    'Verified buyer identity',
-    'Original procurement evidence',
-    'Confirmed budget',
-    'Confirmed deadline',
-    'Confirmed contact route'
-  ];
 
-  let category = 'UNCLASSIFIED';
-
-  const hiring =
-    /who is hiring|job opening|recruiting|vacancy|salary/.test(t) ||
-    /whoishiring/.test(feed);
+  const hiring = /whoishiring/.test(feed) ||
+    /who is hiring|we are hiring|job opening|recruiting|vacancy/.test(t);
 
   const procurement =
-    /tender|rfp|request for proposal|procurement|quotation/.test(t);
+    /request for proposal|request for quotation|\\brfp\\b|\\brfq\\b|\\btender\\b|procurement/.test(t);
 
-  const compute =
-    /gpu|cuda|h100|h200|a100|b200|compute|inference|render farm/.test(t);
+  const buying =
+    /looking to rent|need gpu capacity|seeking gpu compute|buy compute|rent gpu|gpu provider wanted/.test(t);
+
+  const technical =
+    /\\bgpu\\b|\\bcuda\\b|\\bh100\\b|\\bh200\\b|\\ba100\\b|\\bb200\\b|inference|render farm/.test(t);
+
+  let category = 'UNCLASSIFIED';
+  let score = 0;
 
   if (hiring) {
     category = 'EMPLOYMENT';
-    reasons.push('Hiring-related source');
-  } else if (procurement) {
+    reasons.push('Hiring source or employment language');
+  } else if (procurement && technical) {
     category = 'POTENTIAL_PROCUREMENT';
-    score += 25;
-    reasons.push('Procurement terminology');
-  } else if (compute) {
+    score = 45;
+    reasons.push('Procurement and GPU terminology');
+  } else if (buying && technical) {
     category = 'POTENTIAL_COMPUTE_DEMAND';
-    score += 15;
-    reasons.push('Compute-related terminology');
+    score = 40;
+    reasons.push('Possible compute purchasing intent');
+  } else if (technical) {
+    category = 'TECHNICAL_MENTION';
+    score = 10;
+    reasons.push('GPU terminology without confirmed buyer intent');
   }
 
-  if (!hiring && /h100|h200|a100|b200|cuda/.test(t)) {
-    score += 15;
-    reasons.push('Specific GPU technology mentioned');
+  if (!description.trim()) {
+    reasons.push('Source description missing');
+    score = Math.min(score, 10);
   }
-
-  if (!hiring && /inference|training|render farm/.test(t)) {
-    score += 10;
-    reasons.push('Possible workload identified');
-  }
-
-  if (hiring) score = 0;
 
   return {
     category,
-    score: Math.min(score, 50),
+    score,
     reasons,
-    missingEvidence: missing,
+    missingEvidence: [
+      'Verified buyer identity',
+      'Confirmed commercial requirement',
+      'Confirmed budget',
+      'Confirmed deadline',
+      'Confirmed contact route'
+    ],
     evidenceStatus: 'UNVERIFIED',
     verifiedCustomer: false,
     verifiedContract: false,
@@ -152,7 +155,7 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
       await ready();
 
       const result = await pool!.query(
-        `SELECT id, title, source_url, source_feed,
+        `SELECT id, title, source_url, source_feed, description,
                 status, discovered_at
          FROM acquisition_leads
          ORDER BY discovered_at DESC
@@ -164,9 +167,10 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
         title: x.title,
         sourceUrl: x.source_url,
         sourceFeed: x.source_feed,
+        description: x.description || '',
         status: x.status,
         discoveredAt: x.discovered_at,
-        ...qualifyCandidate(x.title, x.source_feed)
+        ...qualifyCandidate(x.title, x.source_feed, x.description || '')
       }));
 
       opportunities.sort((a, b) => b.score - a.score);
@@ -274,6 +278,7 @@ async function load(){
           ' · '+x.score+'/100'),
         node('p','Category: '+x.category),
         node('p','Evidence: '+x.evidenceStatus),
+        node('p',x.description || 'No source description stored'),
         node('small',(x.reasons||[]).join(' · '))
       );
 
