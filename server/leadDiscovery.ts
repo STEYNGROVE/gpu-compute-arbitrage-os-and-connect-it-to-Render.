@@ -20,7 +20,7 @@ export const inMemoryLeadsStore: AcquisitionLeadRecord[] = [];
 const db = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: new URL(process.env.DATABASE_URL).hostname === 'localhost'
+      ssl: /^(localhost|dpg-[a-z0-9-]+)$/.test(new URL(process.env.DATABASE_URL).hostname)
         ? undefined
         : {
             rejectUnauthorized: true,
