@@ -36,7 +36,7 @@ export function maskSecret(secret?: string | null): string {
  */
 export function getBinanceConfig(): BinanceConfig {
   const enabledStr = process.env.BINANCE_ENABLED;
-  const enabled = enabledStr !== undefined ? enabledStr === 'true' || enabledStr === '1' : true;
+  const enabled = enabledStr === 'true' || enabledStr === '1';
 
   const apiKey = (process.env.BINANCE_API_KEY || '').trim();
   const apiSecret = (process.env.BINANCE_API_SECRET || '').trim();

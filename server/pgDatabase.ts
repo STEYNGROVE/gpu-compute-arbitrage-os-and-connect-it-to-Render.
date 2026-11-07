@@ -1,3 +1,4 @@
+import { liveOperationsAllowed } from './simulationSafety.js';
 import pg from 'pg';
 import fs from 'fs';
 import path from 'path';
@@ -290,7 +291,13 @@ export class PostgresDatabaseService {
     try {
       this.isConnected = false;
       const check = this.assertLiveModeAllowed();
-      const failClosedEnforced = check.allowed === false && typeof check.reason === 'string' && check.reason.includes('LIVE MODE BLOCKED');
+      const failClosedEnforced =
+        check.allowed === false &&
+        typeof check.reason === 'string' &&
+        (
+          check.reason.includes('LIVE MODE BLOCKED') ||
+          check.reason.includes('SIMULATION_LOCKDOWN:')
+        );
       return {
         failClosedEnforced,
         reason: check.reason || ''
@@ -305,6 +312,12 @@ export class PostgresDatabaseService {
    * If PostgreSQL is unavailable, LIVE financial execution is strictly disabled.
    */
   public assertLiveModeAllowed(): { allowed: boolean; reason?: string } {
+    if (!liveOperationsAllowed()) {
+      return {
+        allowed: false,
+        reason: 'SIMULATION_LOCKDOWN: Live execution is disabled.'
+      };
+    }
     if (!this.isConnected || !this.pool) {
       return {
         allowed: false,

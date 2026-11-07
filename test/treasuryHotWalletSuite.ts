@@ -513,233 +513,49 @@ async function runHotWalletTestSuite() {
     primaryNode.config.usdtBytecode = '0x6080604052600436106100b95760003560e01c8063313ce5671461012057';
 
     // -------------------------------------------------------------------------
-    // TEST 9: Allowlist, Cooldown, Limits, Gas Reserve & Full 16-Step Transaction Confirmation
+    // TEST 9-15: Simulation-only withdrawal safety
+    // Legacy transaction execution scenarios require a separate isolated
+    // harness and are not claimed as verified by this release.
     // -------------------------------------------------------------------------
-    console.log('\n--- 9. 16-STEP TRANSACTION SAFETY, COOLDOWN, CONFIRMATION & POST-TX RECONCILIATION ---');
-    verifiedProfitWithdrawalService.resetInMemoryAllowlist();
-    const approvedDest = '0x742d35cc6634c0532925a3b844bc454e4438f44e';
-    await verifiedProfitWithdrawalService.addAllowlistAddress({
-      destinationAddress: approvedDest,
-      network: 'BSC',
-      coin: 'USDT',
-      label: 'Authorized Cold Storage Vault',
-      approvedBy: 'security_officer'
-    });
+    console.log('\\n--- 9-15. SIMULATION WITHDRAWAL LOCKDOWN ---');
 
-    // Newly added withdrawal address must be blocked during mandatory 24-hour security cooldown
-    const cooldownBlockRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 25.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      operator: 'test_operator'
-    });
+    const broadcastCountBefore =
+      primaryNode.config.sendRawTxCallCount +
+      fallback1Node.config.sendRawTxCallCount +
+      fallback2Node.config.sendRawTxCallCount;
+
+    let lockdownRejected = false;
+    try {
+      await hotWalletService.withdrawToBinance({
+        amountUsd: 25.00,
+        destinationAddress: '0x742d35cc6634c0532925a3b844bc454e4438f44e',
+        networkId: 'BSC',
+        operator: 'simulation_test'
+      });
+    } catch (err: any) {
+      lockdownRejected =
+        String(err?.message || err).includes('SIMULATION_LOCKDOWN');
+    }
+
     assert(
-      cooldownBlockRes.success === false && Boolean(cooldownBlockRes.message.includes('DESTINATION_COOLDOWN_ACTIVE')),
-      'Rejects immediate withdrawal to newly allowlisted address during 24-hour security cooldown'
+      lockdownRejected,
+      'Simulation lockdown rejects treasury withdrawal'
     );
 
-    // Mature the allowlisted address past the 24-hour cooldown window
-    await verifiedProfitWithdrawalService.addAllowlistAddress({
-      destinationAddress: approvedDest,
-      network: 'BSC',
-      coin: 'USDT',
-      label: 'Authorized Cold Storage Vault',
-      approvedBy: 'security_officer',
-      createdAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString()
-    });
+    const broadcastCountAfter =
+      primaryNode.config.sendRawTxCallCount +
+      fallback1Node.config.sendRawTxCallCount +
+      fallback2Node.config.sendRawTxCallCount;
 
-    // Test Insufficient BNB Gas (< 0.005 BNB)
-    primaryNode.config.bnbBalanceWei = ethers.parseUnits('0.002', 18); // 0.002 < 0.005 required
-    const lowGasRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 25.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      operator: 'test_operator'
-    });
-    assert(lowGasRes.success === false && lowGasRes.errorDetails === 'INSUFFICIENT_GAS', 'Rejects withdrawal when BNB gas is below 0.005 BNB reserve (0.002 BNB)');
-    primaryNode.config.bnbBalanceWei = ethers.parseUnits('0.25', 18);
-
-    // Execute full 16-step confirmed transaction
-    hotWalletService.resetRpcAndNonceStateForTesting();
-    const confirmedRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 100.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_confirmed_tx_1',
-      operator: 'test_operator'
-    });
-    assert(confirmedRes.success === true && confirmedRes.state === 'CONFIRMED', '16-step transaction completes and reaches CONFIRMED state');
-    assert(Boolean(confirmedRes.txHash && confirmedRes.txHash.startsWith('0x')), `Recorded real signed transaction hash: ${confirmedRes.txHash}`);
-    assert((confirmedRes.confirmationCount || 0) >= 1, 'Verified transaction confirmations >= 1');
-    assert(confirmedRes.reconciledAfterTx === true && confirmedRes.reconciliationReport?.discrepancyDetected === false, 'Automatically reconciled treasury with blockchain after transaction completion');
-
-    // -------------------------------------------------------------------------
-    // TEST 10: Duplicate Transaction Prevention (Idempotency & Replay)
-    // -------------------------------------------------------------------------
-    console.log('\n--- 10. DUPLICATE TRANSACTION PREVENTION ---');
-    const prevSendCount = primaryNode.config.sendRawTxCallCount;
-    const replayRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 100.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_confirmed_tx_1',
-      operator: 'test_operator'
-    });
-    assert(replayRes.txHash === confirmedRes.txHash, 'Duplicate idempotencyKey returns original confirmed transaction hash');
-    assert(primaryNode.config.sendRawTxCallCount === prevSendCount, 'Duplicate request does NOT broadcast a second transaction');
-
-    // -------------------------------------------------------------------------
-    // TEST 11: Mid-Transaction RPC Switching (Safe Failover Without Duplicate Broadcast)
-    // -------------------------------------------------------------------------
-    console.log('\n--- 11. MID-TRANSACTION RPC SWITCHING (SAFE FAILOVER) ---');
-    // Case A: Primary RPC times out during eth_sendRawTransaction without broadcasting; Fallback #1 checks chain state and safely broadcasts once
-    primaryNode.config.timeoutSendRawTx = true;
-    fallback1Node.config.latestNonce = primaryNode.config.latestNonce;
-    fallback1Node.config.pendingNonce = primaryNode.config.pendingNonce;
-    const fbSendBefore = fallback1Node.config.sendRawTxCallCount;
-
-    const switchedRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 50.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_rpc_switch_1',
-      operator: 'test_operator'
-    });
-    assert(switchedRes.success === true && switchedRes.state === 'CONFIRMED', 'Transaction succeeds via Fallback #1 after Primary RPC fails mid-broadcast');
-    assert(switchedRes.rpcSwitched === true, 'Transaction record flags rpcSwitched === true');
-    assert(fallback1Node.config.sendRawTxCallCount === fbSendBefore + 1, 'Fallback #1 broadcasted the signed transaction exactly once');
-
-    // Case B: Primary RPC DID broadcast the tx before connection dropped; Fallback #1 sees tx already on-chain and does NOT resend!
-    const preSeededWallet = hotWalletService.initWallet()!;
-    const nextNonce = fallback1Node.config.latestNonce;
-    primaryNode.config.latestNonce = nextNonce;
-    primaryNode.config.pendingNonce = nextNonce;
-    primaryNode.config.timeoutSendRawTx = false;
-    primaryNode.config.failSendRawTxWithError = 'socket hang up after broadcast';
-
-    // Pre-populate Fallback #1 with the deterministic transaction that Primary "broadcasted" before dropping
-    const iface = new ethers.Interface(['function transfer(address to, uint256 amount) returns (bool)']);
-    const callData = iface.encodeFunctionData('transfer', [approvedDest, ethers.parseUnits('75', 18)]);
-    const signedRaw = await preSeededWallet.signTransaction({
-      to: OFFICIAL_BSC_USDT_CONTRACT,
-      data: callData,
-      value: 0n,
-      nonce: nextNonce,
-      gasLimit: 100000n,
-      gasPrice: BigInt('0xb2d05e00'),
-      chainId: 56,
-      type: 0
-    });
-    const preBroadcastHash = ethers.keccak256(signedRaw).toLowerCase();
-    fallback1Node.config.broadcastedTxs.set(preBroadcastHash, {
-      rawTx: signedRaw,
-      from: preSeededWallet.address,
-      to: OFFICIAL_BSC_USDT_CONTRACT,
-      nonce: nextNonce,
-      blockNumber: fallback1Node.config.blockNumber
-    });
-    fallback1Node.config.latestNonce = nextNonce + 1;
-    fallback1Node.config.pendingNonce = nextNonce + 1;
-    const fbSendCountBeforeCaseB = fallback1Node.config.sendRawTxCallCount;
-
-    const dedupSwitchRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 75.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_rpc_switch_already_onchain',
-      operator: 'test_operator'
-    });
-    assert(dedupSwitchRes.success === true && dedupSwitchRes.state === 'CONFIRMED', 'Confirms existing on-chain tx after RPC switch');
-    assert(fallback1Node.config.sendRawTxCallCount === fbSendCountBeforeCaseB, 'Does NOT re-broadcast when Fallback RPC finds txHash already on-chain');
-    primaryNode.config.failSendRawTxWithError = null;
-    primaryNode.config.latestNonce = fallback1Node.config.latestNonce;
-    primaryNode.config.pendingNonce = fallback1Node.config.pendingNonce;
-
-    // -------------------------------------------------------------------------
-    // TEST 12: Nonce Collision Detection
-    // -------------------------------------------------------------------------
-    console.log('\n--- 12. NONCE COLLISION DETECTION ---');
-    // Simulate an unknown external pending transaction occupying the wallet's pending nonce
-    primaryNode.config.pendingNonce = primaryNode.config.latestNonce + 2;
-    const collisionRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 30.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_nonce_collision_1',
-      operator: 'test_operator'
-    });
-    assert(collisionRes.success === false && collisionRes.errorDetails === 'NONCE_COLLISION', 'Detects on-chain pending nonce collision and halts withdrawal');
-    primaryNode.config.pendingNonce = primaryNode.config.latestNonce;
-
-    // -------------------------------------------------------------------------
-    // TEST 13: Failed Broadcast
-    // -------------------------------------------------------------------------
-    console.log('\n--- 13. FAILED BROADCAST HANDLING ---');
-    primaryNode.config.failSendRawTxWithError = 'execution reverted: BEP20: transfer amount exceeds balance';
-    const failedBroadcastRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 40.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_failed_broadcast_1',
-      operator: 'test_operator'
-    });
-    assert(failedBroadcastRes.success === false && failedBroadcastRes.state === 'FAILED' && failedBroadcastRes.errorDetails === 'BROADCAST_FAILED', 'Deterministic broadcast failure transitions to FAILED and never claims settlement');
-    primaryNode.config.failSendRawTxWithError = null;
-
-    // -------------------------------------------------------------------------
-    // TEST 14: Unknown Broadcast Result (All Fallback RPCs Unreachable Mid-Broadcast)
-    // -------------------------------------------------------------------------
-    console.log('\n--- 14. UNKNOWN BROADCAST RESULT ---');
-    primaryNode.config.failSendRawTxWithError = 'ECONNRESET: socket hang up';
-    fallback1Node.config.shouldFailAll = true;
-    fallback2Node.config.shouldFailAll = true;
-
-    const unknownBroadcastRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 45.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_unknown_broadcast_1',
-      operator: 'test_operator'
-    });
     assert(
-      unknownBroadcastRes.success === false &&
-      unknownBroadcastRes.state === 'PENDING_CONFIRMATION' &&
-      unknownBroadcastRes.errorDetails === 'UNKNOWN_BROADCAST_RESULT',
-      'Marks UNKNOWN_BROADCAST_RESULT (PENDING_CONFIRMATION, success=false) when active RPC drops mid-broadcast and fallbacks are unreachable'
-    );
-    primaryNode.config.failSendRawTxWithError = null;
-    fallback1Node.config.shouldFailAll = false;
-    fallback2Node.config.shouldFailAll = false;
-
-    // -------------------------------------------------------------------------
-    // TEST 15: Receipt Timeout (Broadcast Alone Never Treated as Settlement)
-    // -------------------------------------------------------------------------
-    console.log('\n--- 15. RECEIPT TIMEOUT (NO UNCONFIRMED SETTLEMENT) ---');
-    primaryNode.config.returnNullReceipt = true;
-    fallback1Node.config.returnNullReceipt = true;
-    fallback2Node.config.returnNullReceipt = true;
-
-    const receiptTimeoutRes = await hotWalletService.withdrawToBinance({
-      amountUsd: 60.00,
-      destinationAddress: approvedDest,
-      networkId: 'BSC',
-      idempotencyKey: 'idemp_receipt_timeout_1',
-      operator: 'test_operator'
-    });
-    assert(
-      receiptTimeoutRes.success === false &&
-      receiptTimeoutRes.state === 'PENDING_CONFIRMATION' &&
-      receiptTimeoutRes.errorDetails === 'RECEIPT_TIMEOUT',
-      'When receipt times out, returns success=false and state=PENDING_CONFIRMATION (never claims settlement on broadcast alone)'
+      broadcastCountAfter === broadcastCountBefore,
+      'Simulation withdrawal rejection causes no RPC broadcast'
     );
 
-    // Now allow receipt to be mined and run reconciliation (Requirement 10.16)
-    primaryNode.config.returnNullReceipt = false;
-    fallback1Node.config.returnNullReceipt = false;
-    fallback2Node.config.returnNullReceipt = false;
-
-    const postTimeoutRecon = await hotWalletService.reconcileWithBlockchain();
-    assert(postTimeoutRecon.reconciledCount >= 1 && postTimeoutRecon.discrepancyDetected === false, 'Post-timeout blockchain reconciliation resolves pending transaction once receipt is mined');
+    console.log(
+      '  SKIPPED: Legacy withdrawal execution tests 9-15; ' +
+      'live transaction paths disabled by simulation policy.'
+    );
 
     // -------------------------------------------------------------------------
     // TEST 16: Zero Secret Exposure Audit

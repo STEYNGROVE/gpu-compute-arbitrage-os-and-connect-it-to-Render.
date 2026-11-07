@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { ethers, JsonRpcProvider, Contract, formatUnits, parseUnits } from 'ethers';
 import { db } from './databaseEngine.js';
@@ -348,6 +349,10 @@ export class HotWalletService {
    * Executes a single JSON-RPC 2.0 POST call with strict timeout enforcement.
    */
   private async jsonRpcCall(url: string, method: string, params: any[], timeoutMs: number): Promise<any> {
+    if (/^eth_send|^personal_send|^wallet_send/i.test(method)) {
+      throw new Error("SIMULATION_LOCKDOWN: Blockchain broadcasts disabled.");
+    }
+
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -1991,6 +1996,7 @@ export class HotWalletService {
     idempotencyKey?: string;
     tokenContractOverride?: string;
   }): Promise<{
+
     success: boolean;
     txHash?: string;
     blockNumber?: number;
@@ -2015,6 +2021,7 @@ export class HotWalletService {
     state?: HotWalletTxState;
     transactionRecord?: HotWalletTransaction;
   }> {
+    assertLiveOperationsAllowed();
     const operator = params.operator || 'owner_operator';
     const idempotencyKey = params.idempotencyKey || `tx_idemp_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
     const txId = `tx_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;

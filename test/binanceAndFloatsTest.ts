@@ -73,7 +73,7 @@ async function runTests() {
   // Test 1b: Mandatory BINANCE_WEBHOOK_SECRET Requirement (Never fallback to BINANCE_API_SECRET)
   const savedWebhookSecret = process.env.BINANCE_WEBHOOK_SECRET;
   const savedApiSecret = process.env.BINANCE_API_SECRET;
-  process.env.BINANCE_API_SECRET = 'api_secret_must_never_be_used_for_webhook';
+  process.env.BINANCE_API_SECRET = "test-only-binance-api-secret-not-valid";
   delete process.env.BINANCE_WEBHOOK_SECRET;
 
   let threwSecretRequired = false;

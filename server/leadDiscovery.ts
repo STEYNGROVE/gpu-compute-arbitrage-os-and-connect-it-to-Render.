@@ -1,6 +1,8 @@
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import crypto from 'crypto';
+import { secureFeedFetch } from './secureFeedFetch.js';
+import fs from 'node:fs';
 
 // Evidence-backed discovery: candidate URLs are not customers, contracts or revenue.
 // Explicitly configured public RSS/Atom feeds only; no scraping, spam or outbound email.
@@ -18,7 +20,14 @@ export const inMemoryLeadsStore: AcquisitionLeadRecord[] = [];
 const db = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL.includes('localhost') ? undefined : { rejectUnauthorized: false },
+      ssl: /^(localhost|dpg-[a-z0-9-]+)$/.test(new URL(process.env.DATABASE_URL).hostname)
+        ? undefined
+        : {
+            rejectUnauthorized: true,
+            ...(process.env.DATABASE_SSL_CA
+              ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
+              : {})
+          },
       max: 2
     })
   : null;
@@ -77,7 +86,11 @@ async function ready() {
             CHECK(status IN ('CANDIDATE','REVIEWING','QUALIFIED','REJECTED'))
           )`
         )
-        .then(() => undefined)
+        .then(async () => {
+          await db!.query(
+            'ALTER TABLE acquisition_leads ADD COLUMN IF NOT EXISTS description text'
+          );
+        })
         .catch((e) => {
           initialized = undefined;
           throw e;
@@ -117,15 +130,7 @@ async function scan() {
     }
     let inserted = 0;
     try {
-      const r = await fetch(feed, {
-        headers: { Accept: 'application/rss+xml, application/atom+xml, application/xml' },
-        signal: AbortSignal.timeout(9000),
-        redirect: 'error'
-      });
-      if (!r.ok) throw Error('FEED_HTTP_' + r.status);
-      const length = Number(r.headers.get('content-length') || 0);
-      if (length > 1024 * 1024) throw Error('FEED_TOO_LARGE');
-      const xml = (await r.text()).slice(0, 1024 * 1024);
+      const xml = await secureFeedFetch(feed);
       const entries = Array.from(xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)).slice(0, MAX_ENTRIES);
       for (const m of entries) {
         const entry = m[2];
@@ -145,10 +150,17 @@ async function scan() {
 
         if (db) {
           const q = await db.query(
-            'INSERT INTO acquisition_leads(id,title,source_url,source_feed) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING',
-            [id, title, url, feed]
+            `INSERT INTO acquisition_leads
+             (id,title,source_url,source_feed,description)
+             VALUES($1,$2,$3,$4,$5)
+             ON CONFLICT(source_url) DO UPDATE
+             SET description=EXCLUDED.description
+             WHERE acquisition_leads.description IS NULL
+                OR acquisition_leads.description=''
+             RETURNING (xmax = 0) AS newly_inserted`,
+            [id,title,url,feed,description]
           );
-          inserted += q.rowCount || 0;
+          inserted += q.rows.filter((row) => row.newly_inserted).length;
         } else {
           const exists = inMemoryLeadsStore.some((l) => l.id === id || l.source_url === url);
           if (!exists) {
@@ -183,10 +195,18 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
 
   app.get('/api/acquisition/leads', owner, async (_req, res) => {
     try {
+      if (process.env.NODE_ENV === 'test' &&
+          process.env.LEAD_TEST_IN_MEMORY === 'true') {
+        return res.json({
+          leads: inMemoryLeadsStore,
+          verifiedCustomers: 0,
+          realizedRevenueUsd: 0
+        });
+      }
       await ready();
       if (db) {
         const r = await db.query(
-          'SELECT id,title,source_url,source_feed,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
+          'SELECT id,title,source_url,source_feed,description,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
         );
         return res.json({ leads: r.rows, verifiedCustomers: 0, realizedRevenueUsd: 0 });
       }
@@ -202,6 +222,20 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
       return res.status(400).json({ error: 'INVALID_STATUS' });
     }
     try {
+      if (process.env.NODE_ENV === 'test' &&
+          process.env.LEAD_TEST_IN_MEMORY === 'true') {
+        const match = inMemoryLeadsStore.find(
+          (l) => l.id === req.params.id
+        );
+        if (!match) {
+          return res.status(404).json({ error: 'NOT_FOUND' });
+        }
+        match.status = status;
+        return res.status(200).json({
+          id: match.id,
+          status: match.status
+        });
+      }
       await ready();
       if (db) {
         const r = await db.query('UPDATE acquisition_leads SET status=$1 WHERE id=$2 RETURNING id,status', [

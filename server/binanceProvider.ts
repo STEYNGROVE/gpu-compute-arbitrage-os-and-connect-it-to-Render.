@@ -1,3 +1,4 @@
+import { liveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { getBinanceConfig, validateBinanceConfig, maskSecret, BinanceConfig } from './binanceConfig.js';
 import { toMinorUnits, fromMinorUnits } from './moneyUtils.js';
@@ -151,6 +152,12 @@ export class BinanceTreasuryProvider {
   ): Promise<{ data: T; status: number; headers: Headers }> {
     const config = this.getConfig();
     const method = options.method || 'GET';
+
+    if (method !== 'GET') {
+      throw new Error(
+        'SIMULATION_LOCKDOWN: Binance write operations disabled.'
+      );
+    }
     const maxRetries = options.retries !== undefined ? options.retries : 2;
 
     if (options.signed && !this.isConfigured()) {
@@ -597,6 +604,12 @@ export class BinanceTreasuryProvider {
     network?: string;
     clientWithdrawId?: string;
   }): Promise<{ success: boolean; id?: string; error?: string }> {
+    if (!liveOperationsAllowed()) {
+      return {
+        success: false,
+        error: 'SIMULATION_LOCKDOWN: Binance withdrawals disabled.'
+      };
+    }
     const config = this.getConfig();
 
     if (!config.withdrawalsEnabled) {
