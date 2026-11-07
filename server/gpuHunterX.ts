@@ -235,10 +235,83 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
   app.get('/owner/gpu-hunter-x',owner,(_req,res)=>{
     res.setHeader('Cache-Control','no-store');res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
     res.type('html').send(`<!doctype html><html lang="en"><meta name="viewport" content="width=device-width,initial-scale=1"><meta charset="utf-8"><title>GPU HUNTER X</title><style>body{font:16px system-ui;background:#0b1220;color:#e7f1ff;margin:auto;padding:20px;max-width:900px}a{color:#80caff}article{background:#162338;border:1px solid #34435b;border-radius:12px;padding:15px;margin:12px 0}button{padding:9px;border:0;border-radius:7px;background:#7ac7f9;color:#081420}small{color:#b7c8db}select{padding:8px}h1{margin-bottom:4px}</style><h1>GPU HUNTER X</h1><p>Evidence-backed opportunity ranking · Simulation only · No outreach or purchasing</p><p><a href="/owner/sales">Sales Workspace</a> · <a href="/owner/command-centre">Command Centre</a></p><button id="refresh">Refresh opportunities</button><p id="state">Loading...</p><div id="results"></div><script>
-const root=document.getElementById('results'),state=document.getElementById('state');
-function node(tag,text){const e=document.createElement(tag);e.textContent=text;return e;}
-async function load(){try{const r=await fetch('/api/owner/gpu-hunter-x/unified',{credentials:'same-origin',cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();root.replaceChildren();state.textContent=d.opportunities.length+' opportunities · Manual evidence import · 0 verified customers';for(const x of d.opportunities){const a=document.createElement('article');a.append(node('h3',(x.company||x.title||'Discovered lead')+
-  (x.score!=null?' · '+x.score+'/100':' · Unscored')),node('p',x.workload||x.sourceFeed||'Workload not verified'),node('p',x.evidence||'Source discovered; evidence requires review'),node('small',(x.score_reasons||[]).join(' · ')));const link=document.createElement('a');link.href=x.sourceUrl;link.textContent='Source evidence';link.target='_blank';link.rel='noopener noreferrer';a.append(document.createElement('p'),link);root.append(a);}}catch(e){state.textContent='Unable to load: '+String(e);}}
-document.getElementById('refresh').onclick=load;load();</script></html>`);
+
+// GPU_HUNTER_DASHBOARD_V2
+const root=document.getElementById('results');
+const state=document.getElementById('state');
+
+function node(tag,value){
+  const e=document.createElement(tag);
+  e.textContent=String(value??'');
+  return e;
+}
+
+async function load(){
+  state.textContent='Loading qualified opportunities...';
+  root.replaceChildren();
+
+  try{
+    const r=await fetch(
+      '/api/owner/gpu-hunter-x/qualified',
+      {credentials:'same-origin',cache:'no-store'}
+    );
+
+    if(!r.ok)throw Error('HTTP '+r.status);
+
+    const d=await r.json();
+    const items=d.opportunities||[];
+
+    state.textContent=
+      items.length+' discovered candidates | '+
+      d.verifiedCustomers+' verified customers | '+
+      '$'+d.realizedRevenueUsd+' verified revenue';
+
+    for(const x of items){
+      const a=document.createElement('article');
+
+      a.append(
+        node('h3',(x.title||'Opportunity')+
+          ' · '+x.score+'/100'),
+        node('p','Category: '+x.category),
+        node('p','Evidence: '+x.evidenceStatus),
+        node('small',(x.reasons||[]).join(' · '))
+      );
+
+      const missing=node(
+        'p',
+        'Missing evidence: '+
+        (x.missingEvidence||[]).join(', ')
+      );
+      a.append(missing);
+
+      if(x.sourceUrl){
+        try{
+          const u=new URL(x.sourceUrl);
+          if(u.protocol==='https:'){
+            const link=document.createElement('a');
+            link.href=u.href;
+            link.target='_blank';
+            link.rel='noopener noreferrer';
+            link.textContent='Review original source';
+            a.append(link);
+          }
+        }catch{}
+      }
+
+      root.append(a);
+    }
+
+    if(!items.length){
+      root.append(node('p','No candidates discovered yet.'));
+    }
+
+  }catch(e){
+    state.textContent='Qualification API error: '+String(e);
+  }
+}
+
+document.getElementById('refresh').onclick=load;
+load();
+</script></html>`);
   });
 }
