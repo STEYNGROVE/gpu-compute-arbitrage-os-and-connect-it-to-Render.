@@ -13,6 +13,8 @@ function safeUrl(x:string):boolean {
 }
 export function classifyBuyerEvidence(title:string, description:string, source:string) {
   const t=(title+' '+description).replace(/<[^>]*>/g,' ').replace(/&(?:quot|amp|lt|gt|#\d+|#x[\da-f]+);/gi,' ');
+  const discussionSource = /hacker\s*news|ycombinator|forum|reddit/i.test(source);
+
   const hardware=/\b(?:gpu|h100|h200|a100|b100|b200|gb200|rtx\s*4090|rtx\s*5090)\b/i.test(t);
   const service=/\b(?:gpu\s*(?:cloud|rental|hosting|capacity|instances?|cluster|compute)|cloud\s*gpu|compute\s*(?:capacity|rental|hosting|cluster)|rent(?:ing)?\s+(?:an?\s+)?(?:h100|h200|a100|gpu)|h100\s*(?:instances?|rental|cloud))\b/i.test(t);
   const request=/\b(?:we\s+(?:need|seek|are\s+looking\s+for|want\s+to\s+rent)|i\s+(?:need|am\s+looking\s+for|want\s+to\s+rent)|looking\s+to\s+(?:rent|buy)|request\s+for\s+(?:proposal|quotation)|seeking\s+(?:quotes?|bids?|providers?|capacity)|(?:rfp|rfq|tender)\s+(?:for|to\s+provide)|please\s+(?:quote|bid)|invitation\s+to\s+bid)\b/i.test(t);
@@ -22,7 +24,7 @@ export function classifyBuyerEvidence(title:string, description:string, source:s
   let category='DISCUSSION_ONLY';
   if (employment) category='EMPLOYMENT';
   else if (supplier && !request) category='SUPPLIER_OFFER';
-  else if (hardware && service && request && !technical && !supplier) category='BUYER_REQUEST_REVIEW';
+  else if (hardware && service && request && !technical && !supplier && !discussionSource) category='BUYER_REQUEST_REVIEW';
   return {category, buyerIntentConfirmed:false, verifiedCustomer:false, evidenceStatus:'UNVERIFIED', source};
 }
 async function ready(){
