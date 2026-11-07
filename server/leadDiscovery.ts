@@ -156,10 +156,11 @@ async function scan() {
              ON CONFLICT(source_url) DO UPDATE
              SET description=EXCLUDED.description
              WHERE acquisition_leads.description IS NULL
-                OR acquisition_leads.description=''`,
+                OR acquisition_leads.description=''
+             RETURNING (xmax = 0) AS newly_inserted`,
             [id,title,url,feed,description]
           );
-          inserted += q.rowCount || 0;
+          inserted += q.rows.filter((row) => row.newly_inserted).length;
         } else {
           const exists = inMemoryLeadsStore.some((l) => l.id === id || l.source_url === url);
           if (!exists) {

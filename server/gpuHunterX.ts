@@ -96,13 +96,13 @@ function qualifyCandidate(
     /who is hiring|we are hiring|job opening|recruiting|vacancy/.test(t);
 
   const procurement =
-    /request for proposal|request for quotation|\\brfp\\b|\\brfq\\b|\\btender\\b|procurement/.test(t);
+    /request for proposal|request for quotation|\brfp\b|\brfq\b|\btender\b|procurement/.test(t);
 
   const buying =
     /looking to rent|need gpu capacity|seeking gpu compute|buy compute|rent gpu|gpu provider wanted/.test(t);
 
   const technical =
-    /\\bgpu\\b|\\bcuda\\b|\\bh100\\b|\\bh200\\b|\\ba100\\b|\\bb200\\b|inference|render farm/.test(t);
+    /\bgpu\b|\bcuda\b|\bh100\b|\bh200\b|\ba100\b|\bb200\b|inference|render farm/.test(t);
 
   let category = 'UNCLASSIFIED';
   let score = 0;
@@ -153,6 +153,9 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
   app.get('/api/owner/gpu-hunter-x/qualified', owner, async (_req, res) => {
     try {
       await ready();
+      await pool!.query(
+        'ALTER TABLE acquisition_leads ADD COLUMN IF NOT EXISTS description text'
+      );
 
       const result = await pool!.query(
         `SELECT id, title, source_url, source_feed, description,
@@ -179,7 +182,7 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
 
       res.json({
         mode: 'SIMULATION_ONLY',
-        qualificationVersion: 2,
+        qualificationVersion: 3,
         total: opportunities.length,
         verifiedCustomers: 0,
         realizedRevenueUsd: 0,
