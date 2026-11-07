@@ -37,6 +37,45 @@ function score(b: { evidence:string; workload:string; deadline:string; budgetEvi
   if (b.deadline) {const ms = Date.parse(b.deadline)-Date.now(); if(ms>0 && ms<=30*86400000) {points += 15; reasons.push('Deadline within 30 days');}}
   return {score: Math.min(100,points),reasons};
 }
+
+// Conservative relevance screening, not customer verification.
+function rankDiscoveredLead(title: string) {
+  const text = title.toLowerCase();
+  const reasons: string[] = [];
+  let score = 0;
+
+  if (/gpu|compute capacity|cloud gpu|gpu rental/.test(text)) {
+    score += 20;
+    reasons.push('GPU-related terminology');
+  }
+  if (/h100|h200|a100|b200|cuda/.test(text)) {
+    score += 15;
+    reasons.push('Specific GPU or CUDA mentioned');
+  }
+  if (/inference|model training|render farm/.test(text)) {
+    score += 10;
+    reasons.push('Compute workload mentioned');
+  }
+  if (/rfp|tender|procurement|looking to rent/.test(text)) {
+    score += 25;
+    reasons.push('Possible procurement intent');
+  }
+  if (/budget|paid contract/.test(text)) {
+    score += 10;
+    reasons.push('Possible budget evidence');
+  }
+  if (/who is hiring|job opening|salary|recruiting/.test(text)) {
+    score = Math.max(0, score - 25);
+    reasons.push('Hiring advertisement, not confirmed buyer');
+  }
+
+  return {
+    score: Math.min(80, score),
+    score_reasons: reasons,
+    evidenceStatus: 'UNVERIFIED',
+    verifiedCustomer: false
+  };
+}
 export function registerGpuHunterX(app:Express, owner:Auth) {
   // Unified, read-only view. Existing registries remain intact.
   app.get('/api/owner/gpu-hunter-x/unified', owner, async (_req,res)=>{
@@ -48,7 +87,7 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
         pool!.query('SELECT id,company,source_url,evidence,workload,status,created_at FROM customer_intelligence_leads ORDER BY created_at DESC LIMIT 200')
       ]);
       const merged = new Map<string, Record<string,unknown>>();
-      for (const x of acquisition.rows) merged.set(x.source_url, {sourceUrl:x.source_url,title:x.title,sourceFeed:x.source_feed,origin:['ACQUISITION'],status:x.status,discoveredAt:x.discovered_at,verifiedCustomer:false});
+      for (const x of acquisition.rows) merged.set(x.source_url, {sourceUrl:x.source_url,title:x.title,sourceFeed:x.source_feed,origin:['ACQUISITION'],status:x.status,discoveredAt:x.discovered_at,verifiedCustomer:false,...rankDiscoveredLead(x.title)});
       for (const x of intelligence.rows) {
         const prev=merged.get(x.source_url)||{};
         merged.set(x.source_url,{...prev,sourceUrl:x.source_url,company:x.company,evidence:x.evidence,workload:x.workload,origin:[...((prev.origin as string[])||[]),'CUSTOMER_INTELLIGENCE'],intelligenceStatus:x.status,verifiedCustomer:false});
