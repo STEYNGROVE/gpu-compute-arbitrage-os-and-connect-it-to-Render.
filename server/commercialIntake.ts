@@ -1,9 +1,30 @@
 import type { Express, Request, Response } from 'express';
 import { Pool } from 'pg';
 import crypto from 'crypto';
+import fs from 'node:fs';
 
 // Separate, untrusted customer-intake channel. Never triggers procurement or payment.
-const pool = process.env.DATABASE_URL ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: process.env.DATABASE_URL.includes('localhost') ? undefined : { rejectUnauthorized: false }, max: 2 }) : null;
+const databaseHost = process.env.DATABASE_URL
+  ? new URL(process.env.DATABASE_URL).hostname
+  : '';
+
+const isRenderPrivateDb =
+  /^dpg-[a-z0-9-]+-a$/.test(databaseHost);
+
+const pool = process.env.DATABASE_URL
+  ? new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: databaseHost === 'localhost' || isRenderPrivateDb
+        ? undefined
+        : {
+            rejectUnauthorized: true,
+            ...(process.env.DATABASE_SSL_CA
+              ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
+              : {})
+          },
+      max: 2
+    })
+  : null;
 let initialized: Promise<void> | undefined;
 async function ready() {
   if (!pool) {

@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from './simulationSafety';
 import crypto from 'crypto';
 import { pgDbService } from './pgDatabase.js';
 import { ComputeProviderName } from './providerFloatManager.js';
@@ -397,6 +398,8 @@ export class RealProviderFundingManager {
     binanceReference?: string;
     reason?: string;
   }): Promise<ProviderFundingEventRecord> {
+    assertLiveOperationsAllowed();
+
     const adapter = this.getAdapter(params.provider);
 
     // 1. Verify capabilities first

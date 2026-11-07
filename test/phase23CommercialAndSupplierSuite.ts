@@ -24,6 +24,8 @@ import { registerLeadDiscovery, inMemoryLeadsStore, safeFeed } from '../server/l
 import { checkVastConnectivity, checkRunpodConnectivity, getSuppliersConnectivityReport } from '../server/supplierConnectivity.js';
 import { getEffectiveOwnerKey } from '../server/auth.js';
 
+process.env.LEAD_TEST_IN_MEMORY = 'true';
+
 async function runPhase23Suite() {
   console.log('================================================================');
   console.log('  RUNNING PHASE 2 & 3 COMMERCIAL INTAKE & SUPPLIER SUITE');

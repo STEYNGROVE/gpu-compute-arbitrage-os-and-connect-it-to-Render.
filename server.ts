@@ -1,9 +1,16 @@
+import { registerGpuHunterX } from './server/gpuHunterX.js';
+import { registerBuyerEvidenceImport } from './server/buyerEvidenceImport.js';
 import './server/bootstrap.js';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { registerCommercialIntake } from './server/commercialIntake.js';
+import { registerPreapprovedWorkloads } from './server/preapprovedWorkloads.js';
+import { registerOwnerOperations } from './server/ownerOperations.js';
+import { registerOwnerCommandCentre } from './server/ownerCommandCentre.js';
+import { registerOwnerSalesWorkspace } from './server/ownerSalesWorkspace.js';
+import { registerCustomerIntelligence } from './server/customerIntelligence.js';
 import { registerLeadDiscovery } from './server/leadDiscovery.js';
 import { createServer as createViteServer } from 'vite';
 import { db } from './server/databaseEngine.js';
@@ -169,6 +176,13 @@ app.use(rateLimit(200, 60000));
 // Phase 2/3: Public enquiry intake only. No execution, no payments.
 app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
 registerCommercialIntake(app, requireOwnerAuth);
+registerPreapprovedWorkloads(app, requireOwnerAuth);
+  registerOwnerOperations(app, requireOwnerAuth);
+registerOwnerCommandCentre(app, requireOwnerAuth);
+registerOwnerSalesWorkspace(app, requireOwnerAuth);
+registerCustomerIntelligence(app, requireOwnerAuth);
+registerGpuHunterX(app, requireOwnerAuth);
+registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.

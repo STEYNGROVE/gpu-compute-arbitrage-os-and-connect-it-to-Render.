@@ -603,7 +603,11 @@ export class OutboxRepository extends BasePostgresRepository {
     } else {
       await this.query(
         `UPDATE outbox_events
-         SET status = CASE WHEN retry_count >= 5 THEN 'DEAD_LETTER' ELSE 'FAILED' END,
+         SET status = CASE
+           WHEN $2 LIKE 'SIMULATION_LOCKDOWN:%' THEN 'DEAD_LETTER'
+           WHEN retry_count >= 5 THEN 'DEAD_LETTER'
+           ELSE 'FAILED'
+         END,
              retry_count = retry_count + 1,
              updated_at = NOW(),
              error = $2,
