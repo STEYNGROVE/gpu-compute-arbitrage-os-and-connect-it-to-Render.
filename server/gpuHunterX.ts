@@ -76,7 +76,120 @@ function rankDiscoveredLead(title: string) {
     verifiedCustomer: false
   };
 }
+
+// GPU_HUNTER_QUALIFICATION_V2
+// Evidence-based preliminary ranking.
+// No customer, contract or revenue verification is implied.
+
+function qualifyCandidate(title: string, sourceFeed: string) {
+  const t = title.toLowerCase();
+  const feed = sourceFeed.toLowerCase();
+
+  let score = 0;
+  const reasons: string[] = [];
+  const missing: string[] = [
+    'Verified buyer identity',
+    'Original procurement evidence',
+    'Confirmed budget',
+    'Confirmed deadline',
+    'Confirmed contact route'
+  ];
+
+  let category = 'UNCLASSIFIED';
+
+  const hiring =
+    /who is hiring|job opening|recruiting|vacancy|salary/.test(t) ||
+    /whoishiring/.test(feed);
+
+  const procurement =
+    /tender|rfp|request for proposal|procurement|quotation/.test(t);
+
+  const compute =
+    /gpu|cuda|h100|h200|a100|b200|compute|inference|render farm/.test(t);
+
+  if (hiring) {
+    category = 'EMPLOYMENT';
+    reasons.push('Hiring-related source');
+  } else if (procurement) {
+    category = 'POTENTIAL_PROCUREMENT';
+    score += 25;
+    reasons.push('Procurement terminology');
+  } else if (compute) {
+    category = 'POTENTIAL_COMPUTE_DEMAND';
+    score += 15;
+    reasons.push('Compute-related terminology');
+  }
+
+  if (!hiring && /h100|h200|a100|b200|cuda/.test(t)) {
+    score += 15;
+    reasons.push('Specific GPU technology mentioned');
+  }
+
+  if (!hiring && /inference|training|render farm/.test(t)) {
+    score += 10;
+    reasons.push('Possible workload identified');
+  }
+
+  if (hiring) score = 0;
+
+  return {
+    category,
+    score: Math.min(score, 50),
+    reasons,
+    missingEvidence: missing,
+    evidenceStatus: 'UNVERIFIED',
+    verifiedCustomer: false,
+    verifiedContract: false,
+    realizedRevenueUsd: 0
+  };
+}
+
 export function registerGpuHunterX(app:Express, owner:Auth) {
+
+  // Read-only qualification endpoint.
+  app.get('/api/owner/gpu-hunter-x/qualified', owner, async (_req, res) => {
+    try {
+      await ready();
+
+      const result = await pool!.query(
+        `SELECT id, title, source_url, source_feed,
+                status, discovered_at
+         FROM acquisition_leads
+         ORDER BY discovered_at DESC
+         LIMIT 200`
+      );
+
+      const opportunities = result.rows.map(x => ({
+        id: x.id,
+        title: x.title,
+        sourceUrl: x.source_url,
+        sourceFeed: x.source_feed,
+        status: x.status,
+        discoveredAt: x.discovered_at,
+        ...qualifyCandidate(x.title, x.source_feed)
+      }));
+
+      opportunities.sort((a, b) => b.score - a.score);
+
+      res.setHeader('Cache-Control', 'no-store');
+
+      res.json({
+        mode: 'SIMULATION_ONLY',
+        qualificationVersion: 2,
+        total: opportunities.length,
+        verifiedCustomers: 0,
+        realizedRevenueUsd: 0,
+        automatedOutreachEnabled: false,
+        procurementEnabled: false,
+        opportunities
+      });
+    } catch {
+      res.status(503).json({
+        error: 'QUALIFICATION_STORAGE_UNAVAILABLE'
+      });
+    }
+  });
+
   // Unified, read-only view. Existing registries remain intact.
   app.get('/api/owner/gpu-hunter-x/unified', owner, async (_req,res)=>{
     try {
