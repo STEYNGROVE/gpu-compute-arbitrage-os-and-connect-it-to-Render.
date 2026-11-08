@@ -1185,162 +1185,19 @@ export class JakeGroveCfoService {
     finalStatus: string;
     milestoneStatus: string;
   }> {
-    const stages: { name: string; passed: boolean; evidence: string }[] = [];
-    const testTxId = `tx-cfo-sim-${crypto.randomUUID()}`;
-    const testOrderId = `order-cfo-sim-${crypto.randomUUID()}`;
-    const testPaymentId = `pay-cfo-sim-${crypto.randomUUID()}`;
-    const simTxHash = `sim_0x${crypto.randomBytes(32).toString('hex')}`;
-
-    // Step 1: Simulated Customer Payment
-    this.initializeTransactionTrace({
-      transactionId: testTxId,
-      demandOrderId: testOrderId,
-      customerId: 'sim-cust-enterprise-1',
-      customerPayment: {
-        paymentId: testPaymentId,
-        sourceRail: 'BINANCE',
-        externalTxId: simTxHash,
-        amountUsd: 25.00
-      }
-    });
-    zeroFundedBootstrapService.createCustomerJobEscrow({
-      jobId: testTxId,
-      demandOrderId: testOrderId,
-      customerPaymentId: testPaymentId,
-      amountReceived: 25.00,
-      currency: 'USD',
-      providerBudget: 15.00,
-      maxProviderSpend: 15.00,
-      expectedProfit: 10.15,
-      maxLoss: 0,
-      paymentFees: 0.35,
-      providerId: 'runpod'
-    });
-    zeroFundedBootstrapService.reserveFundsForJob(testTxId, 15.00);
-    stages.push({
-      name: '1. REAL CUSTOMER PAYMENT [SIMULATION HARNESS]',
-      passed: true,
-      evidence: `[DRY_RUN] Verified customer escrow pre-authorization model for $25.00 USD (Non-production dry run)`
-    });
-
-    // Step 2: Jake CFO Approval
-    const cfoApproval = await this.evaluateCfoApprovalGate({
-      transactionId: testTxId,
-      demandOrderId: testOrderId,
-      quoteId: `quote-${testTxId}`,
-      customerId: 'sim-cust-enterprise-1',
-      customerPaymentId: testPaymentId,
-      providerId: 'runpod',
-      gpuModel: 'NVIDIA RTX 4090 24GB',
-      customerRevenueUsd: 25.00,
-      expectedProviderCostUsd: 14.50,
-      paymentFeesUsd: 0.35
-    });
-
-    stages.push({
-      name: '2. JAKE CFO APPROVAL [SIMULATION HARNESS]',
-      passed: cfoApproval.approved,
-      evidence: cfoApproval.approved
-        ? `[DRY_RUN] CFO Approval Token: ${cfoApproval.approvalToken} (Audited hash: ${cfoApproval.auditHash.substring(0, 16)}..., zero operator capital verified)`
-        : `[DRY_RUN] Approval rejected: ${cfoApproval.reason}`
-    });
-
-    // Step 3: Verified Purchasing Capability - strictly from live query without defaults
-    const providerStatuses = await zeroFundedBootstrapService.getAllProviderFundingStatuses();
-    const runpodStatus = providerStatuses.find(p => p.providerId === 'runpod');
-    const runpodBal = runpodStatus?.verifiedBalanceUsd ?? 0.00;
-    const lightningStatus = providerStatuses.find(p => p.providerId === 'lightning_ai');
-    const lightningBal = lightningStatus?.verifiedBalanceUsd ?? 0.00;
-    const hasCapacity = runpodBal >= 14.50 || lightningBal >= 14.50;
-    stages.push({
-      name: '3. VERIFIED PURCHASING CAPABILITY [SIMULATION HARNESS]',
-      passed: hasCapacity,
-      evidence: `[DRY_RUN] Live verified funded balances: RunPod ($${runpodBal.toFixed(2)}) & Lightning AI ($${lightningBal.toFixed(2)}) — Live capability: $${(runpodBal + lightningBal).toFixed(2)}`
-    });
-
-    // Step 4: Real GPU
-    const simInstanceId = `sim-instance-${crypto.randomUUID().substring(0, 8)}`;
-    stages.push({
-      name: '4. REAL GPU [SIMULATION HARNESS]',
-      passed: true,
-      evidence: `[DRY_RUN] Instance allocation harness validated for NVIDIA RTX 4090 24GB`
-    });
-
-    // Step 5: Real Workload
-    const inputPayload = 'WORKLOAD_INPUT_BENCHMARK_PROBE';
-    const inputHash = crypto.createHash('sha256').update(inputPayload).digest('hex');
-    stages.push({
-      name: '5. REAL WORKLOAD [SIMULATION HARNESS]',
-      passed: true,
-      evidence: `[DRY_RUN] Workload payload SHA-256: ${inputHash.substring(0, 16)}...`
-    });
-
-    // Step 6: Verified Output
-    const outputPayload = 'WORKLOAD_OUTPUT_VERIFIED_DRY_RUN_RESULT';
-    const outputHash = crypto.createHash('sha256').update(outputPayload).digest('hex');
-    this.recordWorkloadExecutionProof({
-      transactionId: testTxId,
-      providerId: 'runpod',
-      instanceId: 'inst-sim-4090-01',
-      gpuModel: 'NVIDIA RTX 4090',
-      inputHash: inputHash,
-      outputHash: outputHash,
-      exitCode: 0,
-      stdoutExcerpt: 'Benchmark run completed with zero exit code'
-    });
-    stages.push({
-      name: '6. VERIFIED OUTPUT [SIMULATION HARNESS]',
-      passed: true,
-      evidence: `[DRY_RUN] Output artifact hash: ${outputHash} (Exit code: 0)`
-    });
-
-    // Step 7: Actual Provider Bill
-    const billingRef = `prov-inv-bill-${crypto.randomUUID().substring(0, 8)}`;
-    stages.push({
-      name: '7. ACTUAL PROVIDER BILL [SIMULATION HARNESS]',
-      passed: true,
-      evidence: `[DRY_RUN] Provider billing record structure verified ($14.50 USD compute runtime)`
-    });
-
-    // Step 8: Settlement
-    const settlement = this.settleTransactionWithCfo({
-      transactionId: testTxId,
-      billingReference: billingRef,
-      actualProviderCostUsd: 14.50,
-      durationHours: 2.0,
-      paymentFeesUsd: 0.35
-    });
-    stages.push({
-      name: '8. SETTLEMENT [SIMULATION HARNESS]',
-      passed: settlement.success,
-      evidence: `[DRY_RUN] Escrow release: $25.00 − Cost: $14.50 − Fees: $0.35 = Realized Net Profit: $${settlement.netProfitUsd.toFixed(2)} USD`
-    });
-
-    // Step 9: Reconciled Profit
-    const journalAudit = this.verifyJournalIntegrity();
-    stages.push({
-      name: '9. RECONCILED PROFIT [SIMULATION HARNESS]',
-      passed: journalAudit.isBalanced && journalAudit.hashChainValid && settlement.finalStatus === 'CFO_RECONCILED',
-      evidence: `[DRY_RUN] Double-entry journal balanced. SHA-256 block height #${journalAudit.count}`
-    });
-
-    // Step 10: Full Reconciliation & CFO_RECONCILED
-    stages.push({
-      name: '10. FULL RECONCILIATION & CFO_RECONCILED [SIMULATION HARNESS]',
-      passed: settlement.finalStatus === 'CFO_RECONCILED' && journalAudit.isBalanced,
-      evidence: `[DRY_RUN] Complete 11-way transaction reconciliation verified in simulation: Final State = ${settlement.finalStatus}`
-    });
-
-    const allPassed = stages.every(s => s.passed);
-
-    // CRITICAL FIX: Simulated tests NEVER write milestone files or set production truth
+    // Permanently disable legacy financial simulations in this production release.
+    // Never mutate transaction traces, escrow, provider float, or the CFO journal.
     return {
-      passed: false, // A dry-run is not proof of verified customer revenue.
-      isSimulation: true,
-      stages,
-      settlementId: settlement.settlementId,
-      realizedProfitUsd: settlement.netProfitUsd, // Hypothetical simulation-only amount.
-      finalStatus: 'SIMULATION_BLOCKED',
+      passed: false,
+      isSimulation: false,
+      stages: [{
+        name: 'LEGACY SIMULATION DISABLED',
+        passed: false,
+        evidence: 'DISABLED: Synthetic financial transactions are not permitted.'
+      }],
+      settlementId: '',
+      realizedProfitUsd: 0,
+      finalStatus: 'LEGACY_SIMULATION_DISABLED',
       milestoneStatus: 'PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN'
     };
   }
