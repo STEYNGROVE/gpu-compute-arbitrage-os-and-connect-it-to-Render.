@@ -175,6 +175,63 @@ try {
   assert.equal(replay.status, 'INVOICE_NOT_PENDING');
 
   console.log('PASS: replay rejected');
+
+  // Expired invoice
+  const expired = await ledger.createUsdtInvoice('expired_customer', '2', 60);
+  await isolated.query(
+    "UPDATE usdt_customer_invoices SET expires_at=NOW()-INTERVAL '1 minute' WHERE id=$1",
+    [expired.id]
+  );
+  const expiredResult = await ledger.reconcileUsdtInvoice(expired.id, hash);
+  assert.equal(expiredResult.status, 'INVOICE_EXPIRED');
+  assert.equal(expiredResult.verified, false);
+  console.log('PASS: expired invoice rejected');
+
+  // Incorrect transfer amount
+  const wrongAmount = await ledger.createUsdtInvoice('wrong_amount', '3', 60);
+  const wrongAmountResult = await ledger.reconcileUsdtInvoice(wrongAmount.id, hash);
+  assert.equal(wrongAmountResult.status, 'USDT_TRANSFER_NOT_MATCHED');
+  assert.equal(wrongAmountResult.verified, false);
+  console.log('PASS: incorrect USDT amount rejected');
+
+  // Historical payment
+  const historical = await ledger.createUsdtInvoice('historical_customer', '2', 60);
+  minedAt = Math.floor(new Date(historical.createdAt).getTime() / 1000) - 120;
+  const historicalResult = await ledger.reconcileUsdtInvoice(historical.id, hash);
+  assert.equal(historicalResult.status, 'TRANSFER_OUTSIDE_INVOICE_WINDOW');
+  assert.equal(historicalResult.verified, false);
+  console.log('PASS: historical payment rejected');
+
+  minedAt = Math.floor(Date.now() / 1000) + 2;
+
+  // Concurrent replay attempts
+  const concurrent = await ledger.createUsdtInvoice('concurrent_customer', '2', 60);
+  const claims = await Promise.all([
+    ledger.reconcileUsdtInvoice(concurrent.id, hash),
+    ledger.reconcileUsdtInvoice(concurrent.id, hash)
+  ]);
+  assert.equal(claims.every(x => x.verified === false), true);
+  assert.equal((await ledger.getUsdtInvoice(concurrent.id))?.status, 'PENDING');
+  console.log('PASS: concurrent replay attempts rejected');
+
+  // Receiving wallet changed
+  const wrongWallet = await ledger.createUsdtInvoice('wallet_customer', '2', 60);
+  process.env.USDT_ERC20_RECEIVING_ADDRESS =
+    '0x3333333333333333333333333333333333333333';
+
+  try {
+    const walletResult = await ledger.reconcileUsdtInvoice(wrongWallet.id, hash);
+    assert.equal(walletResult.status, 'WALLET_CONFIGURATION_CHANGED');
+    assert.equal(walletResult.verified, false);
+    console.log('PASS: receiving wallet mismatch rejected');
+  } finally {
+    process.env.USDT_ERC20_RECEIVING_ADDRESS = wallet;
+  }
+
+  assert.equal(result.purchasingUnlocked, false);
+  assert.equal(result.treasuryCredited, false);
+  console.log('PASS: purchasing and treasury remain locked');
+
   console.log('ACTUAL USDT LEDGER INTEGRATION TEST PASSED');
 
 } finally {
