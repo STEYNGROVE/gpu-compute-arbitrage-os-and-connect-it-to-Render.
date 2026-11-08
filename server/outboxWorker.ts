@@ -285,6 +285,14 @@ export class OutboxWorker {
         });
         throw new Error(`PROVIDER_UNKNOWN_OUTCOME: Provider call timed out. Marked RECOVERY_REQUIRED.`);
       }
+      await providerOperationRepo.updateState(
+        operationId,
+        'RECOVERY_REQUIRED',
+        {
+          errorMessage:
+            `PROVIDER_EXECUTION_REJECTED: ${String(err?.message || err)}`
+        }
+      );
       throw err;
     }
 
