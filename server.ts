@@ -199,6 +199,12 @@ app.use('/api', (req, res, next) => {
 });
 
 
+// Lightweight public liveness checks. No database or secrets exposed.
+app.get(['/healthz', '/api/healthz', '/api/health'], (_req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.status(200).json({ status: 'ok', check: 'liveness' });
+});
+
 // Private deployment: fail closed for every internal API endpoint, including
 // legacy routes that were previously registered without authentication.
 // Authentication endpoints remain available for login and session validation.
@@ -5116,6 +5122,12 @@ async function start() {
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
+    app.use('/api', (_req, res) => {
+      res.status(404).json({
+        status: 'not_found',
+        error: 'API_ROUTE_NOT_FOUND'
+      });
+    });
     app.get('*', (req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
