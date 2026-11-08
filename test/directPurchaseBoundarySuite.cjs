@@ -1,0 +1,12 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const src = fs.readFileSync('server/providerProvisioner.ts', 'utf8');
+const method = src.match(/public async provisionComputeHardware\(req: ProvisionRequest\): Promise<ProvisionResult> \{([\s\S]*?)\n  \}/);
+assert.ok(method, 'legacy purchasing method must exist for this audit');
+const body = method[1];
+const block = body.indexOf("throw new Error('DIRECT_GPU_PURCHASE_BLOCKED:");
+const purchase = body.search(/fetch\s*\(|\.provision\s*\(|\.provisionComputeHardware\s*\(/);
+assert.ok(block >= 0, 'legacy direct purchasing must fail closed');
+assert.ok(purchase === -1 || block < purchase, 'purchase must be blocked before any provider call');
+assert.ok(src.includes('assertLiveOperationsAllowed'), 'existing live safety assertion retained');
+console.log('PASS: legacy direct GPU purchasing blocked before provider calls');

@@ -1406,7 +1406,7 @@ export class GpuPriceRouter {
 
       // 6. Reject providers without executable adapters in production
       const isProduction = process.env.NODE_ENV === 'production' || (process.env.REALITY_LEVEL || '').toUpperCase() === 'LIVE';
-      const executableProviders = new Set(['runpod', 'vast_ai']);
+      const executableProviders = new Set<string>(); // Read-only release: no verified executable adapters
       if (isProduction && !executableProviders.has(offer.providerId)) {
         disqualifications.push(`NO_EXECUTABLE_ADAPTER: Provider ${provider.name} does not have an active verified execution adapter in this environment`);
       }

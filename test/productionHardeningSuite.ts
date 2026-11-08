@@ -314,7 +314,7 @@ async function runProductionHardeningSuite() {
         });
       } catch (err: any) {
         provisioningLockdownRejected =
-          String(err?.message || err).includes('SIMULATION_LOCKDOWN');
+          /SIMULATION_LOCKDOWN|DIRECT_GPU_PURCHASE_BLOCKED/.test(String(err?.message || err));
       }
 
       assert(

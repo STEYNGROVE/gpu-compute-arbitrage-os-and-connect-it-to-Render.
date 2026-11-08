@@ -285,151 +285,27 @@ export class LightningProvider extends BaseProvider {
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? (req.isInterruptible && avail.spotPriceHourly ? avail.spotPriceHourly : avail.currentPriceHourly) : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = 0; // Free persistent teamspace drive
-    const networkEgressCost = 0; // Free egress
-    const startupCost = 0; // Fast 12-second container spin-up
-    const interruptionBuffer = req.isInterruptible ? computeCost * 0.02 : 0;
-    const providerFees = 0;
-    const paymentFees = computeCost * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: 0,
-      networkEgressCostUsd: 0,
-      startupCostUsd: 0,
-      interruptionBufferUsd: Number(interruptionBuffer.toFixed(4)),
-      providerFeesUsd: 0,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: 0,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey || !this.userId) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'LIGHTNING_API_KEY and LIGHTNING_USER_ID are required',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      const res = await this.safeFetch(`https://lightning.ai/api/v1/teamspaces/${this.orgId}/studios`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'X-Lightning-User-Id': this.userId,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: `arb-studio-${req.customerRef}`,
-          hardware: req.gpuModel,
-          auto_hibernation_minutes: 15
-        })
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `Lightning Studio creation returned HTTP ${res.status}: ${text}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const data = await res.json();
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: String(data.id || data.studio_id),
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: Number(data.cost_per_hour_usd || req.maxHourlyPriceUsd),
-        rawResponse: data,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'Lightning AI provisioning failed',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.userId) throw new Error('LIGHTNING credentials not configured');
-    const res = await this.safeFetch(`https://lightning.ai/api/v1/studios/${instanceId}/start`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'X-Lightning-User-Id': this.userId }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: res.ok ? 'STARTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.userId) throw new Error('LIGHTNING credentials not configured');
-    const res = await this.safeFetch(`https://lightning.ai/api/v1/studios/${instanceId}/stop`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'X-Lightning-User-Id': this.userId }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: res.ok ? 'STOPPED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    await this.stop(instanceId);
-    return this.start(instanceId);
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.userId) throw new Error('LIGHTNING credentials not configured');
-    const res = await this.safeFetch(`https://lightning.ai/api/v1/studios/${instanceId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'X-Lightning-User-Id': this.userId }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {

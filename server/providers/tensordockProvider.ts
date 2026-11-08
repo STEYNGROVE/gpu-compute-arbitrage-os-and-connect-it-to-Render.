@@ -278,168 +278,27 @@ export class TensordockProvider extends BaseProvider {
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? avail.currentPriceHourly : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.00015) * req.durationHours;
-    const networkEgressCost = req.estimatedEgressGb * 0.005;
-    const startupCost = 0.02;
-    const interruptionBuffer = 0;
-    const providerFees = 0;
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: Number(networkEgressCost.toFixed(4)),
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: 0,
-      providerFeesUsd: 0,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: 0,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'TENSORDOCK_API_KEY is not configured',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      const res = await this.safeFetch('https://marketplace.tensordock.com/api/v2/client/deploy', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'api-key': this.apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          gpu_model: req.gpuModel,
-          gpu_count: req.gpuCount,
-          name: `arb-td-${req.customerRef}`,
-          operating_system: 'Ubuntu 22.04 LTS',
-          storage_gb: req.diskSizeGb || 100,
-          ssh_key: req.sshPublicKey
-        })
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `TensorDock deploy returned HTTP ${res.status}: ${errText}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const data = await res.json();
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: String(data.server_id || data.id),
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: Number(data.price_hourly || req.maxHourlyPriceUsd),
-        rawResponse: data,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'TensorDock provisioning failed',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('TENSORDOCK_API_KEY not configured');
-    const res = await this.safeFetch(`https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}/action`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'start' })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: res.ok ? 'STARTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('TENSORDOCK_API_KEY not configured');
-    const res = await this.safeFetch(`https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}/action`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'stop' })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: res.ok ? 'STOPPED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('TENSORDOCK_API_KEY not configured');
-    const res = await this.safeFetch(`https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}/action`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'reboot' })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'RESTART',
-      resultingStatus: res.ok ? 'REBOOTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('TENSORDOCK_API_KEY not configured');
-    const res = await this.safeFetch(`https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {

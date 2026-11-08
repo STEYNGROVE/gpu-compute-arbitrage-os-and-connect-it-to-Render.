@@ -105,7 +105,7 @@ export class RunpodProvider extends BaseProvider {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: authenticated ? 'LIVE' : 'AUTHENTICATED',
+        status: authenticated ? 'AUTHENTICATED' : 'UNVERIFIED',
         healthColor: authenticated ? 'GREEN' : 'YELLOW',
         authenticated,
         latencyMs: latency,
@@ -113,13 +113,13 @@ export class RunpodProvider extends BaseProvider {
           authentication: true,
           pricing: true,
           inventory: true,
-          provisioning: true,
-          instanceControl: true,
-          telemetry: true,
-          billing: true
+          provisioning: false,
+          instanceControl: false,
+          telemetry: false,
+          billing: false
         },
         lastCheckIso: new Date().toISOString(),
-        message: authenticated ? 'RunPod API authenticated and operational' : 'RunPod query returned without user identity',
+        message: authenticated ? 'Identity verified; inventory and execution not independently verified' : 'RunPod query returned without user identity',
         configuredCredentials: configuredKeys,
         missingCredentials: []
       };
@@ -167,8 +167,8 @@ export class RunpodProvider extends BaseProvider {
         gpuModel: g.displayName || g.id,
         canonicalModel: (g.displayName || g.id).replace(/^NVIDIA\s+/i, '').trim(),
         vramGb: g.memoryInGb || 24,
-        stockAvailable: 10,
-        regions: ['US', 'EU', 'GLOBAL']
+        stockAvailable: 0,
+        regions: []
       }));
     } catch {
       return [];
@@ -191,7 +191,7 @@ export class RunpodProvider extends BaseProvider {
 
       return gpus.map(g => {
         const hourly = Number(g.lowestPrice?.uninterruptablePrice || g.securePrice || 0);
-        const spot = Number(g.lowestPrice?.minimumBidPrice || hourly * 0.7);
+        const spot = g.lowestPrice?.minimumBidPrice == null ? undefined : Number(g.lowestPrice.minimumBidPrice);
         const name = g.displayName || g.id;
         return {
           id: `runpod-${g.id}`,
@@ -201,7 +201,7 @@ export class RunpodProvider extends BaseProvider {
           vramGb: g.memoryInGb || 24,
           gpuCount: 1,
           region: 'SECURE_CLOUD',
-          availability: hourly > 0 ? 'AVAILABLE' : 'OUT_OF_STOCK',
+          availability: 'UNKNOWN',
           hourlyPrice: hourly,
           minutePrice: hourly > 0 ? Number((hourly / 60).toFixed(6)) : undefined,
           secondPrice: hourly > 0 ? Number((hourly / 3600).toFixed(8)) : undefined,
@@ -210,14 +210,14 @@ export class RunpodProvider extends BaseProvider {
           storagePricePerGbHourly: 0.0001,
           networkEgressPricePerGb: 0.005,
           startupCost: 0.01,
-          spotPriceHourly: spot,
-          isInterruptible: spot < hourly,
+          spotPriceHourly: spot !== undefined && Number.isFinite(spot) && spot > 0 ? spot : undefined,
+          isInterruptible: spot !== undefined && Number.isFinite(spot) && spot > 0 && spot < hourly,
           estimatedInterruptionRiskPct: 8.5,
           timestamp: new Date().toISOString(),
           source: 'https://api.runpod.io/graphql (gpuTypes)',
           currency: 'USD',
-          status: 'LIVE',
-          rawReference: { gpu_id: g.id }
+          status: 'STALE',
+          rawReference: { gpu_id: g.id, pricingVerification: 'GPU_QUOTE_ONLY', ancillaryCostsVerified: false, executable: false }
         };
       });
     } catch {
@@ -246,8 +246,8 @@ export class RunpodProvider extends BaseProvider {
       providerId: this.id,
       gpuModel: match.gpuModel,
       region: region || match.region,
-      available: true,
-      stockCount: 5,
+      available: false,
+      stockCount: 0,
       currentPriceHourly: match.hourlyPrice,
       spotAvailable: match.isInterruptible,
       spotPriceHourly: match.spotPriceHourly,
@@ -275,183 +275,28 @@ export class RunpodProvider extends BaseProvider {
     }));
   }
 
-  async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? (req.isInterruptible && avail.spotPriceHourly ? avail.spotPriceHourly : avail.currentPriceHourly) : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.0001) * req.durationHours;
-    const networkEgressCost = req.estimatedEgressGb * 0.005;
-    const startupCost = 0.01;
-    const interruptionBuffer = req.isInterruptible ? computeCost * 0.03 : 0;
-    const providerFees = 0;
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: Number(networkEgressCost.toFixed(4)),
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: Number(interruptionBuffer.toFixed(4)),
-      providerFeesUsd: providerFees,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: currencyConversion,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+  async estimateCost(_req: CostEstimateRequest): Promise<CostEstimateResult> {
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'RUNPOD_API_KEY is not configured',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      const mutation = `
-        mutation {
-          podFindAndDeployOnDemand(
-            input: {
-              cloudType: ALL
-              gpuCount: ${req.gpuCount}
-              volumeInGb: ${req.diskSizeGb || 40}
-              containerDiskInGb: 40
-              imageName: "${req.dockerImage || 'runpod/pytorch:2.1.0-py3.10-cuda11.8.0-devel-ubuntu22.04'}"
-              name: "arb-pod-${req.customerRef}"
-              startSsh: true
-            }
-          ) {
-            id
-            imageName
-            desiredStatus
-            costPerHr
-          }
-        }
-      `;
-
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ query: mutation })
-      });
-
-      if (!res.ok) {
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `RunPod mutation failed with HTTP ${res.status}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const json = await res.json();
-      const pod = json.data?.podFindAndDeployOnDemand;
-      if (!pod || !pod.id) {
-        const err = json.errors?.[0]?.message || 'Pod creation did not return instance id';
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: err,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: pod.id,
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: Number(pod.costPerHr || req.maxHourlyPriceUsd),
-        rawResponse: pod,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'RunPod provisioning exception',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('RUNPOD_API_KEY not configured');
-    const mutation = `mutation { podResume(input: { podId: "${instanceId}", gpuCount: 1 }) { id desiredStatus } }`;
-    const res = await this.safeFetch('https://api.runpod.io/graphql', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ query: mutation })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: res.ok ? 'RESUMING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('RUNPOD_API_KEY not configured');
-    const mutation = `mutation { podStop(input: { podId: "${instanceId}" }) { id desiredStatus } }`;
-    const res = await this.safeFetch('https://api.runpod.io/graphql', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ query: mutation })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: res.ok ? 'STOPPED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    await this.stop(instanceId);
-    return this.start(instanceId);
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('RUNPOD_API_KEY not configured');
-    const mutation = `mutation { podTerminate(input: { podId: "${instanceId}" }) }`;
-    const res = await this.safeFetch('https://api.runpod.io/graphql', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-      body: JSON.stringify({ query: mutation })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
@@ -562,59 +407,17 @@ export class RunpodProvider extends BaseProvider {
     };
   }
 
-  async retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
-    if (!this.apiKey) {
-      return this.createUnavailableOutput(workloadId, 'RUNPOD_API_KEY not configured');
-    }
-    const status = await this.getInstanceStatus(instanceId);
-    if (status.status === 'UNKNOWN' || status.status === 'FAILED') {
-      return {
-        workloadId,
-        instanceId,
-        providerId: this.id,
-        status: 'FAILED',
-        outputArtifactUrls: [],
-        error: `Pod ${instanceId} is in failed/unknown state`
-      };
-    }
-
-    const duration = Math.max(1, status.uptimeSeconds || 1);
-    const stdout = `[RUNPOD_COMPUTE_OUTPUT] Workload ${workloadId} executed on pod ${instanceId}. Runtime: ${duration}s. Process completed with status 0.`;
-    const outputHash = this.hash(stdout);
-
-    return {
+  async retrieveOutput(_instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
+    return this.createUnavailableOutput(
       workloadId,
-      instanceId,
-      providerId: this.id,
-      status: 'COMPLETED',
-      outputArtifactUrls: [],
-      stdoutExcerpt: stdout,
-      exitCode: 0,
-      executionDurationSeconds: duration,
-      outputHash,
-      completedAtIso: new Date().toISOString()
-    };
+      'READ_ONLY: no verified workload output evidence'
+    );
   }
 
-  async getUsage(instanceId: string): Promise<ProviderUsageResult> {
-    const status = await this.getInstanceStatus(instanceId);
-    const runtime = Math.max(1, status.uptimeSeconds || 1);
-    const hourly = status.hourlyRateUsd > 0 ? status.hourlyRateUsd : 0.74; // Fallback to base RTX 4090 rate if zero
-    const accrued = Number(Math.max(0.01, (runtime / 3600) * hourly).toFixed(4));
-    const nowIso = new Date().toISOString();
-
-    return {
-      providerId: this.id,
-      instanceId,
-      runtimeSeconds: runtime,
-      gpuHours: Number((runtime / 3600).toFixed(4)),
-      totalCostUsd: accrued,
-      currency: 'USD',
-      isFinal: status.status === 'TERMINATED',
-      invoiceLineItemId: `rpod-inv-${instanceId}-${Math.floor(Date.now() / 1000)}`,
-      periodStartIso: new Date(Date.now() - runtime * 1000).toISOString(),
-      periodEndIso: nowIso
-    };
+  async getUsage(_instanceId: string): Promise<ProviderUsageResult> {
+    throw new Error(
+      'USAGE_UNVERIFIED: provider-confirmed usage required'
+    );
   }
 
   async getBilling(): Promise<ProviderBillingResult> {

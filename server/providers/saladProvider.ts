@@ -278,162 +278,27 @@ export class SaladProvider extends BaseProvider {
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? (req.isInterruptible && avail.spotPriceHourly ? avail.spotPriceHourly : avail.currentPriceHourly) : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.0001) * req.durationHours;
-    const networkEgressCost = 0;
-    const startupCost = 0.005;
-    const interruptionBuffer = req.isInterruptible ? computeCost * 0.08 : 0;
-    const providerFees = 0;
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: 0,
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: Number(interruptionBuffer.toFixed(4)),
-      providerFeesUsd: 0,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: 0,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey || !this.orgId) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'SALAD_API_KEY and SALAD_ORG_ID required for SaladCloud provisioning',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      const body = {
-        name: `cg-${req.customerRef.substring(0, 16)}`,
-        container: {
-          image: req.dockerImage || 'pytorch/pytorch:latest',
-          resources: {
-            cpu: 4,
-            memory: 16384,
-            gpu_classes: [req.gpuModel]
-          },
-          command: req.command ? [req.command] : undefined,
-          priority: req.isInterruptible ? 'batch' : 'high'
-        },
-        replicas: req.gpuCount || 1,
-        restart_policy: 'always'
-      };
-
-      const res = await this.safeFetch(`https://api.salad.com/api/public/organizations/${this.orgId}/projects/default/containers`, {
-        method: 'POST',
-        headers: {
-          'Salad-Api-Key': this.apiKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `SaladCloud deployment returned HTTP ${res.status}: ${errText}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const data = await res.json();
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: String(data.id || data.name),
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: req.maxHourlyPriceUsd,
-        rawResponse: data,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'SaladCloud deployment failed',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.orgId) throw new Error('SALAD credentials not configured');
-    const res = await this.safeFetch(`https://api.salad.com/api/public/organizations/${this.orgId}/projects/default/containers/${instanceId}/start`, {
-      method: 'POST',
-      headers: { 'Salad-Api-Key': this.apiKey }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: res.ok ? 'STARTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.orgId) throw new Error('SALAD credentials not configured');
-    const res = await this.safeFetch(`https://api.salad.com/api/public/organizations/${this.orgId}/projects/default/containers/${instanceId}/stop`, {
-      method: 'POST',
-      headers: { 'Salad-Api-Key': this.apiKey }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: res.ok ? 'STOPPED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    await this.stop(instanceId);
-    return this.start(instanceId);
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey || !this.orgId) throw new Error('SALAD credentials not configured');
-    const res = await this.safeFetch(`https://api.salad.com/api/public/organizations/${this.orgId}/projects/default/containers/${instanceId}`, {
-      method: 'DELETE',
-      headers: { 'Salad-Api-Key': this.apiKey }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {

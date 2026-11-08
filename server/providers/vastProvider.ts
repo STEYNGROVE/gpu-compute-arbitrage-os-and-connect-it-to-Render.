@@ -153,6 +153,7 @@ export class VastAiProvider extends BaseProvider {
 
       const map = new Map<string, GpuModelInfo>();
       for (const o of offers) {
+        if (o.rentable !== true) continue;
         const name = o.gpu_name || 'Unknown GPU';
         if (!map.has(name)) {
           map.set(name, {
@@ -207,14 +208,14 @@ export class VastAiProvider extends BaseProvider {
           storagePricePerGbHourly: Number(o.storage_cost || 0.0002),
           networkEgressPricePerGb: Number(o.inet_up_cost || 0.01),
           startupCost: 0.02,
-          spotPriceHourly: o.is_bid ? hourly : Number((hourly * 0.6).toFixed(4)),
+          spotPriceHourly: o.is_bid && hourly > 0 ? hourly : undefined,
           isInterruptible: Boolean(o.is_bid),
           estimatedInterruptionRiskPct: o.is_bid ? 12.5 : 1.5,
           timestamp: new Date().toISOString(),
           source: 'https://console.vast.ai/api/v0/bundles/',
           currency: 'USD',
-          status: 'LIVE',
-          rawReference: { offer_id: o.id, host_id: o.host_id, score: o.score }
+          status: 'STALE',
+          rawReference: { offer_id: o.id, host_id: o.host_id, score: o.score, pricingVerification: 'GPU_QUOTE_ONLY', ancillaryCostsVerified: false, executable: false }
         };
       });
     } catch {
@@ -224,7 +225,7 @@ export class VastAiProvider extends BaseProvider {
 
   async getAvailability(gpuModel: string, region?: string): Promise<ProviderAvailability> {
     const prices = await this.getLivePricing();
-    const match = prices.find(p => p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()) && (!region || p.region === region));
+    const match = prices.find(p => p.availability === 'AVAILABLE' && Number.isFinite(p.hourlyPrice) && p.hourlyPrice > 0 && p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()) && (!region || p.region === region));
     if (!match) {
       return {
         providerId: this.id,
@@ -272,169 +273,28 @@ export class VastAiProvider extends BaseProvider {
     }));
   }
 
-  async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? (req.isInterruptible && avail.spotPriceHourly ? avail.spotPriceHourly : avail.currentPriceHourly) : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.0002) * req.durationHours;
-    const networkEgressCost = req.estimatedEgressGb * 0.01;
-    const startupCost = 0.02;
-    const interruptionBuffer = req.isInterruptible ? computeCost * 0.05 : 0;
-    const providerFees = computeCost * 0.02; // Vast.ai fee
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: Number(networkEgressCost.toFixed(4)),
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: Number(interruptionBuffer.toFixed(4)),
-      providerFeesUsd: Number(providerFees.toFixed(4)),
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: currencyConversion,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+  async estimateCost(_req: CostEstimateRequest): Promise<CostEstimateResult> {
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'VAST_API_KEY is not configured',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      // Create actual instance via Vast API PUT /api/v0/asks/{id}/
-      const body = {
-        client_id: 'gpu-arbitrage-os',
-        image: req.dockerImage || 'pytorch/pytorch:latest',
-        disk: req.diskSizeGb || 50,
-        label: `job-${req.customerRef}`,
-        onstart: req.command || undefined
-      };
-
-      const res = await this.safeFetch(`https://console.vast.ai/api/v0/asks/${req.gpuModel}/`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `Vast.ai provisioning failed (${res.status}): ${errText}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const data = await res.json();
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: String(data.new_contract || data.id),
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: Number(data.dph || req.maxHourlyPriceUsd),
-        rawResponse: data,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'Exception during Vast.ai provisioning',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('VAST_API_KEY not configured');
-    const res = await this.safeFetch(`https://console.vast.ai/api/v0/instances/${instanceId}/`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ state: 'running' })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: res.ok ? 'STARTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('VAST_API_KEY not configured');
-    const res = await this.safeFetch(`https://console.vast.ai/api/v0/instances/${instanceId}/`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ state: 'stopped' })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: res.ok ? 'STOPPED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('VAST_API_KEY not configured');
-    const res = await this.safeFetch(`https://console.vast.ai/api/v0/instances/${instanceId}/reboot/`, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${this.apiKey}` }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'RESTART',
-      resultingStatus: res.ok ? 'REBOOTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('VAST_API_KEY not configured');
-    const res = await this.safeFetch(`https://console.vast.ai/api/v0/instances/${instanceId}/`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${this.apiKey}` }
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
