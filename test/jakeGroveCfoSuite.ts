@@ -254,10 +254,10 @@ async function runJakeGroveCfoSuite() {
   // ===========================================================================
   console.log('\n--- 6. FIRST VERIFIED REVENUE ACID TEST (SECTION 13) ---');
   const acidResult = await jakeGroveCfoService.executeFirstVerifiedRevenueAcidTest();
-  assert(acidResult.passed === false && acidResult.isSimulation === true, 'Unfunded simulation correctly reports incomplete verification');
-  assert(acidResult.finalStatus === 'SIMULATION_BLOCKED', 'Unfunded simulation does not claim successful reconciliation');
-  assert(acidResult.realizedProfitUsd > 0, `Realized profit is positive ($${acidResult.realizedProfitUsd.toFixed(2)})`);
-  assert(acidResult.stages.length === 10, 'All 10 simulation stages evaluated (not live evidence)');
+  assert(acidResult.passed === false && acidResult.isSimulation === false, 'Unfunded real-evidence audit correctly reports incomplete verification');
+  assert(acidResult.finalStatus === 'UNVERIFIED_EXTERNAL_EVIDENCE', 'Unfunded audit does not claim successful reconciliation');
+  assert(acidResult.realizedProfitUsd === 0, `No unverified realized profit ($${acidResult.realizedProfitUsd.toFixed(2)})`);
+  assert(acidResult.stages.length === 10, 'All 10 external-evidence stages evaluated');
 
   // ===========================================================================
   // 7. CFO COMMAND CENTER SUMMARY PROVENANCE
