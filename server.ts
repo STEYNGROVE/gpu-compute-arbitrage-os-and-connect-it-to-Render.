@@ -1,3 +1,4 @@
+import { registerReadinessHealth } from './server/readinessHealth.js';
 import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
 import { registerSupplierDiagnostics } from './server/supplierReadOnlyDiagnostics.js';
@@ -201,6 +202,8 @@ app.use('/api', (req, res, next) => {
   next();
 });
 
+
+registerReadinessHealth(app);
 
 // Lightweight public liveness checks. No database or secrets exposed.
 app.get(['/healthz', '/api/healthz', '/api/health'], (_req, res) => {
