@@ -1,3 +1,4 @@
+import { registerSupplierDiagnostics } from './server/supplierReadOnlyDiagnostics.js';
 import { registerGpuHunterX } from './server/gpuHunterX.js';
 import { registerBuyerEvidenceImport } from './server/buyerEvidenceImport.js';
 import './server/bootstrap.js';
@@ -184,6 +185,8 @@ registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
+registerSupplierDiagnostics(app, requireOwnerAuth);
+
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.
 app.use('/api', (req, res, next) => {
