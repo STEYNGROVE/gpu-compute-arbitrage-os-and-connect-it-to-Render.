@@ -1,3 +1,4 @@
+import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
 import { registerSupplierDiagnostics } from './server/supplierReadOnlyDiagnostics.js';
 import { registerGpuHunterX } from './server/gpuHunterX.js';
@@ -1911,6 +1912,29 @@ app.post('/api/finance/binance-pay/verify-order', requireOwnerAuth, async (req, 
 
 
 // Owner-only blockchain evidence probe; intentionally cannot credit orders or unlock spending.
+
+// Owner-only invoice allocation. A unique Postgres index prevents payment evidence replay.
+app.post('/api/finance/usdt-invoices', requireOwnerAuth, async (req, res) => {
+  res.set('Cache-Control','no-store');
+  try {
+    const { customerRef, amountUsdt, expiresMinutes = 60 } = req.body || {};
+    const invoice = await createUsdtInvoice(customerRef, amountUsdt, expiresMinutes);
+    return res.status(201).json({ invoice, purchasingUnlocked:false, treasuryCredited:false });
+  } catch (e: any) { return res.status(400).json({ status:'INVOICE_CREATE_FAILED', reason:e.message }); }
+});
+app.get('/api/finance/usdt-invoices/:id', requireOwnerAuth, async (req, res) => {
+  res.set('Cache-Control','no-store');
+  try { const invoice=await getUsdtInvoice(req.params.id); return res.status(invoice ? 200 : 404).json({invoice}); }
+  catch (e: any) { return res.status(400).json({status:'INVOICE_READ_FAILED',reason:e.message}); }
+});
+app.post('/api/finance/usdt-invoices/:id/reconcile', requireOwnerAuth, async (req, res) => {
+  res.set('Cache-Control','no-store');
+  try {
+    const result=await reconcileUsdtInvoice(req.params.id,req.body?.txHash);
+    return res.status(result.verified ? 200 : 409).json({...result,purchasingUnlocked:false,treasuryCredited:false});
+  } catch (e: any) { return res.status(503).json({verified:false,status:'RECONCILIATION_FAILED',reason:e.message,purchasingUnlocked:false}); }
+});
+
 app.post('/api/finance/usdt-chain/verify', requireOwnerAuth, async (req, res) => {
   res.set('Cache-Control', 'no-store');
   const { txHash, destination, expectedAmount } = req.body || {};
