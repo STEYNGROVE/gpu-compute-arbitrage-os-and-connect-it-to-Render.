@@ -4,6 +4,7 @@ import { registerGpuHunterX } from './server/gpuHunterX.js';
 import { registerBuyerEvidenceImport } from './server/buyerEvidenceImport.js';
 import './server/bootstrap.js';
 import { verifyBinancePayOrder } from './server/binancePayReadOnly.js';
+import { verifyEthereumUsdtTransfer } from './server/usdtChainVerifier.js';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -1905,6 +1906,21 @@ app.post('/api/finance/binance-pay/verify-order', requireOwnerAuth, async (req, 
     ...evidence,
     purchasingUnlocked: false,
     ledgerCredited: false
+  });
+});
+
+
+// Owner-only blockchain evidence probe; intentionally cannot credit orders or unlock spending.
+app.post('/api/finance/usdt-chain/verify', requireOwnerAuth, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  const { txHash, destination, expectedAmount } = req.body || {};
+  if (typeof txHash !== 'string' || typeof destination !== 'string' || typeof expectedAmount !== 'string') {
+    return res.status(400).json({ verified: false, status: 'INVALID_REQUEST' });
+  }
+  const evidence = await verifyEthereumUsdtTransfer({ txHash, destination, expectedAmount });
+  return res.status(evidence.verified ? 200 : 409).json({
+    ...evidence, purchasingUnlocked: false, ledgerCredited: false,
+    warning: 'On-chain receipt evidence only. No payment-to-order allocation or settlement.'
   });
 });
 
