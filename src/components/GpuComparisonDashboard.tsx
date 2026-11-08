@@ -121,7 +121,19 @@ export function GpuComparisonDashboard() {
     Number.isFinite(budget) && budget > 0;
 
 
+
+  const demandRequestVersion = React.useRef(0);
+
+  function invalidateDemandMatches() {
+    demandRequestVersion.current += 1;
+    setDemandLoading(false);
+    setDemandMatches([]);
+    setDemandChecked(false);
+    setDemandError('');
+  }
+
   async function runDemandMatch() {
+    const requestVersion = ++demandRequestVersion.current;
     setDemandMatches([]);
     setDemandChecked(false);
     setDemandError('');
@@ -180,14 +192,18 @@ export function GpuComparisonDashboard() {
         throw new Error('Unsafe matching response rejected.');
       }
 
+      if (requestVersion !== demandRequestVersion.current) return;
       setDemandMatches(result.matches);
       setDemandChecked(true);
     } catch (err) {
+      if (requestVersion !== demandRequestVersion.current) return;
       setDemandError(
         err instanceof Error ? err.message : 'Matching failed.'
       );
     } finally {
-      setDemandLoading(false);
+      if (requestVersion === demandRequestVersion.current) {
+        setDemandLoading(false);
+      }
     }
   }
 
@@ -228,7 +244,7 @@ export function GpuComparisonDashboard() {
             min="0"
             step="any"
             value={cost}
-            onChange={e => setCost(e.target.value)}
+            onChange={e => { setCost(e.target.value); invalidateDemandMatches(); }}
             className="block mt-1 w-full rounded bg-slate-900 border border-slate-700 p-3"
           />
         </label>
@@ -280,7 +296,7 @@ export function GpuComparisonDashboard() {
             GPU model
             <input aria-label="Demand GPU model"
               value={demandModel}
-              onChange={e => setDemandModel(e.target.value)}
+              onChange={e => { setDemandModel(e.target.value); invalidateDemandMatches(); }}
               className="w-full bg-slate-900 border p-2 rounded" />
           </label>
           <label>
@@ -288,7 +304,7 @@ export function GpuComparisonDashboard() {
             <input aria-label="Demand GPU quantity"
               type="number" min="1" step="1"
               value={demandCount}
-              onChange={e => setDemandCount(e.target.value)}
+              onChange={e => { setDemandCount(e.target.value); invalidateDemandMatches(); }}
               className="w-full bg-slate-900 border p-2 rounded" />
           </label>
           <label>
@@ -296,7 +312,7 @@ export function GpuComparisonDashboard() {
             <input aria-label="Demand duration"
               type="number" min="0.01" step="any"
               value={demandHours}
-              onChange={e => setDemandHours(e.target.value)}
+              onChange={e => { setDemandHours(e.target.value); invalidateDemandMatches(); }}
               className="w-full bg-slate-900 border p-2 rounded" />
           </label>
           <label>
@@ -304,7 +320,7 @@ export function GpuComparisonDashboard() {
             <input aria-label="Demand budget"
               type="number" min="0.01" step="any"
               value={demandBudget}
-              onChange={e => setDemandBudget(e.target.value)}
+              onChange={e => { setDemandBudget(e.target.value); invalidateDemandMatches(); }}
               className="w-full bg-slate-900 border p-2 rounded" />
           </label>
         </div>
