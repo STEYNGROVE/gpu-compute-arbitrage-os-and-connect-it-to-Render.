@@ -17,7 +17,8 @@
     "security:check": "node scripts/security-check.cjs",
     "verify:gpu-safe": "npm run audit:gpu-execution && npm run typecheck && npm run security:check && npm test && npm run test:purchase-boundary",
     "audit:gpu-execution": "node scripts/audit-gpu-execution.cjs --strict",
-    "test:purchase-boundary": "node test/directPurchaseBoundarySuite.cjs"
+    "test:purchase-boundary": "node test/directPurchaseBoundarySuite.cjs",
+    "test:gpu-postgres": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/prepaidPostgresIntegrationSuite.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
