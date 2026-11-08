@@ -1354,7 +1354,35 @@ export class JakeGroveCfoService {
     finalStatus: string;
     milestoneStatus: string;
   }> {
-    return this.executeSimulationAcidTest();
+    // Read-only and fail-closed: no synthetic payment, GPU, bill, or settlement.
+    const journal = this.verifyJournalIntegrity();
+    const missing = [
+      ['REAL CUSTOMER PAYMENT', 'External payment confirmation linked to customer order'],
+      ['CFO APPROVAL', 'Transaction-specific CFO authorization'],
+      ['VERIFIED PURCHASING CAPABILITY', 'Authorized provider capacity for the paid job'],
+      ['REAL GPU', 'Provider-confirmed instance allocation'],
+      ['REAL WORKLOAD', 'Execution record tied to provider instance'],
+      ['VERIFIED OUTPUT', 'Verified workload output artifact'],
+      ['ACTUAL PROVIDER BILL', 'Provider-issued invoice for the workload'],
+      ['SETTLEMENT', 'Externally confirmed customer and supplier settlement'],
+      ['RECONCILED PROFIT', 'External cashflow reconciled with journal'],
+      ['FULL RECONCILIATION & CFO_RECONCILED', 'Complete cross-system transaction evidence']
+    ];
+    const stages = missing.map(([name, requirement], index) => ({
+      name: `${index + 1}. ${name}`,
+      passed: false,
+      evidence: `UNVERIFIED: ${requirement} not independently established by this audit.` +
+        (index === 8 ? ` Internal journal balanced: ${journal.isBalanced}; hash chain valid: ${journal.hashChainValid}. Internal integrity alone does not prove revenue.` : '')
+    }));
+    return {
+      passed: false,
+      isSimulation: false,
+      stages,
+      settlementId: '',
+      realizedProfitUsd: 0,
+      finalStatus: 'UNVERIFIED_EXTERNAL_EVIDENCE',
+      milestoneStatus: 'PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN'
+    };
   }
 }
 
