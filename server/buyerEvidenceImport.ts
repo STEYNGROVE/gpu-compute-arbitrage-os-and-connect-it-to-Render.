@@ -3,16 +3,42 @@ import { Pool } from 'pg';
 import crypto from 'node:crypto';
 
 type Owner = (req: Request, res: Response, next: NextFunction) => void;
-const connection = process.env.DATABASE_URL;
-const host = connection ? new URL(connection).hostname : '';
-const pool = connection ? new Pool({connectionString:connection, ssl: host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host) ? undefined : {rejectUnauthorized:true}, max:2}) : null;
-let initialized: Promise<unknown> | undefined;
+let pool: Pool | null = null;
+
+function getEvidencePool(): Pool {
+  if (pool) return pool;
+
+  const connection = process.env.DATABASE_URL;
+  if (!connection) {
+    throw new Error('DATABASE_URL_NOT_CONFIGURED');
+  }
+
+  const nextPool = new Pool({
+    connectionString: connection,
+    ssl: { rejectUnauthorized: true },
+    max: 2,
+    connectionTimeoutMillis: 20000,
+    idleTimeoutMillis: 10000
+  });
+
+  nextPool.on('error', (err: Error) => {
+    console.error('[GPU EVIDENCE POOL]', {
+      name: err.name,
+      code: (err as NodeJS.ErrnoException).code || 'UNKNOWN'
+    });
+  });
+
+  pool = nextPool;
+  return pool;
+}
 const limited = (x:unknown,n:number) => typeof x === 'string' ? x.trim().slice(0,n) : '';
 function safeUrl(x:string):boolean {
   try {const u=new URL(x); return u.protocol==='https:' && !u.username && !u.password && (!u.port || u.port==='443') && /^[a-z0-9.-]+$/i.test(u.hostname) && u.hostname.includes('.') && !u.hostname.endsWith('.local') && !u.hostname.endsWith('.internal') && !/^\d+\.\d+\.\d+\.\d+$/.test(u.hostname);} catch{return false;}
 }
 export function classifyBuyerEvidence(title:string, description:string, source:string) {
   const t=(title+' '+description).replace(/<[^>]*>/g,' ').replace(/&(?:quot|amp|lt|gt|#\d+|#x[\da-f]+);/gi,' ');
+  const discussionSource = /hacker\s*news|ycombinator|forum|reddit/i.test(source);
+
   const hardware=/\b(?:gpu|h100|h200|a100|b100|b200|gb200|rtx\s*4090|rtx\s*5090)\b/i.test(t);
   const service=/\b(?:gpu\s*(?:cloud|rental|hosting|capacity|instances?|cluster|compute)|cloud\s*gpu|compute\s*(?:capacity|rental|hosting|cluster)|rent(?:ing)?\s+(?:an?\s+)?(?:h100|h200|a100|gpu)|h100\s*(?:instances?|rental|cloud))\b/i.test(t);
   const request=/\b(?:we\s+(?:need|seek|are\s+looking\s+for|want\s+to\s+rent)|i\s+(?:need|am\s+looking\s+for|want\s+to\s+rent)|looking\s+to\s+(?:rent|buy)|request\s+for\s+(?:proposal|quotation)|seeking\s+(?:quotes?|bids?|providers?|capacity)|(?:rfp|rfq|tender)\s+(?:for|to\s+provide)|please\s+(?:quote|bid)|invitation\s+to\s+bid)\b/i.test(t);
@@ -22,18 +48,12 @@ export function classifyBuyerEvidence(title:string, description:string, source:s
   let category='DISCUSSION_ONLY';
   if (employment) category='EMPLOYMENT';
   else if (supplier && !request) category='SUPPLIER_OFFER';
-  else if (hardware && service && request && !technical && !supplier) category='BUYER_REQUEST_REVIEW';
+  else if (hardware && service && request && !technical && !supplier && !discussionSource) category='BUYER_REQUEST_REVIEW';
   return {category, buyerIntentConfirmed:false, verifiedCustomer:false, evidenceStatus:'UNVERIFIED', source};
 }
 async function ready(){
-  if(!pool)throw Error('DATABASE_URL_NOT_CONFIGURED');
-  if(!initialized)initialized=pool.query(`CREATE TABLE IF NOT EXISTS gpu_buyer_evidence_review (
-    id text PRIMARY KEY, source_url text NOT NULL UNIQUE, source_name text NOT NULL,
-    title text NOT NULL, description text NOT NULL, posted_date timestamptz,
-    category text NOT NULL, original_category text, reviewed boolean NOT NULL DEFAULT false,
-    created_at timestamptz NOT NULL DEFAULT now()
-  )`).catch(e=>{initialized=undefined;throw e;});
-  await initialized;
+  const db = getEvidencePool();
+  await db.query('SELECT id FROM gpu_buyer_evidence_review LIMIT 0');
 }
 export function registerBuyerEvidenceImport(app:Express, owner:Owner){
   app.post('/api/owner/gpu-hunter-x/import-evidence',owner,async(req,res)=>{
@@ -52,16 +72,30 @@ export function registerBuyerEvidenceImport(app:Express, owner:Owner){
       await ready(); let inserted=0,duplicates=0;
       for(const r of rows){
         const id=crypto.createHash('sha256').update(r.url).digest('hex');
-        const q=await pool!.query(`INSERT INTO gpu_buyer_evidence_review(id,source_url,source_name,title,description,posted_date,category,original_category)
+        const q=await getEvidencePool().query(`INSERT INTO gpu_buyer_evidence_review(id,source_url,source_name,title,description,posted_date,category,original_category)
           VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(source_url) DO NOTHING`,[id,r.url,r.source,r.title,r.description,r.posted,r.category,r.original]);
         if(q.rowCount)inserted++;else duplicates++;
       }
       res.setHeader('Cache-Control','no-store');
       res.json({mode:'SIMULATION_ONLY',inserted,duplicates,verifiedCustomers:0,realizedRevenueUsd:0,automatedOutreachEnabled:false,procurementEnabled:false});
-    }catch{res.status(503).json({error:'EVIDENCE_STORAGE_UNAVAILABLE'});}
+    }catch(e){
+      const err = e as { code?: string; name?: string };
+      console.error('[GPU EVIDENCE STORAGE]', {
+        code: err?.code || 'UNKNOWN',
+        name: err?.name || 'Error'
+      });
+      res.status(503).json({error:'EVIDENCE_STORAGE_UNAVAILABLE'});
+    }
   });
   app.get('/api/owner/gpu-hunter-x/evidence-review',owner,async(_req,res)=>{
-    try{await ready();const q=await pool!.query('SELECT id,source_url,source_name,title,description,posted_date,category,original_category,reviewed,created_at FROM gpu_buyer_evidence_review ORDER BY created_at DESC LIMIT 200');res.setHeader('Cache-Control','no-store');res.json({mode:'SIMULATION_ONLY',verifiedCustomers:0,realizedRevenueUsd:0,records:q.rows});}
-    catch{res.status(503).json({error:'EVIDENCE_STORAGE_UNAVAILABLE'});}
+    try{await ready();const q=await getEvidencePool().query('SELECT id,source_url,source_name,title,description,posted_date,category,original_category,reviewed,created_at FROM gpu_buyer_evidence_review ORDER BY created_at DESC LIMIT 200');res.setHeader('Cache-Control','no-store');res.json({mode:'SIMULATION_ONLY',verifiedCustomers:0,realizedRevenueUsd:0,records:q.rows});}
+    catch(e){
+      const err = e as { code?: string; name?: string };
+      console.error('[GPU EVIDENCE STORAGE]', {
+        code: err?.code || 'UNKNOWN',
+        name: err?.name || 'Error'
+      });
+      res.status(503).json({error:'EVIDENCE_STORAGE_UNAVAILABLE'});
+    }
   });
 }
