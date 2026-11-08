@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "system": "GPU Hunter X",
+  "status": "ROLE_REGISTRY_ONLY_NOT_RUNNING",
+  "operatingMode": "SIMULATION_ONLY",
+  "coordinator": "chief-operating",
+  "aiProvider": "groq",
+  "defaults": {
+    "automatedOutreach": false,
+    "procurement": false,
+    "financialExecution": false,
+    "trading": false,
+    "externalActions": false,
+    "claimsRequireEvidence": true
+  },
+  "ownerApprovalRequired": [
+    "customer_outreach",
+    "bid_submission",
+    "contract_signature",
+    "spending",
+    "gpu_provisioning",
+    "trading",
+    "payouts",
+    "production_deployment"
+  ],
+  "agents": [
+    {
+      "id": "chief-operating",
+      "name": "Chief Operating Agent",
+      "mission": "Coordinate specialist agents and prioritize tasks"
+    },
+    {
+      "id": "customer-hunter",
+      "name": "Customer Hunter",
+      "mission": "Discover genuine GPU compute buyers"
+    },
+    {
+      "id": "tender-intelligence",
+      "name": "Tender Intelligence",
+      "mission": "Discover procurement opportunities and deadlines"
+    },
+    {
+      "id": "evidence-auditor",
+      "name": "Evidence Auditor",
+      "mission": "Validate evidence and reject false positives"
+    },
+    {
+      "id": "sales-strategist",
+      "name": "Sales Strategist",
+      "mission": "Prepare proposals for owner approval"
+    },
+    {
+      "id": "gpu-supply-scout",
+      "name": "GPU Supply Scout",
+      "mission": "Research GPU suppliers without provisioning"
+    },
+    {
+      "id": "pricing-analyst",
+      "name": "Pricing Analyst",
+      "mission": "Calculate realistic pricing and margins"
+    },
+    {
+      "id": "contract-analyst",
+      "name": "Contract Analyst",
+      "mission": "Review commercial terms and eligibility"
+    },
+    {
+      "id": "finance-controller",
+      "name": "Finance Controller",
+      "mission": "Reconcile verified financial evidence"
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering Agent",
+      "mission": "Review code and propose tested improvements"
+    },
+    {
+      "id": "security-guardian",
+      "name": "Security Guardian",
+      "mission": "Monitor security controls and permissions"
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing Agent",
+      "mission": "Draft marketing campaigns for approval"
+    },
+    {
+      "id": "performance-analyst",
+      "name": "Performance Analyst",
+      "mission": "Report verified operational metrics"
+    }
+  ],
+  "metrics": {
+    "verifiedCustomers": 0,
+    "signedContracts": 0,
+    "realizedRevenueUsd": 0
+  }
+}

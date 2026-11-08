@@ -32,6 +32,16 @@ const db = process.env.DATABASE_URL
     })
   : null;
 
+// Keep unexpected idle PostgreSQL connection failures
+// from terminating the Node.js process.
+db?.on('error', (err: Error) => {
+  const code = (err as NodeJS.ErrnoException).code || 'UNKNOWN';
+  console.error('[LEAD DISCOVERY POOL]', {
+    name: err.name,
+    code
+  });
+});
+
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
 const terms = /\b(gpu|cuda|machine learning|deep learning|model training|render farm|h100|a100|compute cluster|inference)\b/i;
