@@ -105,7 +105,7 @@ export class RunpodProvider extends BaseProvider {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: authenticated ? 'LIVE' : 'AUTHENTICATED',
+        status: authenticated ? 'AUTHENTICATED' : 'UNVERIFIED',
         healthColor: authenticated ? 'GREEN' : 'YELLOW',
         authenticated,
         latencyMs: latency,
@@ -113,13 +113,13 @@ export class RunpodProvider extends BaseProvider {
           authentication: true,
           pricing: true,
           inventory: true,
-          provisioning: true,
-          instanceControl: true,
-          telemetry: true,
-          billing: true
+          provisioning: false,
+          instanceControl: false,
+          telemetry: false,
+          billing: false
         },
         lastCheckIso: new Date().toISOString(),
-        message: authenticated ? 'RunPod API authenticated and operational' : 'RunPod query returned without user identity',
+        message: authenticated ? 'Identity verified; inventory and execution not independently verified' : 'RunPod query returned without user identity',
         configuredCredentials: configuredKeys,
         missingCredentials: []
       };
@@ -407,59 +407,17 @@ export class RunpodProvider extends BaseProvider {
     };
   }
 
-  async retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
-    if (!this.apiKey) {
-      return this.createUnavailableOutput(workloadId, 'RUNPOD_API_KEY not configured');
-    }
-    const status = await this.getInstanceStatus(instanceId);
-    if (status.status === 'UNKNOWN' || status.status === 'FAILED') {
-      return {
-        workloadId,
-        instanceId,
-        providerId: this.id,
-        status: 'FAILED',
-        outputArtifactUrls: [],
-        error: `Pod ${instanceId} is in failed/unknown state`
-      };
-    }
-
-    const duration = Math.max(1, status.uptimeSeconds || 1);
-    const stdout = `[RUNPOD_COMPUTE_OUTPUT] Workload ${workloadId} executed on pod ${instanceId}. Runtime: ${duration}s. Process completed with status 0.`;
-    const outputHash = this.hash(stdout);
-
-    return {
+  async retrieveOutput(_instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
+    return this.createUnavailableOutput(
       workloadId,
-      instanceId,
-      providerId: this.id,
-      status: 'COMPLETED',
-      outputArtifactUrls: [],
-      stdoutExcerpt: stdout,
-      exitCode: 0,
-      executionDurationSeconds: duration,
-      outputHash,
-      completedAtIso: new Date().toISOString()
-    };
+      'READ_ONLY: no verified workload output evidence'
+    );
   }
 
-  async getUsage(instanceId: string): Promise<ProviderUsageResult> {
-    const status = await this.getInstanceStatus(instanceId);
-    const runtime = Math.max(1, status.uptimeSeconds || 1);
-    const hourly = status.hourlyRateUsd > 0 ? status.hourlyRateUsd : 0.74; // Fallback to base RTX 4090 rate if zero
-    const accrued = Number(Math.max(0.01, (runtime / 3600) * hourly).toFixed(4));
-    const nowIso = new Date().toISOString();
-
-    return {
-      providerId: this.id,
-      instanceId,
-      runtimeSeconds: runtime,
-      gpuHours: Number((runtime / 3600).toFixed(4)),
-      totalCostUsd: accrued,
-      currency: 'USD',
-      isFinal: status.status === 'TERMINATED',
-      invoiceLineItemId: `rpod-inv-${instanceId}-${Math.floor(Date.now() / 1000)}`,
-      periodStartIso: new Date(Date.now() - runtime * 1000).toISOString(),
-      periodEndIso: nowIso
-    };
+  async getUsage(_instanceId: string): Promise<ProviderUsageResult> {
+    throw new Error(
+      'USAGE_UNVERIFIED: provider-confirmed usage required'
+    );
   }
 
   async getBilling(): Promise<ProviderBillingResult> {
