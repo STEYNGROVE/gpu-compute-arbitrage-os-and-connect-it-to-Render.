@@ -3,6 +3,7 @@ import { registerSupplierDiagnostics } from './server/supplierReadOnlyDiagnostic
 import { registerGpuHunterX } from './server/gpuHunterX.js';
 import { registerBuyerEvidenceImport } from './server/buyerEvidenceImport.js';
 import './server/bootstrap.js';
+import { verifyBinancePayOrder } from './server/binancePayReadOnly.js';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -1889,6 +1890,22 @@ app.post('/api/cfo/gate/evaluate', async (req, res) => {
   } catch (err: any) {
     res.status(500).json({ status: 'error', message: err.message });
   }
+});
+
+
+// OWNER-ONLY, READ-ONLY Binance Pay evidence probe. No ledger credit or spending.
+app.post('/api/finance/binance-pay/verify-order', requireOwnerAuth, async (req, res) => {
+  const { merchantTradeNo, expectedAmount } = req.body || {};
+  if (typeof merchantTradeNo !== 'string' || typeof expectedAmount !== 'string') {
+    return res.status(400).json({ verified: false, reason: 'INVALID_REQUEST' });
+  }
+  const evidence = await verifyBinancePayOrder(merchantTradeNo, expectedAmount);
+  res.set('Cache-Control', 'no-store');
+  return res.status(evidence.verified ? 200 : 409).json({
+    ...evidence,
+    purchasingUnlocked: false,
+    ledgerCredited: false
+  });
 });
 
 app.post('/api/cfo/acid-test', async (_req, res) => {
