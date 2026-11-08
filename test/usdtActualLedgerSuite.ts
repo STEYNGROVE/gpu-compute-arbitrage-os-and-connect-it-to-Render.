@@ -32,6 +32,9 @@ const pad = (address: string) =>
 let minedAt = Math.floor(Date.now() / 1000);
 let amount = ethers.parseUnits('2', 6);
 let blockNumber = 100;
+let chainId = '0x1';
+let chainHeight = 120;
+let receiptStatus = '0x1';
 
 const server = createServer(async (req, res) => {
   let body = '';
@@ -45,14 +48,14 @@ const server = createServer(async (req, res) => {
 
     switch (item.method) {
       case 'eth_chainId':
-        result = '0x1';
+        result = chainId;
         break;
       case 'eth_blockNumber':
-        result = '0x78';
+        result = ethers.toBeHex(chainHeight);
         break;
       case 'eth_getTransactionReceipt':
         result = {
-          transactionHash: hash,
+          transactionHash: item.params?.[0] || hash,
           transactionIndex: '0x0',
           blockHash,
           blockNumber: ethers.toBeHex(blockNumber),
@@ -62,7 +65,7 @@ const server = createServer(async (req, res) => {
           gasUsed: '0x5208',
           effectiveGasPrice: '0x1',
           logsBloom: '0x' + '0'.repeat(512),
-          status: '0x1',
+          status: receiptStatus,
           type: '0x2',
           logs: [{
             address: token,
@@ -70,7 +73,7 @@ const server = createServer(async (req, res) => {
             data: ethers.zeroPadValue(ethers.toBeHex(amount), 32),
             blockNumber: ethers.toBeHex(blockNumber),
             blockHash,
-            transactionHash: hash,
+            transactionHash: item.params?.[0] || hash,
             transactionIndex: '0x0',
             logIndex: '0x0',
             removed: false
@@ -231,6 +234,99 @@ try {
   assert.equal(result.purchasingUnlocked, false);
   assert.equal(result.treasuryCredited, false);
   console.log('PASS: purchasing and treasury remain locked');
+
+
+  // Two invoices competing for a previously unused transfer.
+  const raceA = await ledger.createUsdtInvoice('race_a', '2', 60);
+  const raceB = await ledger.createUsdtInvoice('race_b', '2', 60);
+
+  minedAt = Math.ceil(
+    Math.max(
+      new Date(raceA.createdAt).getTime(),
+      new Date(raceB.createdAt).getTime()
+    ) / 1000
+  ) + 2;
+
+  // Use a new transaction hash so the earlier tests do not
+  // interfere with the first-time allocation race.
+  const raceHash = '0x' + 'd'.repeat(64);
+
+  // The mock RPC must return the requested hash.
+  const raceResults = await Promise.all([
+    ledger.reconcileUsdtInvoice(raceA.id, raceHash),
+    ledger.reconcileUsdtInvoice(raceB.id, raceHash)
+  ]);
+
+  const racePaid = raceResults.filter(x => x.verified === true);
+  const raceRejected = raceResults.filter(x => x.verified === false);
+
+  assert.equal(racePaid.length, 1);
+  assert.equal(raceRejected.length, 1);
+
+  const raceSavedA = await ledger.getUsdtInvoice(raceA.id);
+  const raceSavedB = await ledger.getUsdtInvoice(raceB.id);
+
+  assert.equal(
+    [raceSavedA?.status, raceSavedB?.status]
+      .filter(x => x === 'PAID').length,
+    1
+  );
+
+  console.log('PASS: simultaneous first-time allocation');
+
+  // Fewer than twelve confirmations.
+  const insufficient = await ledger.createUsdtInvoice(
+    'insufficient_confirmations', '2', 60
+  );
+
+  chainHeight = 105;
+
+  try {
+    const r = await ledger.reconcileUsdtInvoice(
+      insufficient.id, '0x' + 'e'.repeat(64)
+    );
+    assert.equal(r.verified, false);
+    assert.equal(r.status, 'INSUFFICIENT_CONFIRMATIONS');
+    console.log('PASS: insufficient confirmations rejected');
+  } finally {
+    chainHeight = 120;
+  }
+
+  // Reject wrong Ethereum network.
+  const wrongChain = await ledger.createUsdtInvoice(
+    'wrong_chain', '2', 60
+  );
+
+  chainId = '0x38';
+
+  try {
+    const r = await ledger.reconcileUsdtInvoice(
+      wrongChain.id, '0x' + 'f'.repeat(64)
+    );
+    assert.equal(r.verified, false);
+    assert.equal(r.status, 'WRONG_CHAIN');
+    console.log('PASS: wrong blockchain rejected');
+  } finally {
+    chainId = '0x1';
+  }
+
+  // Reverted Ethereum transaction.
+  const reverted = await ledger.createUsdtInvoice(
+    'reverted_transaction', '2', 60
+  );
+
+  receiptStatus = '0x0';
+
+  try {
+    const r = await ledger.reconcileUsdtInvoice(
+      reverted.id, '0x' + '1'.repeat(64)
+    );
+    assert.equal(r.verified, false);
+    assert.equal(r.status, 'TRANSACTION_REVERTED');
+    console.log('PASS: reverted transaction rejected');
+  } finally {
+    receiptStatus = '0x1';
+  }
 
   console.log('ACTUAL USDT LEDGER INTEGRATION TEST PASSED');
 
