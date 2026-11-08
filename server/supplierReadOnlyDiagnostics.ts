@@ -1,3 +1,4 @@
+import { compareGpuOffers, type GpuOffer } from './gpuPriceComparison.js';
 import type { Express, RequestHandler } from 'express';
 
 type Supplier = 'vast_ai' | 'runpod';
@@ -56,7 +57,168 @@ export async function probeSupplier(supplier: Supplier): Promise<Probe> {
   finally { result.latencyMs=Date.now()-start; }
 }
 
+
+async function fetchComparisonOffers(): Promise<GpuOffer[]> {
+  const offers: GpuOffer[] = [];
+  const checkedAt = new Date().toISOString();
+
+  const vastKey = process.env.VAST_API_KEY;
+  const runpodKey = process.env.RUNPOD_API_KEY;
+
+  if (!vastKey || !runpodKey) {
+    throw new Error('SUPPLIER_KEY_REQUIRED');
+  }
+
+  if (vastKey) {
+    try {
+      const response = await requestJson(
+        endpoints.vast_ai.inventory,
+        vastKey,
+        'GET'
+      );
+
+      if (response.status === 200 &&
+          Array.isArray(response.data?.offers)) {
+        for (const row of response.data.offers) {
+          const model = String(
+            row.gpu_name || row.gpu_model || ''
+          );
+
+          const price = Number(
+            row.dph_total ?? row.dph_base
+          );
+
+          const gpuCount = Number(row.num_gpus ?? 1);
+
+          if (!/4090|a100|h100/i.test(model)) continue;
+          if (!Number.isFinite(price) || price <= 0) continue;
+          if (!Number.isInteger(gpuCount) || gpuCount < 1) continue;
+
+          offers.push({
+            provider: 'vast_ai',
+            offerId: String(row.id ?? row.bundle_id ?? ''),
+            model,
+            gpuCount,
+            vramGb: null,
+            region: null,
+            totalHourlyUsd: price,
+            available: null,
+            checkedAt
+          });
+        }
+      } else {
+        throw new Error('VAST_INVENTORY_SCHEMA_OR_HTTP_ERROR');
+      }
+    } catch {
+      throw new Error('VAST_INVENTORY_UNAVAILABLE');
+    }
+  }
+
+  if (runpodKey) {
+    try {
+      const response = await requestJson(
+        endpoints.runpod.inventory,
+        runpodKey,
+        'POST',
+        inventoryQuery
+      );
+
+      const rows = response.data?.data?.gpuTypes;
+
+      if (response.status === 200 &&
+          !response.data?.errors &&
+          Array.isArray(rows)) {
+        for (const row of rows) {
+          const model = String(row.id ?? '');
+
+          const price = Number(
+            row.lowestPrice?.uninterruptablePrice ??
+            row.securePrice
+          );
+
+          if (!/4090|a100|h100/i.test(model)) continue;
+          if (!Number.isFinite(price) || price <= 0) continue;
+
+          offers.push({
+            provider: 'runpod',
+            offerId: model,
+            model,
+            gpuCount: 1,
+            vramGb: null,
+            region: null,
+            totalHourlyUsd: price,
+            available: null,
+            checkedAt
+          });
+        }
+      } else {
+        throw new Error('RUNPOD_INVENTORY_SCHEMA_OR_HTTP_ERROR');
+      }
+    } catch {
+      throw new Error('RUNPOD_INVENTORY_UNAVAILABLE');
+    }
+  }
+
+  return offers;
+}
+
 export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: RequestHandler): void {
+
+  app.get('/api/owner/gpu-price-comparison',
+    requireOwnerAuth,
+    async (req, res) => {
+      res.setHeader('Cache-Control', 'no-store');
+
+      const rawQuote = req.query.customerHourlyUsd;
+      const rawCosts = req.query.additionalCostHourlyUsd;
+
+      const quote = rawQuote === undefined
+        ? undefined
+        : Number(rawQuote);
+
+      const costs = rawCosts === undefined
+        ? 0
+        : Number(rawCosts);
+
+      if ((rawQuote !== undefined &&
+           (typeof rawQuote !== 'string' ||
+            !Number.isFinite(quote) ||
+            quote! <= 0)) ||
+          (rawCosts !== undefined &&
+           (typeof rawCosts !== 'string' ||
+            !Number.isFinite(costs) ||
+            costs < 0))) {
+        return res.status(400).json({
+          error: 'INVALID_PRICING_INPUT'
+        });
+      }
+
+      let offers: GpuOffer[];
+      try {
+        offers = await fetchComparisonOffers();
+      } catch {
+        return res.status(503).json({
+          mode: 'READ_ONLY',
+          error: 'SUPPLIER_COMPARISON_UNAVAILABLE',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true
+        });
+      }
+
+      res.json({
+        mode: 'READ_ONLY',
+        procurementBlocked: true,
+        tradingBlocked: true,
+        payoutsBlocked: true,
+        pricingStatus: 'CATALOG_ONLY',
+        verifiedCustomer: false,
+        confirmedAvailability: false,
+        comparisons: compareGpuOffers(offers, quote, costs)
+      });
+    }
+  );
+
   // Owner auth is required even though this route only reads supplier information.
   app.get('/api/owner/supplier-diagnostics', requireOwnerAuth, async (_req,res)=>{
     res.setHeader('Cache-Control','no-store');
