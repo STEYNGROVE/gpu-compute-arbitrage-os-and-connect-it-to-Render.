@@ -266,107 +266,27 @@ export class AkashProvider extends BaseProvider {
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? (req.isInterruptible && avail.spotPriceHourly ? avail.spotPriceHourly : avail.currentPriceHourly) : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.0001) * req.durationHours;
-    const networkEgressCost = 0;
-    const startupCost = 0.01;
-    const interruptionBuffer = req.isInterruptible ? computeCost * 0.06 : 0;
-    const providerFees = 0;
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0.02 * computeCost; // AKT settlement buffer
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: 0,
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: Number(interruptionBuffer.toFixed(4)),
-      providerFeesUsd: 0,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: Number(currencyConversion.toFixed(4)),
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey || !this.walletAddress) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'AKASH_API_KEY and AKASH_WALLET_ADDRESS are required for Akash deployment',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-    // Akash requires signed Cosmos SDK deployment transaction broadcast
-    return {
-      success: false,
-      providerId: this.id,
-      status: 'FAILED',
-      actualHourlyPriceUsd: 0,
-      error: 'Akash Network deployment requires signed on-chain deployment certificate and escrow funding',
-      provisionedAtIso: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Akash deployment lifecycle managed via on-chain lease state'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Akash deployment close requires on-chain MsgCloseDeployment transaction'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'RESTART',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Akash lease restart managed via SDL manifest update'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Akash deployment teardown requires on-chain MsgCloseDeployment'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {

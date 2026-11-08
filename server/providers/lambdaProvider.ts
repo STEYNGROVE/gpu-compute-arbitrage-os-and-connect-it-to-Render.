@@ -267,164 +267,27 @@ export class LambdaProvider extends BaseProvider {
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    const avail = await this.getAvailability(req.gpuModel, req.regionPreference);
-    const hourly = avail.available ? avail.currentPriceHourly : 0;
-    const computeCost = hourly * req.durationHours * req.gpuCount;
-    const storageCost = (req.storageGb * 0.0001) * req.durationHours;
-    const networkEgressCost = 0;
-    const startupCost = 0.02;
-    const interruptionBuffer = 0;
-    const providerFees = 0;
-    const paymentFees = (computeCost + storageCost) * 0.029 + 0.30;
-    const currencyConversion = 0;
-    const totalTrueCost = computeCost + storageCost + networkEgressCost + startupCost + interruptionBuffer + providerFees + paymentFees + currencyConversion;
-
-    return {
-      providerId: this.id,
-      gpuModel: req.gpuModel,
-      gpuCount: req.gpuCount,
-      durationHours: req.durationHours,
-      computeCostUsd: Number(computeCost.toFixed(4)),
-      storageCostUsd: Number(storageCost.toFixed(4)),
-      networkEgressCostUsd: 0,
-      startupCostUsd: startupCost,
-      interruptionBufferUsd: 0,
-      providerFeesUsd: 0,
-      paymentFeesUsd: Number(paymentFees.toFixed(4)),
-      currencyConversionCostUsd: 0,
-      totalTrueCostUsd: Number(totalTrueCost.toFixed(4)),
-      effectiveHourlyRateUsd: req.durationHours > 0 ? Number((totalTrueCost / req.durationHours).toFixed(4)) : 0,
-      isCalculatedFromLivePricing: avail.available,
-      pricingTimestamp: avail.timestamp,
-      pricingSource: avail.source
-    };
+    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    if (!this.apiKey) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: 'LAMBDA_API_KEY is not configured',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
-
-    try {
-      const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-operations/launch', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          region_name: req.region || 'us-west-1',
-          instance_type_name: req.gpuModel,
-          ssh_key_names: req.sshPublicKey ? ['gpu-arbitrage-os'] : [],
-          quantity: 1,
-          name: `arb-lambda-${req.customerRef}`
-        })
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        return {
-          success: false,
-          providerId: this.id,
-          status: 'FAILED',
-          actualHourlyPriceUsd: 0,
-          error: `Lambda Labs launch failed (${res.status}): ${text}`,
-          provisionedAtIso: new Date().toISOString()
-        };
-      }
-
-      const json = await res.json();
-      const instId = json.data?.instance_ids?.[0];
-      return {
-        success: true,
-        providerId: this.id,
-        instanceId: String(instId),
-        status: 'PROVISIONING',
-        actualHourlyPriceUsd: req.maxHourlyPriceUsd,
-        rawResponse: json,
-        provisionedAtIso: new Date().toISOString()
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        providerId: this.id,
-        status: 'FAILED',
-        actualHourlyPriceUsd: 0,
-        error: err.message || 'Lambda Labs provisioning request failed',
-        provisionedAtIso: new Date().toISOString()
-      };
-    }
+    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'START',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Lambda cloud instances do not support start/stop actions'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    return {
-      success: false,
-      providerId: this.id,
-      instanceId,
-      action: 'STOP',
-      resultingStatus: 'UNAVAILABLE',
-      timestamp: new Date().toISOString(),
-      message: 'Lambda cloud instances do not support stop actions'
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('LAMBDA_API_KEY not configured');
-    const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-operations/restart', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ instance_ids: [instanceId] })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'RESTART',
-      resultingStatus: res.ok ? 'RESTARTING' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    if (!this.apiKey) throw new Error('LAMBDA_API_KEY not configured');
-    const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-operations/terminate', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ instance_ids: [instanceId] })
-    });
-    return {
-      success: res.ok,
-      providerId: this.id,
-      instanceId,
-      action: 'TERMINATE',
-      resultingStatus: res.ok ? 'TERMINATED' : 'FAILED',
-      timestamp: new Date().toISOString()
-    };
+    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
