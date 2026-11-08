@@ -1,3 +1,4 @@
+import { matchGpuDemand } from './gpuDemandMatcher.js';
 import {
   compareGpuOffers,
   compareGpuOffersPerGpu,
@@ -274,6 +275,87 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
         return res.status(503).json({
           mode: 'READ_ONLY',
           error: 'SUPPLIER_COMPARISON_UNAVAILABLE',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true
+        });
+      }
+    }
+  );
+
+
+  app.post('/api/owner/gpu-demand-match',
+    requireOwnerAuth,
+    async (req, res) => {
+      res.setHeader('Cache-Control', 'no-store');
+
+      const body = req.body;
+
+      if (!body || typeof body !== 'object' ||
+          Array.isArray(body) ||
+          typeof body.gpuModel !== 'string' ||
+          body.gpuModel.length > 100 ||
+          !body.gpuModel.trim() ||
+          !Number.isInteger(body.gpuCount) ||
+          body.gpuCount < 1 || body.gpuCount > 128 ||
+          !Number.isFinite(body.durationHours) ||
+          body.durationHours <= 0 ||
+          body.durationHours > 8760 ||
+          !Number.isFinite(body.maxCustomerPricePerGpuHourUsd) ||
+          body.maxCustomerPricePerGpuHourUsd <= 0 ||
+          body.maxCustomerPricePerGpuHourUsd > 10000 ||
+          !Number.isFinite(body.additionalCostPerGpuHourUsd) ||
+          body.additionalCostPerGpuHourUsd < 0 ||
+          body.additionalCostPerGpuHourUsd > 10000) {
+        return res.status(400).json({
+          error: 'INVALID_CUSTOMER_REQUIREMENT'
+        });
+      }
+
+      try {
+        const offers = await fetchComparisonOffers();
+
+        const normalized = compareGpuOffersPerGpu(
+          offers,
+          body.maxCustomerPricePerGpuHourUsd,
+          body.additionalCostPerGpuHourUsd
+        );
+
+        const matches = matchGpuDemand(body, normalized)
+          .map(match => {
+            const additionalCost =
+              body.additionalCostPerGpuHourUsd *
+              body.gpuCount *
+              body.durationHours;
+
+            return {
+              ...match,
+              estimatedAdditionalCostUsd: additionalCost,
+              estimatedGrossSpreadUsd:
+                match.estimatedGrossSpreadUsd - additionalCost
+            };
+          })
+          .filter(match =>
+            Number.isFinite(match.estimatedGrossSpreadUsd) &&
+            match.estimatedGrossSpreadUsd > 0
+          );
+
+        return res.json({
+          mode: 'READ_ONLY',
+          pricingStatus: 'CATALOG_ONLY',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true,
+          verifiedCustomer: false,
+          confirmedAvailability: false,
+          paymentVerified: false,
+          realizedRevenueUsd: 0,
+          matches
+        });
+      } catch {
+        return res.status(503).json({
+          error: 'DEMAND_MATCHING_UNAVAILABLE',
+          mode: 'READ_ONLY',
           procurementBlocked: true,
           tradingBlocked: true,
           payoutsBlocked: true
