@@ -29,6 +29,20 @@ export function GpuComparisonDashboard() {
   const [demandCount, setDemandCount] = useState('1');
   const [demandHours, setDemandHours] = useState('10');
   const [demandBudget, setDemandBudget] = useState('0.75');
+  const [demandMatches, setDemandMatches] = useState<Array<{
+    provider: string;
+    offerId: string;
+    model: string;
+    gpuCount: number;
+    estimatedSupplierCostUsd: number;
+    estimatedAdditionalCostUsd: number;
+    estimatedGrossSpreadUsd: number;
+    purchasingAllowed: false;
+  }>>([]);
+  const [demandError, setDemandError] = useState('');
+  const [demandLoading, setDemandLoading] = useState(false);
+  const [demandChecked, setDemandChecked] = useState(false);
+
 
   const [data, setData] = useState<ResponseData | null>(null);
   const [error, setError] = useState('');
@@ -106,29 +120,76 @@ export function GpuComparisonDashboard() {
     Number.isFinite(hours) && hours > 0 &&
     Number.isFinite(budget) && budget > 0;
 
-  const matches = demandValid
-    ? rows.filter(item => {
-        const age = Date.now() - Date.parse(item.checkedAt);
-        const totalSupplierCost =
-          item.supplierHourlyUsd * hours;
-        const customerRevenue = count * hours * budget;
 
-        return (
-          Number.isFinite(age) &&
-          age >= 0 &&
-          age <= 15 * 60 * 1000 &&
-          item.model.toLowerCase().includes(
-            demandModel.trim().toLowerCase()
-          ) &&
-          item.gpuCount >= count &&
-          Number.isFinite(item.supplierHourlyUsd) &&
-          item.supplierHourlyUsd > 0 &&
-          customerRevenue > totalSupplierCost
+  async function runDemandMatch() {
+    setDemandMatches([]);
+    setDemandChecked(false);
+    setDemandError('');
+
+    if (!demandValid || cost.trim() === '' ||
+        !Number.isFinite(Number(cost)) ||
+        Number(cost) < 0) {
+      setDemandError('Invalid demand or additional cost.');
+      return;
+    }
+
+    setDemandLoading(true);
+
+    try {
+      const response = await fetch('/api/owner/gpu-demand-match', {
+        method: 'POST',
+        credentials: 'same-origin',
+        cache: 'no-store',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gpuModel: demandModel.trim(),
+          gpuCount: count,
+          durationHours: hours,
+          maxCustomerPricePerGpuHourUsd: budget,
+          additionalCostPerGpuHourUsd: Number(cost)
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          response.status === 401 || response.status === 403
+            ? 'Owner authentication required.'
+            : `Matching unavailable (HTTP ${response.status}).`
         );
-      }).sort((a, b) =>
-        a.supplierHourlyUsd - b.supplierHourlyUsd
-      )
-    : [];
+      }
+
+      const result = await response.json();
+
+      if (result.mode !== 'READ_ONLY' ||
+          result.pricingStatus !== 'CATALOG_ONLY' ||
+          result.procurementBlocked !== true ||
+          result.tradingBlocked !== true ||
+          result.payoutsBlocked !== true ||
+          result.verifiedCustomer !== false ||
+          result.confirmedAvailability !== false ||
+          result.paymentVerified !== false ||
+          !Array.isArray(result.matches) ||
+          !result.matches.every((m: any) =>
+            m.purchasingAllowed === false &&
+            m.availabilityVerified === false &&
+            m.paymentVerified === false &&
+            m.status === 'CATALOG_MATCH_ONLY' &&
+            Number.isFinite(m.estimatedGrossSpreadUsd) &&
+            m.estimatedGrossSpreadUsd > 0
+          )) {
+        throw new Error('Unsafe matching response rejected.');
+      }
+
+      setDemandMatches(result.matches);
+      setDemandChecked(true);
+    } catch (err) {
+      setDemandError(
+        err instanceof Error ? err.message : 'Matching failed.'
+      );
+    } finally {
+      setDemandLoading(false);
+    }
+  }
 
   const money = (value: number) =>
     '$' + value.toFixed(4);
@@ -248,10 +309,20 @@ export function GpuComparisonDashboard() {
           </label>
         </div>
 
+        <button type="button"
+          onClick={() => void runDemandMatch()}
+          disabled={demandLoading || !demandValid}
+          className="rounded bg-cyan-700 px-4 py-2 disabled:opacity-50">
+          {demandLoading ? 'Matching…' : 'Match GPU demand'}
+        </button>
+
+        {demandError && <p role="alert"
+          className="text-red-300">{demandError}</p>}
+
         <p className="font-semibold">
-          {demandValid
-            ? `${matches.length} hypothetical catalog matches`
-            : 'Enter valid customer requirements'}
+          {demandChecked
+            ? `${demandMatches.length} hypothetical catalog matches`
+            : 'Run matching to see catalog results'}
         </p>
 
         <div className="overflow-x-auto">
@@ -265,27 +336,23 @@ export function GpuComparisonDashboard() {
               </tr>
             </thead>
             <tbody>
-              {matches.map((item, index) => {
-                const supplierCost =
-                  item.supplierHourlyUsd * hours;
-                const spread =
-                  count * hours * budget - supplierCost;
-                return (
-                  <tr key={`${item.provider}:${item.offerId}:${index}`}
-                    className="border-t border-slate-800">
-                    <td className="p-2">
-                      {item.model} — {item.provider}
-                    </td>
-                    <td className="p-2 text-center">{item.gpuCount}</td>
-                    <td className="p-2 text-center">
-                      ${supplierCost.toFixed(2)}
-                    </td>
-                    <td className="p-2 text-center">
-                      ${spread.toFixed(2)}
-                    </td>
-                  </tr>
-                );
-              })}
+              {demandMatches.map((item, index) => (
+                <tr key={`${item.provider}:${item.offerId}:${index}`}
+                  className="border-t border-slate-800">
+                  <td className="p-2">
+                    {item.model} — {item.provider}
+                  </td>
+                  <td className="p-2 text-center">
+                    {item.gpuCount}
+                  </td>
+                  <td className="p-2 text-center">
+                    ${item.estimatedSupplierCostUsd.toFixed(2)}
+                  </td>
+                  <td className="p-2 text-center">
+                    ${item.estimatedGrossSpreadUsd.toFixed(2)}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
