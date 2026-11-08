@@ -1,4 +1,8 @@
-import { compareGpuOffers, type GpuOffer } from './gpuPriceComparison.js';
+import {
+  compareGpuOffers,
+  compareGpuOffersPerGpu,
+  type GpuOffer
+} from './gpuPriceComparison.js';
 import type { Express, RequestHandler } from 'express';
 
 type Supplier = 'vast_ai' | 'runpod';
@@ -216,6 +220,65 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
         confirmedAvailability: false,
         comparisons: compareGpuOffers(offers, quote, costs)
       });
+    }
+  );
+
+
+  app.get('/api/owner/gpu-price-comparison-normalized',
+    requireOwnerAuth,
+    async (req, res) => {
+      res.setHeader('Cache-Control', 'no-store');
+
+      const quoteRaw = req.query.customerPerGpuHourUsd;
+      const costsRaw = req.query.additionalCostPerGpuHourUsd;
+
+      const quote = quoteRaw === undefined
+        ? undefined : Number(quoteRaw);
+      const costs = costsRaw === undefined
+        ? 0 : Number(costsRaw);
+
+      if (
+        (quoteRaw !== undefined &&
+          (typeof quoteRaw !== 'string' ||
+           quoteRaw.trim() === '' ||
+           !Number.isFinite(quote) ||
+           quote! <= 0)) ||
+        (costsRaw !== undefined &&
+          (typeof costsRaw !== 'string' ||
+           costsRaw.trim() === '' ||
+           !Number.isFinite(costs) ||
+           costs < 0))
+      ) {
+        return res.status(400).json({
+          error: 'INVALID_PRICING_INPUT'
+        });
+      }
+
+      try {
+        const offers = await fetchComparisonOffers();
+
+        return res.json({
+          mode: 'READ_ONLY',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true,
+          pricingStatus: 'CATALOG_ONLY',
+          pricingBasis: 'PER_GPU_HOUR',
+          verifiedCustomer: false,
+          confirmedAvailability: false,
+          comparisons: compareGpuOffersPerGpu(
+            offers, quote, costs
+          )
+        });
+      } catch {
+        return res.status(503).json({
+          mode: 'READ_ONLY',
+          error: 'SUPPLIER_COMPARISON_UNAVAILABLE',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true
+        });
+      }
     }
   );
 

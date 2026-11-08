@@ -299,6 +299,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab }) => {
             { id: 'cfo_command', label: 'Jake Grove — CFO', icon: Scale, textBadge: 'CONTROL PLANE' },
             { id: 'zero_funded', label: 'Zero-Funded Bootstrap', icon: ShieldCheck, textBadge: 'ZERO CAP' },
             { id: 'price_router', label: 'Live GPU Price Router', icon: Cpu, textBadge: 'CORE 4' },
+            { id: 'gpu_comparison', label: 'GPU Catalog Comparison', icon: Cpu, textBadge: 'READ ONLY' },
             { id: 'provider_keyring', label: 'Provider APIs & Keyring', icon: Key, textBadge: 'LIGHTNING & APIS' },
             { id: 'capital_summary', label: 'Capital Required Summary', icon: Coins, badge: opportunitySummary.profitable },
             { id: 'opportunities', label: 'Verified Opportunities', icon: Sparkles, badge: opportunitySummary.realOpportunities },

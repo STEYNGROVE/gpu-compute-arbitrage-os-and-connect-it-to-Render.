@@ -18,6 +18,7 @@ import { LiveGpuPriceRouter } from './components/LiveGpuPriceRouter';
 import { ZeroFundedBootstrapPanel } from './components/ZeroFundedBootstrapPanel';
 import { JakeGroveCfoPanel } from './components/JakeGroveCfoPanel';
 import { ProviderKeyringPanel } from './components/ProviderKeyringPanel';
+import { GpuComparisonDashboard } from './components/GpuComparisonDashboard';
 
 export function AppContent() {
   const [activeTab, setActiveTab] = useState<string>('command_center');
@@ -39,6 +40,7 @@ export function AppContent() {
         )}
         {activeTab === 'zero_funded' && <ZeroFundedBootstrapPanel />}
         {activeTab === 'price_router' && <LiveGpuPriceRouter />}
+        {activeTab === 'gpu_comparison' && <GpuComparisonDashboard />}
         {activeTab === 'treasury' && <TreasuryPanel />}
         {activeTab === 'readiness' && <ReadinessPanel />}
         {activeTab === 'opportunities' && <OpportunityEngine />}

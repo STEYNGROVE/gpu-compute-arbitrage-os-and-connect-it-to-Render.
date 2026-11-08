@@ -75,3 +75,74 @@ export function compareGpuOffers(
       b.supplierPerGpuHourUsd
     );
 }
+
+export interface NormalizedGpuComparison extends GpuComparison {
+  customerPerGpuHourUsd: number | null;
+  additionalCostPerGpuHourUsd: number;
+  estimatedMarginPerGpuHourUsd: number | null;
+  estimatedMarginTotalOfferHourUsd: number | null;
+  pricingBasis: 'PER_GPU_HOUR';
+  availabilityVerified: false;
+  checkedAt: string;
+}
+
+export function compareGpuOffersPerGpu(
+  offers: GpuOffer[],
+  customerPerGpuHourUsd?: number,
+  additionalCostPerGpuHourUsd = 0
+): NormalizedGpuComparison[] {
+  if (
+    customerPerGpuHourUsd !== undefined &&
+    (!Number.isFinite(customerPerGpuHourUsd) ||
+     customerPerGpuHourUsd <= 0)
+  ) {
+    throw new Error('INVALID_CUSTOMER_PRICE');
+  }
+
+  if (
+    !Number.isFinite(additionalCostPerGpuHourUsd) ||
+    additionalCostPerGpuHourUsd < 0
+  ) {
+    throw new Error('INVALID_ADDITIONAL_COST');
+  }
+
+  const source = new Map(
+    offers.map(o => [`${o.provider}:${o.offerId}`, o])
+  );
+
+  return compareGpuOffers(offers).map(row => {
+    const original = source.get(
+      `${row.provider}:${row.offerId}`
+    );
+
+    const margin =
+      customerPerGpuHourUsd === undefined
+        ? null
+        : customerPerGpuHourUsd -
+          row.supplierPerGpuHourUsd -
+          additionalCostPerGpuHourUsd;
+
+    return {
+      ...row,
+      customerHourlyUsd:
+        customerPerGpuHourUsd === undefined
+          ? null
+          : customerPerGpuHourUsd * row.gpuCount,
+      estimatedMarginUsd:
+        margin === null ? null : margin * row.gpuCount,
+      customerPerGpuHourUsd:
+        customerPerGpuHourUsd ?? null,
+      additionalCostPerGpuHourUsd,
+      estimatedMarginPerGpuHourUsd: margin,
+      estimatedMarginTotalOfferHourUsd:
+        margin === null ? null : margin * row.gpuCount,
+      estimatedMarginPct:
+        margin === null
+          ? null
+          : margin / customerPerGpuHourUsd! * 100,
+      pricingBasis: 'PER_GPU_HOUR',
+      availabilityVerified: false,
+      checkedAt: original?.checkedAt ?? ''
+    };
+  });
+}
