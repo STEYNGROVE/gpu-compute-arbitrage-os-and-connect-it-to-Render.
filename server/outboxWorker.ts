@@ -192,6 +192,9 @@ export class OutboxWorker {
   }
 
   private async handleProvisionGpuInstance(payload: Record<string, unknown>): Promise<void> {
+    // Phase 9: independent purchase authorization boundary.
+    // Keep locked until a verified reservation gateway is implemented.
+    throw new Error('GPU_PURCHASE_GATE_BLOCKED: Verified purchase authorization gateway not implemented');
     const { operationId, provider } = payload as { operationId: string; provider: string };
     if (!operationId) return;
 
