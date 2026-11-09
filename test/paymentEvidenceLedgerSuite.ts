@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {recordUnverifiedPaymentObservation} from '../server/paymentEvidenceLedger.js';
 const expected={orderId:'order-1',customerId:'customer-1',provider:'EXAMPLE',currency:'USD',amountMinor:1500,expiresAt:'2030-01-02T00:00:00Z'};
-const observed={...expected,transactionId:'tx-1',status:'SETTLED',observedAt:'2026-01-01T00:00:00Z',authenticatedByProvider:true,independentlyFetched:true};
+const observed={...expected,transactionId:'transaction-0001',status:'SETTLED',observedAt:'2026-01-01T00:00:00Z',authenticatedByProvider:true,independentlyFetched:true};
 let calls=0;const seen=new Set<string>();
 const db={query:async(_sql:string,params:unknown[])=>{calls++;const k=params[0]+':'+params[1];if(seen.has(k))return {rowCount:0};seen.add(k);return {rowCount:1};}};
 const check=async(e=expected,o=observed)=>recordUnverifiedPaymentObservation(db as any,e,o);
@@ -15,6 +15,6 @@ assert.equal((await check(expected,{...observed,transactionId:''})).reason,'INVA
 assert.equal((await check(expected,{...observed,observedAt:'not-a-date'})).reason,'INVALID_OBSERVATION_TIME');
 assert.equal(calls,before,'invalid observations must not reach database');
 const failing={query:async()=>{throw Error('DB_OFFLINE')}};
-const unavailable=await recordUnverifiedPaymentObservation(failing as any,expected,{...observed,transactionId:'tx-2'});
+const unavailable=await recordUnverifiedPaymentObservation(failing as any,expected,{...observed,transactionId:'transaction-0002'});
 assert.equal(unavailable.reason,'EVIDENCE_STORAGE_UNAVAILABLE');assert.equal(unavailable.verifiedPayment,false);
 console.log('PASS: Phase 9.5 evidence ledger mock tests; no settlement or procurement authority');
