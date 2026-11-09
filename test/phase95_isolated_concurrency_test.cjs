@@ -46,7 +46,15 @@ async function main() {
     assert.equal(attempts.filter(x=>x.status==='rejected' && x.reason.code==='23505').length,1,'Other concurrent insert fails unique constraint');
     console.log('PASS: concurrent duplicate transaction rejected');
     const tx2='distinct-'+crypto.randomBytes(6).toString('hex');
-    await assert.rejects(b.query(insert,vals(tx2,'order-A-'+tx)),e=>e.code==='23505');
+    const winner = await setup.query(
+      'SELECT order_id FROM gpu_payment_evidence_allocations WHERE provider_transaction_id=$1',
+      [tx]
+    );
+    assert.equal(winner.rows.length, 1);
+    await assert.rejects(
+      b.query(insert, vals(tx2, winner.rows[0].order_id)),
+      e => e.code === '23505'
+    );
     console.log('PASS: duplicate order rejected');
     await assert.rejects(a.query('UPDATE gpu_payment_evidence_allocations SET amount_minor=1 WHERE provider_transaction_id=$1',[tx]),e=>e.message.includes('PAYMENT_ALLOCATION_IMMUTABLE'));
     await assert.rejects(a.query('DELETE FROM gpu_payment_evidence_allocations WHERE provider_transaction_id=$1',[tx]),e=>e.message.includes('PAYMENT_ALLOCATION_IMMUTABLE'));
