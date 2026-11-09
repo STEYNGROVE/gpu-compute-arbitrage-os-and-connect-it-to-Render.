@@ -72,6 +72,18 @@ jobs:
       - name: Node 24 Production DNS Lookup Tests
         run: NODE_ENV=test npx tsx test/secureFeedNode24ProductionSuite.ts
 
+      - name: Phase 6 GPU Evidence and Owner Authentication
+        env:
+          NODE_ENV: production
+          STRICT_AUTH_ENFORCEMENT: 'true'
+        run: |
+          npx tsx --test \
+            server/gpuOfferEvidence.test.ts \
+            server/gpuEvidenceIntegration.test.ts \
+            server/gpuEvidenceHttp.test.ts \
+            server/gpuAuthIsolation.test.ts \
+            server/gpuOwnerAuthHttp.test.ts
+
       - name: Security check
         run: npm run security:check
 

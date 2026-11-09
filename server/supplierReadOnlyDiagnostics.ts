@@ -1,3 +1,4 @@
+import { assessGpuOffer } from './gpuOfferEvidence.js';
 import { matchGpuDemand } from './gpuDemandMatcher.js';
 import {
   compareGpuOffers,
@@ -269,7 +270,22 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
           confirmedAvailability: false,
           comparisons: compareGpuOffersPerGpu(
             offers, quote, costs
-          )
+          ).map(offer => ({
+            ...offer,
+            evidence: assessGpuOffer({
+              provider: offer.provider as
+                'vast_ai' | 'runpod',
+              offerId: offer.offerId,
+              model: offer.model,
+              gpuCount: offer.gpuCount,
+              pricePerGpuHourUsd:
+                offer.supplierPerGpuHourUsd,
+              checkedAt: offer.checkedAt,
+              capacityVerified: false,
+              available: null,
+              source: 'SUPPLIER_CATALOG'
+            })
+          }))
         });
       } catch {
         return res.status(503).json({
