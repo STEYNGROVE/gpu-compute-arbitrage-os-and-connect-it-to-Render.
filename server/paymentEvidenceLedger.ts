@@ -97,11 +97,11 @@ export async function recordUnverifiedPaymentObservation(
 
   try {
     const result = await db.query(
-      `INSERT INTO gpu_payment_evidence_allocations
+      `INSERT INTO gpu_payment_observations
        (provider, provider_transaction_id, customer_id,
         order_id, amount_minor, currency, evidence_sha256)
        VALUES ($1,$2,$3,$4,$5,$6,$7)
-       ON CONFLICT DO NOTHING
+       ON CONFLICT (provider, provider_transaction_id) DO NOTHING
        RETURNING id`,
       [
         expected.provider,
