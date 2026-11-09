@@ -71,7 +71,7 @@ async function fetchComparisonOffers(): Promise<GpuOffer[]> {
   const vastKey = process.env.VAST_API_KEY;
   const runpodKey = process.env.RUNPOD_API_KEY;
 
-  if (!vastKey || !runpodKey) {
+  if (!vastKey && !runpodKey) {
     throw new Error('SUPPLIER_KEY_REQUIRED');
   }
 
@@ -116,7 +116,7 @@ async function fetchComparisonOffers(): Promise<GpuOffer[]> {
         throw new Error('VAST_INVENTORY_SCHEMA_OR_HTTP_ERROR');
       }
     } catch {
-      throw new Error('VAST_INVENTORY_UNAVAILABLE');
+      console.warn('VAST_INVENTORY_UNAVAILABLE');
     }
   }
 
@@ -161,8 +161,12 @@ async function fetchComparisonOffers(): Promise<GpuOffer[]> {
         throw new Error('RUNPOD_INVENTORY_SCHEMA_OR_HTTP_ERROR');
       }
     } catch {
-      throw new Error('RUNPOD_INVENTORY_UNAVAILABLE');
+      console.warn('RUNPOD_INVENTORY_UNAVAILABLE');
     }
+  }
+
+  if (offers.length === 0) {
+    throw new Error('NO_VERIFIED_SUPPLIER_CATALOG_OFFERS');
   }
 
   return offers;

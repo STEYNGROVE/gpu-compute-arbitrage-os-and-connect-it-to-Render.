@@ -32,6 +32,7 @@ test('normalized GPU endpoint enforces Phase 6 safety', async () => {
 
   let supplierCalls = 0;
   let supplierFailure = false;
+  let runpodFailure = false;
 
   try {
     process.env.VAST_API_KEY = 'synthetic-test-placeholder';
@@ -60,6 +61,9 @@ test('normalized GPU endpoint enforces Phase 6 safety', async () => {
 
       if (target.startsWith('https://api.runpod.io/')) {
         supplierCalls++;
+        if (runpodFailure) {
+          return Response.json({}, { status: 503 });
+        }
         return Response.json({
           data: {
             gpuTypes: [{
@@ -115,8 +119,32 @@ test('normalized GPU endpoint enforces Phase 6 safety', async () => {
       assert.equal(response.status, 400);
     });
 
-    await test('supplier failures return safe 503', async () => {
+    await test('partial supplier failure remains read-only', async () => {
       supplierFailure = true;
+
+      const response = await originalFetch(url, {
+        headers: { 'x-test-owner': 'allowed' }
+      });
+
+      assert.equal(response.status, 200);
+
+      const body = await response.json() as any;
+
+      assert.equal(body.mode, 'READ_ONLY');
+      assert.equal(body.pricingStatus, 'CATALOG_ONLY');
+      assert.equal(body.confirmedAvailability, false);
+      assert.equal(body.procurementBlocked, true);
+      assert.equal(body.tradingBlocked, true);
+      assert.equal(body.payoutsBlocked, true);
+      assert.equal(body.comparisons.length, 1);
+      assert.equal(body.comparisons[0].provider, 'runpod');
+      assert.equal(body.comparisons[0].evidence.purchasingAllowed, false);
+      assert.equal(body.comparisons[0].evidence.paymentVerified, false);
+    });
+
+    await test('all supplier failures return safe 503', async () => {
+      supplierFailure = true;
+      runpodFailure = true;
 
       const response = await originalFetch(url, {
         headers: { 'x-test-owner': 'allowed' }
