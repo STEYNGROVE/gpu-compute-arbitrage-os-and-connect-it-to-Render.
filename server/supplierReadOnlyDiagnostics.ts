@@ -60,7 +60,10 @@ export async function probeSupplier(supplier: Supplier): Promise<Probe> {
     }).length;
     return result;
   } catch { result.errorCode='NETWORK_OR_PARSE_FAILURE'; return result; }
-  finally { result.latencyMs=Date.now()-start; }
+  finally {
+    result.latencyMs = Date.now() - start;
+    result.checkedAt = new Date().toISOString();
+  }
 }
 
 
@@ -388,6 +391,28 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
   app.get('/api/owner/supplier-diagnostics', requireOwnerAuth, async (_req,res)=>{
     res.setHeader('Cache-Control','no-store');
     const [vast,runpod]=await Promise.all([probeSupplier('vast_ai'),probeSupplier('runpod')]);
-    res.json({ mode:'READ_ONLY', procurementBlocked:true, tradingBlocked:true, payoutsBlocked:true, suppliers:[vast,runpod] });
+    const suppliers = [vast, runpod].map(probe => ({
+      ...probe,
+      healthStatus: !probe.configured
+        ? 'NOT_CONFIGURED'
+        : probe.errorCode
+          ? 'DEGRADED'
+          : 'HEALTHY',
+      inventoryVerified: probe.errorCode === null &&
+        probe.authenticated &&
+        probe.inventoryRecords !== null,
+      confirmedAvailability: false,
+      evidenceFreshness: 'CURRENT_PROBE',
+      tradingBlocked: true,
+      payoutsBlocked: true
+    }));
+    res.json({
+      mode: 'READ_ONLY',
+      procurementBlocked: true,
+      tradingBlocked: true,
+      payoutsBlocked: true,
+      confirmedAvailability: false,
+      suppliers
+    });
   });
 }
