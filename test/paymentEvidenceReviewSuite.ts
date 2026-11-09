@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {reviewPaymentEvidence} from '../server/paymentEvidenceReview.js';
+const expected={orderId:'order-1',customerId:'customer-1',provider:'EXAMPLE',currency:'USD',amountMinor:1500,expiresAt:'2030-01-02T00:00:00Z'};
+const observed={...expected,transactionId:'transaction-1',status:'SETTLED',observedAt:'2030-01-01T00:00:00Z',authenticatedByProvider:true,independentlyFetched:true};
+const now=new Date('2030-01-01T01:00:00Z');
+const check=(reason:string,e=expected,o=observed)=>{const result=reviewPaymentEvidence(e,o,now);assert.equal(result.accepted,false);assert.equal(result.reason,reason);assert.equal(result.procurementBlocked,true);assert.equal(result.readOnly,true);};
+check('REPLAY_PROTECTION_NOT_INTEGRATED');
+check('PROVIDER_AUTHENTICITY_UNVERIFIED',expected,{...observed,authenticatedByProvider:false});
+check('PROVIDER_AUTHENTICITY_UNVERIFIED',expected,{...observed,independentlyFetched:false});
+check('ORDER_CUSTOMER_PROVIDER_MISMATCH',expected,{...observed,customerId:'other'});
+check('ORDER_CUSTOMER_PROVIDER_MISMATCH',expected,{...observed,orderId:'other'});
+check('CURRENCY_MISMATCH',expected,{...observed,currency:'ZAR'});
+check('AMOUNT_MISMATCH',expected,{...observed,amountMinor:1499});
+check('PAYMENT_NOT_SETTLED',expected,{...observed,status:'PENDING'});
+check('EXPIRED_OR_INVALID_TIME',{...expected,expiresAt:'2029-01-01T00:00:00Z'});
+check('EXPIRED_OR_INVALID_TIME',expected,{...observed,observedAt:'2030-01-02T00:00:00Z'});
+console.log('PASS: 10 fail-closed payment evidence review cases; no authorization pathway');
