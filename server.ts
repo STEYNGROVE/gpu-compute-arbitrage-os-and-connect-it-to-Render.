@@ -15,6 +15,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { registerCommercialIntake } from './server/commercialIntake.js';
+import { registerCommercialEvidence } from './server/commercialEvidence.js';
 import { registerPreapprovedWorkloads } from './server/preapprovedWorkloads.js';
 import { registerOwnerOperations } from './server/ownerOperations.js';
 import { registerOwnerCommandCentre } from './server/ownerCommandCentre.js';
@@ -185,6 +186,7 @@ app.use(rateLimit(200, 60000));
 // Phase 2/3: Public enquiry intake only. No execution, no payments.
 app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
 registerCommercialIntake(app, requireOwnerAuth);
+registerCommercialEvidence(app, requireOwnerAuth);
 registerPreapprovedWorkloads(app, requireOwnerAuth);
   registerOwnerOperations(app, requireOwnerAuth);
 registerOwnerCommandCentre(app, requireOwnerAuth);
