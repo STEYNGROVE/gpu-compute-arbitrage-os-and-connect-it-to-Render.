@@ -1,3 +1,4 @@
+import { registerSpaceStationOne } from './server/spaceStationOne.js';
 import { registerH100FleetController } from './server/h100FleetController.js';
 import { registerReadinessHealth } from './server/readinessHealth.js';
 import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
@@ -187,6 +188,7 @@ registerCommercialIntake(app, requireOwnerAuth);
 registerPreapprovedWorkloads(app, requireOwnerAuth);
   registerOwnerOperations(app, requireOwnerAuth);
 registerOwnerCommandCentre(app, requireOwnerAuth);
+registerSpaceStationOne(app, requireOwnerAuth);
 registerOwnerSalesWorkspace(app, requireOwnerAuth);
 registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
