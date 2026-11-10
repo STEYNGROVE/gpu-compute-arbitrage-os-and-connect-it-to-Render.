@@ -724,7 +724,7 @@ async function runProductionHardeningSuite() {
 
     const migrateScriptCode = fs.readFileSync(path.join(process.cwd(), 'scripts', 'migrateDatabase.ts'), 'utf-8');
     assert(
-      migrateScriptCode.includes('storedChecksum !== checksum') &&
+      migrateScriptCode.includes('storedChecksum !== currentChecksum') &&
       migrateScriptCode.includes('MIGRATION_INTEGRITY_FAILURE'),
       'scripts/migrateDatabase.ts enforces storedChecksum === currentChecksum and fails with MIGRATION_INTEGRITY_FAILURE on mismatch'
     );
