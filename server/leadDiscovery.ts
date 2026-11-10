@@ -150,7 +150,23 @@ async function scan() {
         const description = xmlDecode(field(entry, 'description') || field(entry, 'summary'))
           .replace(/<[^>]+>/g, '')
           .slice(0, 600);
-        if (!terms.test(title + ' ' + description)) continue;
+        const leadText = title + ' ' + description;
+        if (!terms.test(leadText)) continue;
+
+        // Commercial buyer intent is required.
+        const procurementIntent =
+          /\b(rfp|rfq|tender|procurement)\b|request for (proposal|quotation)/i.test(leadText);
+
+        const buyingIntent =
+          /\b(looking to (rent|buy|purchase|hire)|seeking (a )?(gpu|compute) provider|need gpu capacity|need (gpu|ai) compute|requesting (gpu|compute) quotes?|gpu provider wanted|buy compute|rent gpu|paid (gpu|compute) contract)\b/i.test(leadText);
+
+        const hiringPost =
+          /who is hiring|whoishiring|we are hiring|job opening|recruiting|vacancy|full.time position/i.test(
+            leadText + ' ' + feed
+          );
+
+        if ((!procurementIntent && !buyingIntent) ||
+            (hiringPost && !procurementIntent)) continue;
         let url = xmlDecode(field(entry, 'link'));
         if (!url) {
           url = entry.match(/<link[^>]*href=["']([^"']+)["']/i)?.[1] || '';
