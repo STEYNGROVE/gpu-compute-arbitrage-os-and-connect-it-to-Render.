@@ -44,7 +44,8 @@ db?.on('error', (err: Error) => {
 
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
-const terms = /\b(gpu|cuda|machine learning|deep learning|model training|render farm|h100|a100|compute cluster|inference)\b/i;
+
+import { isCommercialComputeLead } from './commercialLeadFilter.js';
 
 const xmlDecode = (s: string) =>
   s
@@ -150,23 +151,7 @@ async function scan() {
         const description = xmlDecode(field(entry, 'description') || field(entry, 'summary'))
           .replace(/<[^>]+>/g, '')
           .slice(0, 600);
-        const leadText = title + ' ' + description;
-        if (!terms.test(leadText)) continue;
-
-        // Commercial buyer intent is required.
-        const procurementIntent =
-          /\b(rfp|rfq|tender|procurement)\b|request for (proposal|quotation)/i.test(leadText);
-
-        const buyingIntent =
-          /\b(looking to (rent|buy|purchase|hire)|seeking (a )?(gpu|compute) provider|need gpu capacity|need (gpu|ai) compute|requesting (gpu|compute) quotes?|gpu provider wanted|buy compute|rent gpu|paid (gpu|compute) contract)\b/i.test(leadText);
-
-        const hiringPost =
-          /who is hiring|whoishiring|we are hiring|job opening|recruiting|vacancy|full.time position/i.test(
-            leadText + ' ' + feed
-          );
-
-        if ((!procurementIntent && !buyingIntent) ||
-            (hiringPost && !procurementIntent)) continue;
+        if (!isCommercialComputeLead(title, description, feed)) continue;
         let url = xmlDecode(field(entry, 'link'));
         if (!url) {
           url = entry.match(/<link[^>]*href=["']([^"']+)["']/i)?.[1] || '';
