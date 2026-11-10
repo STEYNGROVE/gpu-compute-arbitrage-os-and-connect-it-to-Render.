@@ -27,13 +27,57 @@ async function runVersionedMigrations() {
 
   const client = await pgDbService.getClient();
   try {
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS schema_migrations (
-        version VARCHAR(64) PRIMARY KEY,
-        checksum VARCHAR(128) NOT NULL,
-        applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      )
-    `);
+    // PHASE 9.11: Preflight ALL existing checksums
+    // before executing any migration DDL.
+    const migrationHistory = await client.query(
+      "SELECT version, checksum FROM schema_migrations"
+    );
+
+    const applied = new Map<string, string>(
+      migrationHistory.rows.map((row: any) => [
+        String(row.version).trim(),
+        String(row.checksum).trim()
+      ])
+    );
+
+    const availableVersions = new Set(
+      files.map(file => file.replace(/\\.sql$/, ''))
+    );
+
+    for (const version of applied.keys()) {
+      if (!availableVersions.has(version)) {
+        throw new Error(
+          `MIGRATION_PREFLIGHT_FAILED: Applied migration ${version} has no source file.`
+        );
+      }
+    }
+
+    for (const file of files) {
+      const version = file.replace(/\\.sql$/, '');
+      const sql = fs.readFileSync(
+        path.join(migrationsDir, file),
+        'utf-8'
+      );
+
+      const checksum = crypto
+        .createHash('sha256')
+        .update(sql.trim())
+        .digest('hex');
+
+      const stored = applied.get(version);
+
+      if (stored && stored !== checksum) {
+        throw new Error(
+          `MIGRATION_PREFLIGHT_FAILED: Checksum mismatch for ${version}`
+        );
+      }
+    }
+
+    console.log(
+      '[MIGRATE] All existing migration checksums passed preflight'
+    );
+
+
     for (const file of files) {
       const version = file.replace(/\.sql$/, '');
       const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf-8');
