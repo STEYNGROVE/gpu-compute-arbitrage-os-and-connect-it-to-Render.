@@ -1,3 +1,4 @@
+import { registerH100FleetController } from './server/h100FleetController.js';
 import { registerReadinessHealth } from './server/readinessHealth.js';
 import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
@@ -191,6 +192,7 @@ registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
 
 registerGpuArbitrageDiscovery(app, requireOwnerAuth);
+registerH100FleetController(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
