@@ -19,7 +19,8 @@
     "audit:gpu-execution": "node scripts/audit-gpu-execution.cjs --strict",
     "test:purchase-boundary": "node test/directPurchaseBoundarySuite.cjs",
     "test:gpu-postgres": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/prepaidPostgresIntegrationSuite.ts",
-    "test:supplier-balances": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/supplierBalanceReadOnlySuite.ts"
+    "test:supplier-balances": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/supplierBalanceReadOnlySuite.ts",
+    "test:v5-commercial": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/v5CommercialEvidenceSuite.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { validateVerification, validateQuote } from '../server/commercialEvidence.js';
+assert.equal(validateVerification({state:'IDENTITY_REVIEWED',evidenceReference:'',reviewNote:''}),false);
+assert.equal(validateVerification({state:'IDENTITY_REVIEWED',evidenceReference:'manual-check-1',reviewNote:'reviewed'}),true);
+assert.equal(validateVerification({state:'PAID',evidenceReference:'x',reviewNote:''}),false);
+assert.equal(validateVerification({state:'UNVERIFIED',evidenceReference:'',reviewNote:''}),true);
+const valid={customerRateUsdPerGpuHour:2,providerRateUsdPerGpuHour:1,additionalCostUsd:0,validUntil:new Date(Date.now()+86400000).toISOString()};
+assert.equal(validateQuote(valid),true);
+assert.equal(validateQuote({...valid,providerRateUsdPerGpuHour:-1}),false);
+assert.equal(validateQuote({...valid,additionalCostUsd:Infinity}),false);
+assert.equal(validateQuote({...valid,validUntil:new Date(Date.now()-86400000).toISOString()}),false);
+console.log('PASS: V5 commercial evidence validation tests');
