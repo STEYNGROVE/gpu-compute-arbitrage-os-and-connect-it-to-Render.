@@ -63,7 +63,7 @@ export function analyzeH100Fleet(snapshot: H100Snapshot) {
   const completeInventory = snapshot.nodes.length === MAX_NODES;
   const finance = snapshot.finance;
   if (finance && (!nonnegative(finance.supplierPaidUsd) || !nonnegative(finance.tenantClearedUsd) || !nonnegative(finance.otherPaidCostsUsd) || !nonnegative(finance.outstandingLiabilitiesUsd) || typeof finance.clearedFundsVerified !== 'boolean' || typeof finance.supplierInvoicesVerified !== 'boolean' || typeof finance.sourceReference !== 'string' || !finance.sourceReference.trim())) throw new Error('INVALID_FINANCIAL_EVIDENCE');
-  const financialVerified = !!finance && finance.clearedFundsVerified && finance.supplierInvoicesVerified && completeInventory;
+  const financialVerified = false; // User-supplied flags cannot independently verify financial evidence.
   const reserveUsd = financialVerified ? money(finance!.tenantClearedUsd * reservePct / 100) : null;
   const distributableUsd = financialVerified ? money(Math.max(0, finance!.tenantClearedUsd - finance!.supplierPaidUsd - finance!.otherPaidCostsUsd - finance!.outstandingLiabilitiesUsd - reserveUsd!)) : null;
   const netRealizedMarginUsd = financialVerified ? money(finance!.tenantClearedUsd - finance!.supplierPaidUsd - finance!.otherPaidCostsUsd) : null;
