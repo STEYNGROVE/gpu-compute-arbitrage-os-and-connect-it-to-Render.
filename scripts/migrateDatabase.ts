@@ -330,7 +330,16 @@ async function runVersionedMigrations() {
   }
 }
 
-runVersionedMigrations().catch(error => {
-  console.error('[MIGRATE FATAL]', error);
-  process.exitCode = 1;
-});
+runVersionedMigrations()
+  .catch(error => {
+    console.error('[MIGRATE FATAL]', error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    try {
+      await pgDbService.close();
+    } catch (error) {
+      console.error('[MIGRATE CLEANUP FAILED]', error);
+      process.exitCode = 1;
+    }
+  });

@@ -87,6 +87,17 @@ export class PostgresDatabaseService {
     }
   }
 
+  public async close(): Promise<void> {
+    const pool = this.pool;
+    this.pool = null;
+    this.isConnected = false;
+    this.isInitialized = false;
+
+    if (pool) {
+      await pool.end();
+    }
+  }
+
   public async initialize(options?: { skipSchemaCheck?: boolean }): Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }> {
     if (!this.pool) {
       this.configurePool();
