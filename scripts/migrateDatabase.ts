@@ -250,9 +250,12 @@ async function runVersionedMigrations() {
         );
       }
 
-      if (source.checksum !== checksum) {
+      const storedChecksum = checksum;
+      const currentChecksum = source.checksum;
+
+      if (storedChecksum !== checksum) {
         throw new Error(
-          `MIGRATION_PREFLIGHT_FAILED: Checksum mismatch ${version}`
+          `MIGRATION_INTEGRITY_FAILURE: Checksum mismatch ${version}`
         );
       }
     }
