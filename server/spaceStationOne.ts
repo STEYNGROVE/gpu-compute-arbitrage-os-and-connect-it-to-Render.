@@ -195,69 +195,70 @@ button.addEventListener('click',refresh);
 refresh();
 </script>
 
-<!-- SPACE_STATION_V2_LIVE_INTELLIGENCE -->
-<section class="live-intelligence">
-<h2>Live Business Intelligence</h2>
+
+<!-- SPACE_STATION_V3_EVIDENCE -->
+<section>
+<h2>V3 — Evidence Command</h2>
 <p>
-Authenticated read-only records.
-Administrative counts are not revenue.
+Authenticated records, not assumed income.
+All actions in this panel are read-only.
 </p>
 
 <div class="grid">
 <div class="card">
-<h2>Customer Enquiries</h2>
-<strong id="v2-enquiries">UNKNOWN</strong>
+<h2>Recorded Enquiries</h2>
+<strong id="v3-count">UNKNOWN</strong>
 </div>
-
 <div class="card">
-<h2>Pending Approvals</h2>
-<strong id="v2-pending">UNKNOWN</strong>
+<h2>Execution Mode</h2>
+<strong id="v3-mode">UNKNOWN</strong>
 </div>
-
 <div class="card">
-<h2>Verified Approvals</h2>
-<strong id="v2-approved">UNKNOWN</strong>
+<h2>Approval Storage</h2>
+<strong id="v3-storage">UNKNOWN</strong>
 </div>
-
 <div class="card">
-<h2>Commercial Execution</h2>
-<strong id="v2-execution">UNKNOWN</strong>
+<h2>Revenue Verification</h2>
+<strong id="v3-revenue">NOT VERIFIED</strong>
 </div>
 </div>
 
-<h2>GPU Supplier Diagnostics</h2>
-<pre id="v2-suppliers">Not checked</pre>
+<h2>Customer Pipeline</h2>
+<p>
+Records may include tests and unverified
+enquiries. No automatic outreach occurs.
+</p>
+<div id="v3-customers">Not checked</div>
 
-<h2>Evidence Integrity</h2>
-<pre id="v2-evidence">
-Revenue: NOT VERIFIED
-Payments: NOT VERIFIED
-Customer contracts: NOT VERIFIED
-</pre>
+<h2>Approval States</h2>
+<pre id="v3-approvals">Not checked</pre>
 
-<h2>Integration Health</h2>
-<pre id="v2-status">Not checked</pre>
+<h2>GPU Supplier Evidence</h2>
+<pre id="v3-suppliers">Not checked</pre>
 
-<button id="v2-refresh" type="button">
-Refresh Live Intelligence
+<h2>Integration Diagnostics</h2>
+<pre id="v3-diagnostics">Not checked</pre>
+
+<button id="v3-refresh" type="button">
+Refresh Evidence Command
 </button>
 </section>
 
 <script>
 'use strict';
-
 (function(){
-const get=id=>document.getElementById(id);
-const put=(id,value)=>{
-  get(id).textContent=String(value);
+const el=id=>document.getElementById(id);
+const show=(id,value)=>{
+  el(id).textContent=String(value);
 };
 
-async function requestJson(path){
+async function get(path){
   const controller=new AbortController();
-  const timeout=setTimeout(
-    ()=>controller.abort(),15000
+  const timer=setTimeout(
+    ()=>controller.abort(),12000
   );
-  try {
+
+  try{
     const response=await fetch(path,{
       method:'GET',
       credentials:'same-origin',
@@ -271,45 +272,106 @@ async function requestJson(path){
     }
 
     return await response.json();
-  } finally {
-    clearTimeout(timeout);
+  }finally{
+    clearTimeout(timer);
   }
 }
 
-function total(counts){
-  if(!counts ||
-     typeof counts!=='object' ||
-     Array.isArray(counts)){
+function safeCounts(x){
+  if(!x || typeof x!=='object' ||
+     Array.isArray(x)){
     return null;
   }
 
-  let sum=0;
-  for(const value of Object.values(counts)){
+  const result=[];
+  for(const [key,value] of Object.entries(x)){
     if(typeof value!=='number' ||
        !Number.isSafeInteger(value) ||
        value<0){
       return null;
     }
-    sum+=value;
+    result.push([key,value]);
   }
-  return sum;
+  return result;
+}
+
+function customerCard(record){
+  const card=document.createElement('article');
+  card.className='card';
+
+  const title=document.createElement('h3');
+  title.textContent=String(
+    record.company||'Unnamed enquiry'
+  );
+  card.append(title);
+
+  const fields=[
+    ['status','Status'],
+    ['workload','Workload'],
+    ['gpu_model','Requested GPU'],
+    ['gpu_count','GPU count'],
+    ['hours','Requested hours'],
+    ['created_at','Received']
+  ];
+
+  for(const [field,label] of fields){
+    const p=document.createElement('p');
+    p.textContent=label+': '+
+      String(record[field]??'Not provided');
+    card.append(p);
+  }
+
+  return card;
+}
+
+function supplierSummary(s){
+  const name=String(s.supplier??'UNKNOWN');
+  const authenticated=s.authenticated===true;
+  const verified=s.balanceEvidenceVerified===true;
+  const amount=typeof s.balanceUsd==='number' &&
+    Number.isFinite(s.balanceUsd) &&
+    s.balanceUsd>=0 ? s.balanceUsd : null;
+
+  return [
+    'Supplier: '+name,
+    'Authenticated: '+authenticated,
+    'Balance evidence verified: '+verified,
+    'Balance USD: '+
+      (verified && amount!==null
+        ? amount.toFixed(2)
+        : 'NOT VERIFIED'),
+    'Auto-charge disabled verified: '+
+      (s.autoChargeDisabledVerified===true),
+    'Billing mode: '+
+      String(s.billingMode??'UNKNOWN'),
+    'Diagnostic: '+
+      String(s.errorCode??'NONE REPORTED'),
+    'Checked: '+String(s.checkedAt??'UNKNOWN')
+  ].join('\\n');
 }
 
 async function refresh(){
-  const button=get('v2-refresh');
+  const button=el('v3-refresh');
   button.disabled=true;
 
-  put('v2-status','Refreshing...');
-  put('v2-enquiries','UNKNOWN');
-  put('v2-pending','UNKNOWN');
-  put('v2-approved','UNKNOWN');
-  put('v2-execution','UNKNOWN');
-  put('v2-suppliers','Checking...');
+  show('v3-diagnostics','Checking...');
+  show('v3-count','UNKNOWN');
+  show('v3-mode','UNKNOWN');
+  show('v3-storage','UNKNOWN');
+  show('v3-revenue','NOT VERIFIED');
+  show('v3-customers','Loading...');
+  show('v3-approvals','Loading...');
+  show('v3-suppliers','Loading...');
 
-  const results=await Promise.allSettled([
-    requestJson('/api/owner/operations-summary'),
-    requestJson('/api/owner/supplier-balances')
-  ]);
+  const paths=[
+    '/api/owner/operations-summary',
+    '/api/commercial/requests',
+    '/api/owner/supplier-balances'
+  ];
+
+  const results=await Promise.allSettled(
+    paths.map(get)
+  );
 
   const messages=[];
 
@@ -319,35 +381,83 @@ async function refresh(){
     if(d.environment==='SIMULATION_ONLY' &&
        d.executionEnabled===false){
 
-      const enquiries=total(d.quoteRequests);
-      const approvals=d.approvals||{};
+      show('v3-mode','SIMULATION ONLY');
+      show('v3-storage',
+        d.approvalStorageInitialized===true
+          ? 'INITIALIZED'
+          : 'NOT INITIALIZED');
 
-      put('v2-enquiries',
-        enquiries===null?'UNKNOWN':enquiries);
+      const quoteCounts=safeCounts(d.quoteRequests);
+      if(quoteCounts){
+        const total=quoteCounts.reduce(
+          (n,p)=>n+p[1],0
+        );
+        show('v3-count',total);
+      }
 
-      put('v2-pending',
-        approvals.PENDING_VERIFICATION??'UNKNOWN');
+      const approvals=safeCounts(d.approvals);
+      show('v3-approvals',
+        d.approvalStorageInitialized!==true
+          ? 'Approval storage not initialized'
+          : approvals===null
+            ? 'Approval schema unavailable'
+            : approvals.length===0
+              ? 'No approval records'
+              : approvals.map(
+                  p=>p[0]+': '+p[1]
+                ).join('\\n'));
 
-      put('v2-approved',
-        approvals.APPROVAL_VERIFIED??'UNKNOWN');
-
-      put('v2-execution','SIMULATION ONLY');
+      show('v3-revenue',
+        d.revenueVerificationStatus==='NOT_VERIFIED'
+          ? 'NOT VERIFIED'
+          : 'REVIEW REQUIRED');
 
       messages.push('Operations: CONNECTED');
     }else{
       messages.push(
-        'Operations: SAFETY STATUS MISMATCH'
+        'Operations: SAFETY MISMATCH'
       );
     }
   }else{
+    show('v3-approvals','UNAVAILABLE');
     messages.push(
-      'Operations: UNAVAILABLE ('+
-      String(results[0].reason)+')'
+      'Operations: '+String(results[0].reason)
     );
   }
 
-  if(results[1].status==='fulfilled'){
-    const d=results[1].value;
+  if(results[1].status==='fulfilled' &&
+     Array.isArray(results[1].value.requests)){
+
+    const records=results[1].value.requests;
+    const holder=el('v3-customers');
+    holder.replaceChildren();
+
+    const grid=document.createElement('div');
+    grid.className='grid';
+
+    for(const record of records){
+      grid.append(customerCard(record));
+    }
+
+    if(records.length){
+      holder.append(grid);
+    }else{
+      holder.textContent='No enquiries returned';
+    }
+
+    messages.push(
+      'Customer records: '+records.length
+    );
+  }else{
+    show('v3-customers',
+      'Customer records unavailable');
+    messages.push(
+      'Customer API: UNAVAILABLE'
+    );
+  }
+
+  if(results[2].status==='fulfilled'){
+    const d=results[2].value;
 
     if(d.mode==='READ_ONLY' &&
        d.procurementBlocked===true &&
@@ -355,60 +465,41 @@ async function refresh(){
        d.tradingBlocked===true &&
        Array.isArray(d.suppliers)){
 
-      const lines=d.suppliers.map(
-        (supplier,index)=>{
-          const name=String(
-            supplier.provider??
-            supplier.supplier??
-            'Supplier '+(index+1)
-          );
-
-          const status=String(
-            supplier.status??
-            supplier.verificationStatus??
-            'UNKNOWN'
-          );
-
-          return name+': '+status;
-        }
-      );
-
-      put('v2-suppliers',
-        lines.join('\\n') ||
-        'No supplier results');
+      show('v3-suppliers',
+        d.suppliers.length
+          ? d.suppliers.map(
+              supplierSummary
+            ).join('\\n\\n')
+          : 'No supplier diagnostics returned');
 
       messages.push(
         'Supplier diagnostics: CONNECTED'
       );
     }else{
-      put('v2-suppliers',
-        'Safety response mismatch; data withheld');
-
+      show('v3-suppliers',
+        'SAFETY RESPONSE MISMATCH');
       messages.push(
         'Supplier diagnostics: REVIEW REQUIRED'
       );
     }
   }else{
-    put('v2-suppliers',
-      'UNAVAILABLE: '+String(results[1].reason));
-
+    show('v3-suppliers','UNAVAILABLE');
     messages.push(
       'Supplier diagnostics: UNAVAILABLE'
     );
   }
 
-  put('v2-status',
-    messages.join('\\n')+
-    '\\nChecked: '+new Date().toISOString()
+  messages.push(
+    'Checked: '+new Date().toISOString()
   );
 
+  show('v3-diagnostics',messages.join('\\n'));
   button.disabled=false;
 }
 
-get('v2-refresh').addEventListener(
+el('v3-refresh').addEventListener(
   'click',refresh
 );
-
 refresh();
 })();
 </script>
