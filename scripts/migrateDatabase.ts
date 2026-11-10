@@ -120,6 +120,66 @@ async function runVersionedMigrations() {
   let locked = false;
 
   try {
+    // Verify the actual connected database before acquiring
+    // a migration lock or executing any migration SQL.
+    const expectedDatabase =
+      process.env.DB_MIGRATION_EXPECT_DATABASE;
+    const expectedPort =
+      process.env.DB_MIGRATION_EXPECT_PORT;
+    const expectedTransport =
+      process.env.DB_MIGRATION_EXPECT_TRANSPORT;
+    const expectedAddress =
+      process.env.DB_MIGRATION_EXPECT_SERVER_ADDRESS;
+
+    if (
+      !expectedDatabase ||
+      !expectedPort ||
+      !/^[0-9]+$/.test(expectedPort) ||
+      Number(expectedPort) < 1 ||
+      Number(expectedPort) > 65535 ||
+      !['unix', 'tcp'].includes(expectedTransport || '') ||
+      (expectedTransport === 'tcp' && !expectedAddress)
+    ) {
+      throw new Error(
+        'MIGRATION_IDENTITY_REQUIRED: ' +
+        'Expected database, port and transport are required; ' +
+        'TCP also requires expected server address'
+      );
+    }
+
+    const identity = await client.query(
+      `SELECT
+         current_database() AS database_name,
+         current_setting('port') AS server_port,
+         inet_server_addr()::text AS server_address,
+         inet_client_addr()::text AS client_address`
+    );
+
+    const actual = identity.rows[0];
+
+    const transportMatches =
+      expectedTransport === 'unix'
+        ? actual?.client_address == null &&
+          actual?.server_address == null
+        : actual?.client_address != null &&
+          actual?.server_address === expectedAddress;
+
+    if (
+      actual?.database_name !== expectedDatabase ||
+      String(actual?.server_port) !==
+        String(Number(expectedPort)) ||
+      !transportMatches
+    ) {
+      throw new Error(
+        'MIGRATION_TARGET_IDENTITY_MISMATCH: ' +
+        'Connected database does not match authorized identity'
+      );
+    }
+
+    console.log(
+      '[MIGRATE] Connected database identity verified'
+    );
+
     // Session-scoped lock, held on this same client
     // until every migration completes.
     const lockDeadline = Date.now() + 10000;
