@@ -44,7 +44,8 @@ db?.on('error', (err: Error) => {
 
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
-const terms = /\b(gpu|cuda|machine learning|deep learning|model training|render farm|h100|a100|compute cluster|inference)\b/i;
+
+import { isCommercialComputeLead } from './commercialLeadFilter.js';
 
 const xmlDecode = (s: string) =>
   s
@@ -150,7 +151,7 @@ async function scan() {
         const description = xmlDecode(field(entry, 'description') || field(entry, 'summary'))
           .replace(/<[^>]+>/g, '')
           .slice(0, 600);
-        if (!terms.test(title + ' ' + description)) continue;
+        if (!isCommercialComputeLead(title, description, feed)) continue;
         let url = xmlDecode(field(entry, 'link'));
         if (!url) {
           url = entry.match(/<link[^>]*href=["']([^"']+)["']/i)?.[1] || '';
