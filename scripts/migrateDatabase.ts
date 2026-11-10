@@ -122,11 +122,28 @@ async function runVersionedMigrations() {
   try {
     // Session-scoped lock, held on this same client
     // until every migration completes.
-    await client.query(
-      'SELECT pg_advisory_lock($1)',
-      [MIGRATION_LOCK_ID]
-    );
-    locked = true;
+    const lockDeadline = Date.now() + 10000;
+
+    while (Date.now() < lockDeadline) {
+      const result = await client.query(
+        'SELECT pg_try_advisory_lock($1) AS acquired',
+        [MIGRATION_LOCK_ID]
+      );
+
+      if (result.rows[0]?.acquired === true) {
+        locked = true;
+        break;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 250));
+    }
+
+    if (!locked) {
+      throw new Error(
+        'MIGRATION_LOCK_TIMEOUT: ' +
+        'Another migration holds the advisory lock'
+      );
+    }
 
     const tableCheck = await client.query(
       "SELECT to_regclass('public.schema_migrations') AS table_name"
