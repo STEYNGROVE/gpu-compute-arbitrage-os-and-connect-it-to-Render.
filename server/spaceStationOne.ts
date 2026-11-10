@@ -196,63 +196,97 @@ refresh();
 </script>
 
 
-<!-- SPACE_STATION_V3_EVIDENCE -->
-<section>
-<h2>V3 — Evidence Command</h2>
+
+<!-- SPACE_STATION_V4_INTELLIGENCE -->
+<section id="v4-command">
+<h2>V4 — Commercial Intelligence & Safety</h2>
 <p>
-Authenticated records, not assumed income.
-All actions in this panel are read-only.
+Live authenticated read-only intelligence.
+Enquiries are not contracts. Supplier credits
+are not revenue. No purchasing is authorized.
 </p>
 
 <div class="grid">
 <div class="card">
-<h2>Recorded Enquiries</h2>
-<strong id="v3-count">UNKNOWN</strong>
+<h2>Enquiry Records</h2>
+<strong id="v4-enquiries">UNKNOWN</strong>
 </div>
+
 <div class="card">
-<h2>Execution Mode</h2>
-<strong id="v3-mode">UNKNOWN</strong>
+<h2>Unique Demand Groups</h2>
+<strong id="v4-groups">UNKNOWN</strong>
 </div>
+
 <div class="card">
-<h2>Approval Storage</h2>
-<strong id="v3-storage">UNKNOWN</strong>
+<h2>Potential Duplicates</h2>
+<strong id="v4-duplicates">UNKNOWN</strong>
 </div>
+
 <div class="card">
-<h2>Revenue Verification</h2>
-<strong id="v3-revenue">NOT VERIFIED</strong>
+<h2>Verified Supplier Credits</h2>
+<strong id="v4-credits">NOT VERIFIED</strong>
+</div>
+
+<div class="card">
+<h2>Billing Safety</h2>
+<strong id="v4-billing">NOT VERIFIED</strong>
+</div>
+
+<div class="card">
+<h2>Execution Permission</h2>
+<strong id="v4-execution">BLOCKED</strong>
 </div>
 </div>
 
-<h2>Customer Pipeline</h2>
+<h2>Customer Qualification Intelligence</h2>
 <p>
-Records may include tests and unverified
-enquiries. No automatic outreach occurs.
+Matching enquiries are grouped for review.
+Grouping does not prove that two records
+belong to the same real customer.
 </p>
-<div id="v3-customers">Not checked</div>
+<div id="v4-pipeline">Not checked</div>
 
-<h2>Approval States</h2>
-<pre id="v3-approvals">Not checked</pre>
+<h2>Supplier Safety & Credit Evidence</h2>
+<pre id="v4-suppliers">Not checked</pre>
 
-<h2>GPU Supplier Evidence</h2>
-<pre id="v3-suppliers">Not checked</pre>
+<h2>Approvals & Revenue Evidence</h2>
+<pre id="v4-approvals">Not checked</pre>
+
+<h2>Operational Risk Register</h2>
+<pre id="v4-risks">Not checked</pre>
 
 <h2>Integration Diagnostics</h2>
-<pre id="v3-diagnostics">Not checked</pre>
+<pre id="v4-health">Not checked</pre>
 
-<button id="v3-refresh" type="button">
-Refresh Evidence Command
+<button id="v4-refresh" type="button">
+Refresh V4 Intelligence
 </button>
 </section>
 
 <script>
 'use strict';
-(function(){
-const el=id=>document.getElementById(id);
-const show=(id,value)=>{
-  el(id).textContent=String(value);
-};
 
-async function get(path){
+(function(){
+const byId=id=>document.getElementById(id);
+const set=(id,value)=>{
+  byId(id).textContent=String(value);
+};
+const newline=String.fromCharCode(10);
+
+function safeText(value){
+  if(value===null || value===undefined){
+    return 'UNKNOWN';
+  }
+  return String(value);
+}
+
+function numeric(value){
+  return typeof value==='number' &&
+    Number.isFinite(value) &&
+    value>=0 ? value : null;
+}
+
+async function fetchJson(path){
   const controller=new AbortController();
   const timer=setTimeout(
     ()=>controller.abort(),12000
@@ -260,7 +294,6 @@ async function get(path){
 
   try{
     const response=await fetch(path,{
-      method:'GET',
       credentials:'same-origin',
       cache:'no-store',
       headers:{Accept:'application/json'},
@@ -277,103 +310,176 @@ async function get(path){
   }
 }
 
-function safeCounts(x){
-  if(!x || typeof x!=='object' ||
-     Array.isArray(x)){
-    return null;
-  }
+function element(tag,value){
+  const node=document.createElement(tag);
+  node.textContent=safeText(value);
+  return node;
+}
 
-  const result=[];
-  for(const [key,value] of Object.entries(x)){
-    if(typeof value!=='number' ||
-       !Number.isSafeInteger(value) ||
-       value<0){
-      return null;
+function normalize(value){
+  return String(value??'')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g,' ');
+}
+
+function signature(r){
+  return [
+    normalize(r.company),
+    normalize(r.workload),
+    normalize(r.gpu_model),
+    normalize(r.gpu_count),
+    normalize(r.hours)
+  ].join('|');
+}
+
+function demandGroups(records){
+  const map=new Map();
+
+  for(const record of records){
+    const key=signature(record);
+
+    if(!map.has(key)){
+      map.set(key,[]);
     }
-    result.push([key,value]);
-  }
-  return result;
-}
 
-function customerCard(record){
-  const card=document.createElement('article');
-  card.className='card';
-
-  const title=document.createElement('h3');
-  title.textContent=String(
-    record.company||'Unnamed enquiry'
-  );
-  card.append(title);
-
-  const fields=[
-    ['status','Status'],
-    ['workload','Workload'],
-    ['gpu_model','Requested GPU'],
-    ['gpu_count','GPU count'],
-    ['hours','Requested hours'],
-    ['created_at','Received']
-  ];
-
-  for(const [field,label] of fields){
-    const p=document.createElement('p');
-    p.textContent=label+': '+
-      String(record[field]??'Not provided');
-    card.append(p);
+    map.get(key).push(record);
   }
 
-  return card;
+  return Array.from(map.values());
 }
 
-function supplierSummary(s){
-  const name=String(s.supplier??'UNKNOWN');
-  const authenticated=s.authenticated===true;
+function renderPipeline(records){
+  const holder=byId('v4-pipeline');
+  holder.replaceChildren();
+
+  const groups=demandGroups(records);
+
+  set('v4-enquiries',records.length);
+  set('v4-groups',groups.length);
+  set('v4-duplicates',
+    records.length-groups.length);
+
+  const grid=document.createElement('div');
+  grid.className='grid';
+
+  for(const group of groups){
+    const r=group[0];
+    const card=document.createElement('article');
+    card.className='card';
+
+    card.append(element(
+      'h3',r.company||'Unnamed enquiry'
+    ));
+
+    const fields=[
+      ['Records',group.length],
+      ['Status',group.map(
+        x=>x.status||'UNKNOWN'
+      ).join(', ')],
+      ['Workload',r.workload],
+      ['GPU model',r.gpu_model],
+      ['GPU count',r.gpu_count],
+      ['Hours',r.hours]
+    ];
+
+    const gpu=numeric(Number(r.gpu_count));
+    const hours=numeric(Number(r.hours));
+
+    if(gpu!==null && hours!==null &&
+       gpu>0 && hours>0){
+      fields.push([
+        'GPU-hours per request',
+        gpu*hours
+      ]);
+    }
+
+    for(const [label,value] of fields){
+      card.append(element(
+        'p',label+': '+safeText(value)
+      ));
+    }
+
+    const isTest=normalize(r.company)
+      .includes('test');
+
+    let assessment='UNVERIFIED ENQUIRY';
+
+    if(isTest){
+      assessment='POSSIBLE TEST RECORD';
+    }else if(group.length>1){
+      assessment='POTENTIAL DUPLICATES';
+    }
+
+    card.append(element(
+      'strong','Assessment: '+assessment
+    ));
+
+    grid.append(card);
+  }
+
+  if(groups.length===0){
+    holder.textContent='No enquiries returned';
+  }else{
+    holder.append(grid);
+  }
+
+  return {
+    groups:groups.length,
+    duplicates:records.length-groups.length
+  };
+}
+
+function supplierLines(s){
   const verified=s.balanceEvidenceVerified===true;
-  const amount=typeof s.balanceUsd==='number' &&
-    Number.isFinite(s.balanceUsd) &&
-    s.balanceUsd>=0 ? s.balanceUsd : null;
+  const balance=numeric(s.balanceUsd);
 
   return [
-    'Supplier: '+name,
-    'Authenticated: '+authenticated,
-    'Balance evidence verified: '+verified,
-    'Balance USD: '+
-      (verified && amount!==null
-        ? amount.toFixed(2)
-        : 'NOT VERIFIED'),
+    'Supplier: '+safeText(s.supplier),
+    'API authenticated: '+(s.authenticated===true),
+    'Balance evidence: '+(verified?'VERIFIED':'UNVERIFIED'),
+    'Credit USD: '+(
+      verified && balance!==null
+        ? balance.toFixed(2)
+        : 'NOT VERIFIED'
+    ),
+    'Billing mode: '+safeText(s.billingMode),
     'Auto-charge disabled verified: '+
       (s.autoChargeDisabledVerified===true),
-    'Billing mode: '+
-      String(s.billingMode??'UNKNOWN'),
-    'Diagnostic: '+
-      String(s.errorCode??'NONE REPORTED'),
-    'Checked: '+String(s.checkedAt??'UNKNOWN')
-  ].join('\\n');
+    'Diagnostic: '+safeText(s.errorCode),
+    'Checked: '+safeText(s.checkedAt)
+  ].join(newline);
 }
 
 async function refresh(){
-  const button=el('v3-refresh');
+  const button=byId('v4-refresh');
   button.disabled=true;
 
-  show('v3-diagnostics','Checking...');
-  show('v3-count','UNKNOWN');
-  show('v3-mode','UNKNOWN');
-  show('v3-storage','UNKNOWN');
-  show('v3-revenue','NOT VERIFIED');
-  show('v3-customers','Loading...');
-  show('v3-approvals','Loading...');
-  show('v3-suppliers','Loading...');
+  for(const id of [
+    'v4-enquiries',
+    'v4-groups',
+    'v4-duplicates'
+  ]){
+    set(id,'UNKNOWN');
+  }
 
-  const paths=[
-    '/api/owner/operations-summary',
-    '/api/commercial/requests',
-    '/api/owner/supplier-balances'
-  ];
+  set('v4-credits','NOT VERIFIED');
+  set('v4-billing','NOT VERIFIED');
+  set('v4-execution','BLOCKED');
+  set('v4-pipeline','Loading...');
+  set('v4-suppliers','Loading...');
+  set('v4-approvals','Loading...');
+  set('v4-risks','Checking...');
+  set('v4-health','Checking...');
 
-  const results=await Promise.allSettled(
-    paths.map(get)
-  );
+  const risks=[];
+  const diagnostics=[];
 
-  const messages=[];
+  const results=await Promise.allSettled([
+    fetchJson('/api/owner/operations-summary'),
+    fetchJson('/api/commercial/requests'),
+    fetchJson('/api/owner/supplier-balances')
+  ]);
 
   if(results[0].status==='fulfilled'){
     const d=results[0].value;
@@ -381,47 +487,52 @@ async function refresh(){
     if(d.environment==='SIMULATION_ONLY' &&
        d.executionEnabled===false){
 
-      show('v3-mode','SIMULATION ONLY');
-      show('v3-storage',
-        d.approvalStorageInitialized===true
-          ? 'INITIALIZED'
-          : 'NOT INITIALIZED');
+      const states=d.approvals;
 
-      const quoteCounts=safeCounts(d.quoteRequests);
-      if(quoteCounts){
-        const total=quoteCounts.reduce(
-          (n,p)=>n+p[1],0
-        );
-        show('v3-count',total);
+      if(states &&
+         typeof states==='object' &&
+         !Array.isArray(states)){
+
+        const lines=Object.entries(states)
+          .map(([state,count])=>
+            state+': '+safeText(count));
+
+        set('v4-approvals',[
+          'Approval storage: '+
+            (d.approvalStorageInitialized===true
+              ? 'INITIALIZED'
+              : 'NOT INITIALIZED'),
+          ...lines,
+          'Revenue: '+
+            safeText(d.revenueVerificationStatus),
+          'Verified revenue USD: '+
+            (d.verifiedRevenueUsd===null
+              ? 'NOT VERIFIED'
+              : 'REQUIRES INDEPENDENT REVIEW')
+        ].join(newline));
+      }else{
+        set('v4-approvals',
+          'Approval schema unavailable');
       }
 
-      const approvals=safeCounts(d.approvals);
-      show('v3-approvals',
-        d.approvalStorageInitialized!==true
-          ? 'Approval storage not initialized'
-          : approvals===null
-            ? 'Approval schema unavailable'
-            : approvals.length===0
-              ? 'No approval records'
-              : approvals.map(
-                  p=>p[0]+': '+p[1]
-                ).join('\\n'));
+      diagnostics.push(
+        'Operations: CONNECTED / SIMULATION'
+      );
 
-      show('v3-revenue',
-        d.revenueVerificationStatus==='NOT_VERIFIED'
-          ? 'NOT VERIFIED'
-          : 'REVIEW REQUIRED');
-
-      messages.push('Operations: CONNECTED');
+      risks.push(
+        'No verified settled revenue established'
+      );
     }else{
-      messages.push(
-        'Operations: SAFETY MISMATCH'
+      set('v4-approvals',
+        'SAFETY STATUS MISMATCH');
+      risks.push(
+        'CRITICAL: Execution mode requires review'
       );
     }
   }else{
-    show('v3-approvals','UNAVAILABLE');
-    messages.push(
-      'Operations: '+String(results[0].reason)
+    set('v4-approvals','UNAVAILABLE');
+    risks.push(
+      'Operations evidence unavailable'
     );
   }
 
@@ -429,77 +540,133 @@ async function refresh(){
      Array.isArray(results[1].value.requests)){
 
     const records=results[1].value.requests;
-    const holder=el('v3-customers');
-    holder.replaceChildren();
+    const summary=renderPipeline(records);
 
-    const grid=document.createElement('div');
-    grid.className='grid';
+    diagnostics.push(
+      'Customer API: CONNECTED'
+    );
 
-    for(const record of records){
-      grid.append(customerCard(record));
+    if(summary.duplicates>0){
+      risks.push(
+        'Potential duplicate enquiries: '+
+        summary.duplicates
+      );
     }
 
-    if(records.length){
-      holder.append(grid);
-    }else{
-      holder.textContent='No enquiries returned';
-    }
-
-    messages.push(
-      'Customer records: '+records.length
+    risks.push(
+      'Customer identity and payments not verified'
     );
   }else{
-    show('v3-customers',
+    set('v4-pipeline',
       'Customer records unavailable');
-    messages.push(
-      'Customer API: UNAVAILABLE'
+    risks.push(
+      'Customer API unavailable'
     );
   }
 
   if(results[2].status==='fulfilled'){
     const d=results[2].value;
 
-    if(d.mode==='READ_ONLY' &&
-       d.procurementBlocked===true &&
-       d.payoutsBlocked===true &&
-       d.tradingBlocked===true &&
-       Array.isArray(d.suppliers)){
+    const safeEnvelope=
+      d.mode==='READ_ONLY' &&
+      d.procurementBlocked===true &&
+      d.payoutsBlocked===true &&
+      d.tradingBlocked===true &&
+      Array.isArray(d.suppliers);
 
-      show('v3-suppliers',
-        d.suppliers.length
-          ? d.suppliers.map(
-              supplierSummary
-            ).join('\\n\\n')
-          : 'No supplier diagnostics returned');
+    if(safeEnvelope){
+      let creditTotal=0;
+      let verifiedCount=0;
+      let billingSafe=true;
 
-      messages.push(
-        'Supplier diagnostics: CONNECTED'
+      const lines=[];
+
+      for(const supplier of d.suppliers){
+        lines.push(supplierLines(supplier));
+
+        const balance=numeric(
+          supplier.balanceUsd
+        );
+
+        if(supplier.authenticated===true &&
+           supplier.balanceEvidenceVerified===true &&
+           balance!==null){
+
+          creditTotal+=balance;
+          verifiedCount++;
+        }
+
+        if(supplier.autoChargeDisabledVerified
+           !==true){
+
+          billingSafe=false;
+
+          risks.push(
+            safeText(supplier.supplier)+
+            ': automatic charging not verified disabled'
+          );
+        }
+
+        if(supplier.errorCode){
+          risks.push(
+            safeText(supplier.supplier)+
+            ': '+safeText(supplier.errorCode)
+          );
+        }
+      }
+
+      set('v4-suppliers',
+        lines.join(newline+newline) ||
+        'No supplier results');
+
+      set('v4-credits',
+        verifiedCount===d.suppliers.length &&
+        verifiedCount>0
+          ? '$'+creditTotal.toFixed(2)
+          : 'PARTIAL / UNVERIFIED');
+
+      set('v4-billing',
+        billingSafe && d.suppliers.length>0
+          ? 'API CHECKS PASSED'
+          : 'NOT VERIFIED SAFE');
+
+      diagnostics.push(
+        'Supplier API: CONNECTED'
       );
     }else{
-      show('v3-suppliers',
+      set('v4-suppliers',
         'SAFETY RESPONSE MISMATCH');
-      messages.push(
-        'Supplier diagnostics: REVIEW REQUIRED'
+
+      risks.push(
+        'Supplier safety envelope mismatch'
       );
     }
   }else{
-    show('v3-suppliers','UNAVAILABLE');
-    messages.push(
-      'Supplier diagnostics: UNAVAILABLE'
+    set('v4-suppliers','UNAVAILABLE');
+    risks.push(
+      'Supplier diagnostics unavailable'
     );
   }
 
-  messages.push(
-    'Checked: '+new Date().toISOString()
+  risks.push(
+    'GPU purchasing remains unavailable'
   );
 
-  show('v3-diagnostics',messages.join('\\n'));
+  set('v4-risks',risks.join(newline));
+  set('v4-health',[
+    ...diagnostics,
+    'Execution permission: BLOCKED',
+    'Read-only intelligence: ACTIVE',
+    'Checked: '+new Date().toISOString()
+  ].join(newline));
+
   button.disabled=false;
 }
 
-el('v3-refresh').addEventListener(
+byId('v4-refresh').addEventListener(
   'click',refresh
 );
+
 refresh();
 })();
 </script>
