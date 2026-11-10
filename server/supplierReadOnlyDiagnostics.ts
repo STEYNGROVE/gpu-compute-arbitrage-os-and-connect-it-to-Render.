@@ -1,3 +1,4 @@
+import { planCommercialQuotes } from './commercialQuotePlanner.js';
 import { assessGpuOffer } from './gpuOfferEvidence.js';
 import { matchGpuDemand } from './gpuDemandMatcher.js';
 import {
@@ -378,6 +379,102 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
       } catch {
         return res.status(503).json({
           error: 'DEMAND_MATCHING_UNAVAILABLE',
+          mode: 'READ_ONLY',
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true
+        });
+      }
+    }
+  );
+
+
+  // Owner-only, read-only commercial quotation planning.
+  app.post('/api/owner/commercial-quote-plan',
+    requireOwnerAuth,
+    async (req, res) => {
+      res.setHeader('Cache-Control', 'no-store');
+
+      const b = req.body;
+
+      const validNumber = (
+        value: unknown,
+        min: number,
+        max: number
+      ): value is number =>
+        typeof value === 'number' &&
+        Number.isFinite(value) &&
+        value >= min &&
+        value <= max;
+
+      if (
+        !b ||
+        typeof b !== 'object' ||
+        Array.isArray(b) ||
+        typeof b.gpuModel !== 'string' ||
+        !b.gpuModel.trim() ||
+        b.gpuModel.length > 100 ||
+        !Number.isInteger(b.gpuCount) ||
+        b.gpuCount < 1 ||
+        b.gpuCount > 128 ||
+        !validNumber(b.durationHours, 0.01, 8760) ||
+        !validNumber(
+          b.maxCustomerPricePerGpuHourUsd,
+          0.01,
+          10000
+        ) ||
+        !validNumber(
+          b.additionalCostUsd,
+          0,
+          1000000
+        ) ||
+        !validNumber(b.contingencyPct, 0, 100) ||
+        !validNumber(b.minimumMarginPct, 0, 99)
+      ) {
+        return res.status(400).json({
+          error: 'INVALID_COMMERCIAL_QUOTE_INPUT',
+          purchasingAllowed: false
+        });
+      }
+
+      try {
+        const offers = await fetchComparisonOffers();
+
+        const catalog = compareGpuOffersPerGpu(
+          offers,
+          b.maxCustomerPricePerGpuHourUsd,
+          0
+        );
+
+        const quotes = planCommercialQuotes({
+          requirement: {
+            gpuModel: b.gpuModel,
+            gpuCount: b.gpuCount,
+            durationHours: b.durationHours,
+            maxCustomerPricePerGpuHourUsd:
+              b.maxCustomerPricePerGpuHourUsd
+          },
+          catalog,
+          additionalCostUsd: b.additionalCostUsd,
+          contingencyPct: b.contingencyPct,
+          minimumMarginPct: b.minimumMarginPct
+        });
+
+        return res.json({
+          mode: 'READ_ONLY',
+          pricingStatus: 'CATALOG_ONLY',
+          customerVerified: false,
+          capacityVerified: false,
+          paymentVerified: false,
+          procurementBlocked: true,
+          tradingBlocked: true,
+          payoutsBlocked: true,
+          realizedRevenueUsd: 0,
+          quotes
+        });
+      } catch {
+        return res.status(503).json({
+          error: 'COMMERCIAL_QUOTE_PLANNING_UNAVAILABLE',
           mode: 'READ_ONLY',
           procurementBlocked: true,
           tradingBlocked: true,
