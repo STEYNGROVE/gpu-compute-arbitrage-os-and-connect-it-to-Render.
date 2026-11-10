@@ -671,6 +671,158 @@ refresh();
 })();
 </script>
 
+
+<!-- SPACE_STATION_V5_PROFITABILITY -->
+<section id="v5-profitability">
+<h2>V5 — GPU Commercial Profitability</h2>
+<p>
+Estimate only. Enter independently sourced
+provider rates and proposed customer prices.
+No orders or payments are created.
+</p>
+
+<div class="grid">
+<div class="card">
+<h2>GPU Count</h2>
+<input id="v5-gpus" type="number"
+ min="1" max="10000" step="1" value="1">
+</div>
+
+<div class="card">
+<h2>Hours per GPU</h2>
+<input id="v5-hours" type="number"
+ min="0.01" max="100000"
+ step="0.25" value="24">
+</div>
+
+<div class="card">
+<h2>Provider USD/GPU-hour</h2>
+<input id="v5-cost" type="number"
+ min="0" max="100000"
+ step="0.01" value="1">
+</div>
+
+<div class="card">
+<h2>Customer USD/GPU-hour</h2>
+<input id="v5-price" type="number"
+ min="0" max="100000"
+ step="0.01" value="1.5">
+</div>
+
+<div class="card">
+<h2>Additional Costs USD</h2>
+<input id="v5-extra" type="number"
+ min="0" max="100000000"
+ step="0.01" value="0">
+</div>
+</div>
+
+<button id="v5-calculate" type="button">
+Calculate Estimated Profitability
+</button>
+
+<pre id="v5-results">
+No calculation performed.
+</pre>
+
+<p>
+Estimates exclude unentered taxes, fees,
+currency conversion, failed jobs, refunds,
+idle capacity and unexpected charges.
+</p>
+</section>
+
+<script>
+'use strict';
+(function(){
+const get=id=>document.getElementById(id);
+const output=get('v5-results');
+const nl=String.fromCharCode(10);
+
+function read(id){
+  const input=get(id);
+  if(!input.value.trim()){
+    throw Error('Missing '+id);
+  }
+  const n=Number(input.value);
+  if(!Number.isFinite(n) || n<0){
+    throw Error('Invalid '+id);
+  }
+  const min=Number(input.min);
+  const max=Number(input.max);
+  if(n<min || n>max){
+    throw Error('Out of range: '+id);
+  }
+  return n;
+}
+
+function money(n){
+  return '$'+n.toFixed(2);
+}
+
+get('v5-calculate').addEventListener(
+  'click',()=>{
+    try{
+      const g=read('v5-gpus');
+      const h=read('v5-hours');
+      const c=read('v5-cost');
+      const p=read('v5-price');
+      const e=read('v5-extra');
+
+      if(!Number.isInteger(g)){
+        throw Error('GPU count must be whole');
+      }
+
+      const gpuHours=g*h;
+      const providerCost=gpuHours*c;
+      const totalCost=providerCost+e;
+      const revenue=gpuHours*p;
+      const profit=revenue-totalCost;
+      const margin=revenue>0
+        ? profit/revenue*100:null;
+      const breakEven=totalCost/gpuHours;
+
+      const values=[
+        gpuHours,providerCost,totalCost,
+        revenue,profit,breakEven
+      ];
+
+      if(!values.every(Number.isFinite)){
+        throw Error('Calculation overflow');
+      }
+
+      output.textContent=[
+        'ESTIMATED GPU-HOURS: '+gpuHours,
+        'ESTIMATED PROVIDER COST: '+
+          money(providerCost),
+        'ADDITIONAL COSTS: '+money(e),
+        'ESTIMATED TOTAL COST: '+
+          money(totalCost),
+        'PROPOSED CUSTOMER REVENUE: '+
+          money(revenue),
+        'ESTIMATED GROSS PROFIT: '+
+          money(profit),
+        'ESTIMATED GROSS MARGIN: '+
+          (margin===null
+            ? 'N/A'
+            : margin.toFixed(2)+'%'),
+        'BREAK-EVEN USD/GPU-HOUR: '+
+          money(breakEven),
+        '',
+        'STATUS: ESTIMATE ONLY',
+        'CUSTOMER PAYMENT: NOT VERIFIED',
+        'PROVIDER PRICE: USER SUPPLIED',
+        'GPU PURCHASE: NOT AUTHORIZED'
+      ].join(nl);
+    }catch(error){
+      output.textContent=
+        'Calculation rejected: '+String(error);
+    }
+  }
+);
+})();
+</script>
+
 </body>
 </html>`;
 
