@@ -253,7 +253,7 @@ async function runVersionedMigrations() {
       const storedChecksum = checksum;
       const currentChecksum = source.checksum;
 
-      if (storedChecksum !== checksum) {
+      if (storedChecksum !== currentChecksum) {
         throw new Error(
           `MIGRATION_INTEGRITY_FAILURE: Checksum mismatch ${version}`
         );
