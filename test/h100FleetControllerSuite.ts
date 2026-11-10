@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import { analyzeH100Fleet } from '../server/h100FleetController.js';
+const now = new Date().toISOString();
+const node = (i:number) => ({nodeId:`node-${i}`,gpuCount:8,gpuModel:'NVIDIA H100 SXM5 80GB',state:'active' as const,tenantType:'retail' as const,allocatedGpuSeconds:90,availableGpuSeconds:100,observedAt:now,evidenceId:`telemetry-${i}`});
+const partial = analyzeH100Fleet({nodes:[node(1)]});
+assert.equal(partial.telemetry.utilizationPct,90);
+assert.equal(partial.finance.distributableUsd,null);
+assert.equal(partial.inventory.complete,false);
+assert.equal(partial.controls.payoutsEnabled,false);
+const all = analyzeH100Fleet({nodes:Array.from({length:40},(_,i)=>node(i)),finance:{supplierPaidUsd:100,tenantClearedUsd:200,otherPaidCostsUsd:10,outstandingLiabilitiesUsd:20,clearedFundsVerified:true,supplierInvoicesVerified:true,sourceReference:'test-evidence'}});
+assert.equal(all.finance.insuranceReserveUsd,16);
+assert.equal(all.finance.distributableUsd,54);
+assert.equal(all.finance.reinvestment80Usd,43.2);
+assert.equal(all.finance.distribution20Usd,10.8);
+assert.equal(all.controls.executionEligible,false);
+assert.throws(()=>analyzeH100Fleet({nodes:[node(1),node(1)]}),/DUPLICATE/);
+assert.equal(analyzeH100Fleet({nodes:[{...node(1),allocatedGpuSeconds:50}]}).telemetry.warningPayload?.event,'fleet.utilization.below_floor');
+console.log('H100 fleet controller tests passed');
