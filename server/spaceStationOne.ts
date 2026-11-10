@@ -194,6 +194,225 @@ async function refresh(){
 button.addEventListener('click',refresh);
 refresh();
 </script>
+
+<!-- SPACE_STATION_V2_LIVE_INTELLIGENCE -->
+<section class="live-intelligence">
+<h2>Live Business Intelligence</h2>
+<p>
+Authenticated read-only records.
+Administrative counts are not revenue.
+</p>
+
+<div class="grid">
+<div class="card">
+<h2>Customer Enquiries</h2>
+<strong id="v2-enquiries">UNKNOWN</strong>
+</div>
+
+<div class="card">
+<h2>Pending Approvals</h2>
+<strong id="v2-pending">UNKNOWN</strong>
+</div>
+
+<div class="card">
+<h2>Verified Approvals</h2>
+<strong id="v2-approved">UNKNOWN</strong>
+</div>
+
+<div class="card">
+<h2>Commercial Execution</h2>
+<strong id="v2-execution">UNKNOWN</strong>
+</div>
+</div>
+
+<h2>GPU Supplier Diagnostics</h2>
+<pre id="v2-suppliers">Not checked</pre>
+
+<h2>Evidence Integrity</h2>
+<pre id="v2-evidence">
+Revenue: NOT VERIFIED
+Payments: NOT VERIFIED
+Customer contracts: NOT VERIFIED
+</pre>
+
+<h2>Integration Health</h2>
+<pre id="v2-status">Not checked</pre>
+
+<button id="v2-refresh" type="button">
+Refresh Live Intelligence
+</button>
+</section>
+
+<script>
+'use strict';
+
+(function(){
+const get=id=>document.getElementById(id);
+const put=(id,value)=>{
+  get(id).textContent=String(value);
+};
+
+async function requestJson(path){
+  const controller=new AbortController();
+  const timeout=setTimeout(
+    ()=>controller.abort(),15000
+  );
+  try {
+    const response=await fetch(path,{
+      method:'GET',
+      credentials:'same-origin',
+      cache:'no-store',
+      headers:{Accept:'application/json'},
+      signal:controller.signal
+    });
+
+    if(!response.ok){
+      throw Error('HTTP '+response.status);
+    }
+
+    return await response.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function total(counts){
+  if(!counts ||
+     typeof counts!=='object' ||
+     Array.isArray(counts)){
+    return null;
+  }
+
+  let sum=0;
+  for(const value of Object.values(counts)){
+    if(typeof value!=='number' ||
+       !Number.isSafeInteger(value) ||
+       value<0){
+      return null;
+    }
+    sum+=value;
+  }
+  return sum;
+}
+
+async function refresh(){
+  const button=get('v2-refresh');
+  button.disabled=true;
+
+  put('v2-status','Refreshing...');
+  put('v2-enquiries','UNKNOWN');
+  put('v2-pending','UNKNOWN');
+  put('v2-approved','UNKNOWN');
+  put('v2-execution','UNKNOWN');
+  put('v2-suppliers','Checking...');
+
+  const results=await Promise.allSettled([
+    requestJson('/api/owner/operations-summary'),
+    requestJson('/api/owner/supplier-balances')
+  ]);
+
+  const messages=[];
+
+  if(results[0].status==='fulfilled'){
+    const d=results[0].value;
+
+    if(d.environment==='SIMULATION_ONLY' &&
+       d.executionEnabled===false){
+
+      const enquiries=total(d.quoteRequests);
+      const approvals=d.approvals||{};
+
+      put('v2-enquiries',
+        enquiries===null?'UNKNOWN':enquiries);
+
+      put('v2-pending',
+        approvals.PENDING_VERIFICATION??'UNKNOWN');
+
+      put('v2-approved',
+        approvals.APPROVAL_VERIFIED??'UNKNOWN');
+
+      put('v2-execution','SIMULATION ONLY');
+
+      messages.push('Operations: CONNECTED');
+    }else{
+      messages.push(
+        'Operations: SAFETY STATUS MISMATCH'
+      );
+    }
+  }else{
+    messages.push(
+      'Operations: UNAVAILABLE ('+
+      String(results[0].reason)+')'
+    );
+  }
+
+  if(results[1].status==='fulfilled'){
+    const d=results[1].value;
+
+    if(d.mode==='READ_ONLY' &&
+       d.procurementBlocked===true &&
+       d.payoutsBlocked===true &&
+       d.tradingBlocked===true &&
+       Array.isArray(d.suppliers)){
+
+      const lines=d.suppliers.map(
+        (supplier,index)=>{
+          const name=String(
+            supplier.provider??
+            supplier.supplier??
+            'Supplier '+(index+1)
+          );
+
+          const status=String(
+            supplier.status??
+            supplier.verificationStatus??
+            'UNKNOWN'
+          );
+
+          return name+': '+status;
+        }
+      );
+
+      put('v2-suppliers',
+        lines.join('\\n') ||
+        'No supplier results');
+
+      messages.push(
+        'Supplier diagnostics: CONNECTED'
+      );
+    }else{
+      put('v2-suppliers',
+        'Safety response mismatch; data withheld');
+
+      messages.push(
+        'Supplier diagnostics: REVIEW REQUIRED'
+      );
+    }
+  }else{
+    put('v2-suppliers',
+      'UNAVAILABLE: '+String(results[1].reason));
+
+    messages.push(
+      'Supplier diagnostics: UNAVAILABLE'
+    );
+  }
+
+  put('v2-status',
+    messages.join('\\n')+
+    '\\nChecked: '+new Date().toISOString()
+  );
+
+  button.disabled=false;
+}
+
+get('v2-refresh').addEventListener(
+  'click',refresh
+);
+
+refresh();
+})();
+</script>
+
 </body>
 </html>`;
 
