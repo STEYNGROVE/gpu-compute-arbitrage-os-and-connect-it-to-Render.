@@ -1,0 +1,39 @@
+waiting for server to start.... done
+server started
+=== VERIFY ISOLATED POSTGRESQL ===
+=== RESTORE BACKUP ===
+PASS: Eight migrations restored
+=== ACTUAL FINANCIAL CONSTRAINT TESTS ===
+BEGIN
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+NOTICE:  PASS 1: t_payment.status rejected by payment_intents_status_check
+NOTICE:  PASS 2: t_payment.amount_minor rejected by payment_intents_amount_minor_check
+NOTICE:  PASS 3: t_reservation.status rejected by chk_res_status
+NOTICE:  PASS 4: t_reservation.amount rejected by capital_reservations_amount_check
+NOTICE:  PASS 5: t_ledger.direction rejected by chk_valid_direction
+NOTICE:  PASS 6: t_ledger.quantity rejected by chk_positive_quantity
+NOTICE:  PASS 7: t_ledger.precision rejected by chk_valid_precision
+NOTICE:  PASS 8: t_funding.status rejected by provider_funding_events_status_check
+NOTICE:  PASS 9: t_funding.amount rejected by provider_funding_events_amount_check
+NOTICE:  PASS 10: t_profit.net_profit_minor rejected by withdrawable_profits_net_profit_minor_check
+NOTICE:  PASS 11: t_profit.status rejected by withdrawable_profits_status_check
+NOTICE:  PASS: All 11 financial constraint tests
+DO
+ROLLBACK
+======================================
+PHASE 9.30B: 11 TESTS PASSED
+======================================
+Original constraint definitions tested
+All test transactions rolled back
+No production changes
+waiting for server to shut down.... done
+server stopped

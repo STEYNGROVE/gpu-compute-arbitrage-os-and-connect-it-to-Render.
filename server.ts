@@ -3,6 +3,7 @@ import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './serve
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
 import { registerSupplierDiagnostics } from './server/supplierReadOnlyDiagnostics.js';
 import { registerGpuHunterX } from './server/gpuHunterX.js';
+import { registerGpuArbitrageDiscovery } from './server/gpuArbitrageDiscovery.js';
 import { registerBuyerEvidenceImport } from './server/buyerEvidenceImport.js';
 import './server/bootstrap.js';
 import { verifyBinancePayOrder } from './server/binancePayReadOnly.js';
@@ -188,6 +189,8 @@ registerOwnerCommandCentre(app, requireOwnerAuth);
 registerOwnerSalesWorkspace(app, requireOwnerAuth);
 registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
+
+registerGpuArbitrageDiscovery(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
