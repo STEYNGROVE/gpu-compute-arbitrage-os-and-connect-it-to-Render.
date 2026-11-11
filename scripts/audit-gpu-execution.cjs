@@ -56,6 +56,10 @@ if (process.env.RUN_GPU_POSTGRES_AUDIT === 'YES') {
     if (process.env.RENDER || process.env.NODE_ENV === 'production')
       throw Error('DEPLOYMENT_ENVIRONMENT_REFUSED');
 
+    if (process.env.DATABASE_URL &&
+        url === process.env.DATABASE_URL)
+      throw Error('REFUSE_PRODUCTION_DATABASE_URL');
+
     const env = { ...process.env };
     delete env.DATABASE_URL;
     delete env.RENDER;
