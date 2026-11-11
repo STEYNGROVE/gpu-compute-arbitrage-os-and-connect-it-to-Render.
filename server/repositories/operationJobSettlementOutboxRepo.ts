@@ -252,6 +252,14 @@ export class ComputeJobRepository extends BasePostgresRepository {
     return res.rows;
   }
 
+  /** One read snapshot includes terminal matches, so stale memory jobs cannot remain active. */
+  public async listExposureJobs(memoryJobIds: string[]): Promise<Array<Pick<ComputeJob, 'jobId' | 'gpuCount' | 'actualCost' | 'status'>>> {
+    const result = await this.query(`SELECT job_id AS "jobId", gpu_count AS "gpuCount",
+      actual_cost::float AS "actualCost", status FROM compute_jobs
+      WHERE status IN ('PROVISIONING', 'RUNNING') OR job_id = ANY($1::text[])`, [memoryJobIds]);
+    return result.rows;
+  }
+
   public async findActiveJobs(): Promise<ComputeJob[]> {
     return this.listRunningJobs();
   }

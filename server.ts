@@ -2053,7 +2053,7 @@ app.get('/api/command-center/summary', async (_req, res) => {
       ? [...validPrices].sort((a, b) => a.hourlyPrice - b.hourlyPrice)[0]
       : null;
 
-    const jobSummary = await commandCenterJobSummary(db.getActiveJobs(), pgDbService.isLiveDatabaseConnected(), () => computeJobRepo.findActiveJobs());
+    const jobSummary = await commandCenterJobSummary(db.getActiveJobs(), pgDbService.isLiveDatabaseConnected(), ids => computeJobRepo.listExposureJobs(ids));
     const activeJobs = jobSummary.activeJobs;
     const totalRev = Number(revenueSummary.verifiedCashTotal || 0);
 

@@ -1,3 +1,4 @@
+import { ComputeJobRepository } from '../server/repositories/operationJobSettlementOutboxRepo.js';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import type { Pool } from 'pg';
@@ -29,6 +30,17 @@ export async function verifyCommercialEvidenceSchema(pool: Pool) {
     await client.query("UPDATE commercial_quote_evidence SET state='VOID'");
     await client.query('ROLLBACK');
     assert.equal((await client.query('SELECT state FROM commercial_quote_evidence')).rows[0].state, 'DRAFT');
+    await client.query('CREATE TABLE compute_jobs (job_id varchar(64) PRIMARY KEY, gpu_count integer NOT NULL, actual_cost numeric, status text NOT NULL)');
+    await client.query(`INSERT INTO compute_jobs VALUES ('active',2,NULL,'RUNNING'), ('stale',8,50,'COMPLETED'), ('unrelated-terminal',1,1,'COMPLETED')`);
+    class ExposureRepository extends ComputeJobRepository {
+      protected async query<T = any>(sql: string, params: any[] = []): Promise<any> { return pool.query(sql, params); }
+    }
+    const exposure = new ExposureRepository();
+    const rows = await exposure.listExposureJobs(['stale', 'memory-only']);
+    assert.deepEqual(rows.map(row=>row.jobId).sort(), ['active','stale']);
+    assert.equal(rows.find(row=>row.jobId==='stale')!.status,'COMPLETED');
+    assert.equal((await exposure.listExposureJobs(["missing'); DROP TABLE compute_jobs; --"])).length,1);
+    console.log('PASS: real PostgreSQL exposure query includes active and terminal matches without unrelated terminal jobs');
     console.log('PASS: isolated commercial evidence migration/replay, unverified defaults, state/cost/unique/FK constraints and rollback');
   } finally { client.release(); }
 }

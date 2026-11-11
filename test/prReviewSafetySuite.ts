@@ -9,7 +9,18 @@ const {rateLimit}=await import('../server/rateLimit.js');
 const {requireOwnerAuth,createBrowserSession,revokeBrowserSession}=await import('../server/auth.js');
 const summary=await commandCenterJobSummary([{id:'same',gpuCount:1,currentAccruedCost:100,status:'RUNNING'}],true,async()=>[
  {jobId:'same',gpuCount:2,actualCost:3,status:'RUNNING'}, {jobId:'pg-only',gpuCount:4,actualCost:7,status:'PROVISIONING'}]);
-assert.equal(summary.count,2);assert.equal(summary.gpuCount,6);assert.equal(summary.estimatedAccruedCost,10);
+assert.equal(summary.count,2);assert.equal(summary.gpuCount,6);assert.equal(summary.estimatedAccruedCost,107);
+const reconciled=await commandCenterJobSummary([
+ {id:'stale',gpuCount:8,currentAccruedCost:50,status:'RUNNING'},
+ {id:'memory-only',gpuCount:1,currentAccruedCost:2,status:'RUNNING'},
+ {id:'estimate',gpuCount:2,currentAccruedCost:100,status:'RUNNING'}
+],true,async ids=>{
+ assert(ids.includes('stale'));
+ return [{jobId:'stale',gpuCount:8,status:'COMPLETED'}, {jobId:'estimate',gpuCount:2,status:'RUNNING'}];
+});
+assert.equal(reconciled.count,2);assert.equal(reconciled.gpuCount,3);assert.equal(reconciled.estimatedAccruedCost,102);
+const unknown=await commandCenterJobSummary([],true,async()=>[{jobId:'missing-estimate',gpuCount:1,status:'RUNNING'}]);
+assert.equal(unknown.estimatedAccruedCost,null,'Missing telemetry is not zero cost');
 assert.equal(summary.invoicedCostUsd,null);assert.equal(summary.realizedProfitUsd,null);
 assert.equal((await commandCenterJobSummary([],false,async()=>{throw Error('not called');})).count,null);
 await assert.rejects(commandCenterJobSummary([],true,async()=>{throw Error('unavailable');}));
