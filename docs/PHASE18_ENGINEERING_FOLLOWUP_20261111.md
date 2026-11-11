@@ -35,6 +35,8 @@ The local verification completed on this follow-up:
 
 The full offline workflow checks customer discovery and lead qualification, quote/commercial evidence, read-only supplier diagnostics, owner authentication, financial simulation lockdown, database isolation and production build. No live discovery, supplier transaction, payment, withdrawal, production migration or deployment was part of these checks.
 
+The first hosted PR run exposed that GitHub supplies `GITHUB_SHA`, so the missing-revision test had accidentally exercised the valid workflow fallback. The regression now clears and restores both revision environment variables for its missing-input case and separately asserts that the workflow SHA fallback rejects stale readiness. The complete suite passed locally again with `GITHUB_SHA` set to mimic CI; hosted checks are being rerun on the updated PR head.
+
 ## Render status (read-only inspection)
 
 The primary Render service remains on `security/phase18-staging-verification`; its live commit is `2482877c3a2221a7eabc5c8da42db67c440268ca`. A separate `gpu-arbitrage-simulation-staging` service is configured on `main` and is live at PR #42 merge `388339d59733f026d46d22fdf5bcb75c90ae9c5f`. Both settings were read only; this follow-up branch was not deployed and no Render configuration was changed. The existing main-linked staging auto-deploy behavior may deploy a later main merge; no deploy was triggered from this branch.
