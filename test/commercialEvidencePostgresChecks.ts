@@ -39,6 +39,10 @@ export async function verifyCommercialEvidenceSchema(pool: Pool) {
     const rows = await exposure.listExposureJobs(['stale', 'memory-only']);
     assert.deepEqual(rows.map(row=>row.jobId).sort(), ['active','stale']);
     assert.equal(rows.find(row=>row.jobId==='stale')!.status,'COMPLETED');
+    assert.equal(rows.find(row=>row.jobId==='stale')!.gpuCount,8);
+    assert.equal(rows.find(row=>row.jobId==='stale')!.actualCost,50);
+    assert.equal(rows.find(row=>row.jobId==='active')!.gpuCount,2);
+    assert.equal(rows.find(row=>row.jobId==='active')!.actualCost,null);
     assert.equal((await exposure.listExposureJobs(["missing'); DROP TABLE compute_jobs; --"])).length,1);
     console.log('PASS: real PostgreSQL exposure query includes active and terminal matches without unrelated terminal jobs');
     console.log('PASS: isolated commercial evidence migration/replay, unverified defaults, state/cost/unique/FK constraints and rollback');

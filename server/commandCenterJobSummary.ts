@@ -16,7 +16,7 @@ export async function commandCenterJobSummary(memory: Job[], connected: boolean,
     gpuCount: authoritative ? active.reduce((n, job) => n + (job.gpuCount || 0), 0) : null,
     status: authoritative ? (active.length ? 'RUNNING' : 'STANDBY') : 'UNKNOWN',
     source: authoritative ? 'POSTGRES_AND_MEMORY' : 'MEMORY_ONLY_UNVERIFIED',
-    estimatedAccruedCost: active.every(job => Number.isFinite(job.currentAccruedCost) && job.currentAccruedCost! >= 0)
+    estimatedAccruedCost: authoritative && active.every(job => Number.isFinite(job.currentAccruedCost) && job.currentAccruedCost! >= 0)
       ? active.reduce((n, job) => n + job.currentAccruedCost!, 0) : null,
     invoicedCostUsd: null,
     realizedProfitUsd: null

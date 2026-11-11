@@ -22,3 +22,5 @@ Validation includes malformed health responses, adversarial pod identifiers, Pos
 
 
 Follow-up reconciliation review: the exposure query now reads active PostgreSQL jobs and all memory-matched job states in one snapshot, including terminal matches. Terminal PostgreSQL state removes stale memory jobs from the active count, while unmatched memory-only jobs remain visible. Memory telemetry estimates are preserved over PostgreSQL completion-cost fields; any missing active estimate makes the aggregate unavailable rather than zero. Added regressions for terminal overrides, preserved telemetry, missing estimates and legitimate memory-only jobs.
+
+Final estimate review: disconnected PostgreSQL now makes the accrued aggregate unavailable even when memory is empty; a regression asserts both unknown count and unknown estimate. The real PostgreSQL exposure test also checks GPU counts, numeric cost and null cost aliases.
