@@ -436,7 +436,7 @@ export class RunpodProvider extends BaseProvider {
       const res = await this.safeFetch('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ query: 'query { myself { id email clientBalance } }' })
+        body: JSON.stringify({ query: 'query { myself { id clientBalance } }' })
       });
       if (!res.ok) {
         return {
@@ -450,7 +450,19 @@ export class RunpodProvider extends BaseProvider {
         };
       }
       const json = await res.json();
-      const rawBalance = json.data?.myself?.clientBalance;
+      const identity = json?.data?.myself?.id;
+      const validIdentity =
+        (typeof identity === 'string' && identity.trim().length > 0) ||
+        (typeof identity === 'number' && Number.isFinite(identity));
+
+      if (
+        !validIdentity ||
+        (Array.isArray(json?.errors) && json.errors.length > 0)
+      ) {
+        throw new Error('BILLING_IDENTITY_OR_GRAPHQL_UNVERIFIED');
+      }
+
+      const rawBalance = json.data.myself.clientBalance;
       const bal = typeof rawBalance === 'number' &&
         Number.isFinite(rawBalance) &&
         rawBalance >= 0 &&
@@ -463,8 +475,12 @@ export class RunpodProvider extends BaseProvider {
         currentUnbilledChargesUsd: null,
         currency: 'USD',
         billingMechanism: 'PREPAID_CREDIT',
-        invoiceCount: 1,
-        rawBillingInfo: json.data?.myself
+        invoiceCount: 0,
+        rawBillingInfo: {
+          balanceVerifiedFromProviderResponse: bal !== null,
+          invoiceCountVerified: false,
+          procurementAuthorized: false
+        }
       };
     } catch {
       return {
