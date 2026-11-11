@@ -1,3 +1,4 @@
+import { registerH100FleetController } from './server/h100FleetController.js';
 import { rateLimit } from './server/rateLimit.js';
 import { liveOperationsAllowed } from './server/simulationSafety.js';
 import { financialLockdown } from './server/financialLockdown.js';
@@ -175,6 +176,7 @@ registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
 
 registerGpuArbitrageDiscovery(app, requireOwnerAuth);
+registerH100FleetController(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
