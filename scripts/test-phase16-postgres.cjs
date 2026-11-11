@@ -1,5 +1,6 @@
 /** Creates and stops only its own disposable local PostgreSQL cluster. Never uses DATABASE_URL. */
-const { mkdtempSync } = require('node:fs');
+const { mkdtempSync, writeFileSync, unlinkSync } = require('node:fs');
+const { randomBytes } = require('node:crypto');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
 const { spawnSync } = require('node:child_process');
@@ -16,20 +17,44 @@ async function main() {
   await new Promise(resolve => listener.close(resolve));
   const root = mkdtempSync(join(tmpdir(), 'phase16-pg-'));
   const cluster = join(root, 'data');
-  let started = false;
+  const password = randomBytes(32).toString('hex');
+  const passwordFile = join(root, 'password');
+  writeFileSync(passwordFile, password, {mode: 0o600});
+  let startupAttempted = false;
+  let failed = false;
   try {
-    run('initdb', ['-D', cluster, '-U', 'phase16_testowner', '--auth=trust', '--no-locale']);
+    run('initdb', ['-D', cluster, '-U', 'phase16_testowner', '--auth-local=trust', '--auth-host=scram-sha-256', '--pwfile', passwordFile, '--no-locale']);
+    unlinkSync(passwordFile);
+    startupAttempted = true;
     // If the selected port is taken in the meantime, startup fails; never use its occupant.
     run('pg_ctl', ['-D', cluster, '-l', join(root, 'postgres.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}`, '-w', 'start']);
-    started = true;
     run('createdb', ['-h', root, '-p', String(port), '-U', 'phase16_testowner', 'phase16_test']);
     const env = { ...process.env, NODE_ENV: 'test', DISABLE_JSON_PERSISTENCE: 'true',
-      TEST_DATABASE_URL: `postgresql://phase16_testowner@127.0.0.1:${port}/phase16_test`, ALLOW_ISOLATED_GPU_DB_TEST: 'YES' };
+      TEST_DATABASE_URL: `postgresql://phase16_testowner:${password}@127.0.0.1:${port}/phase16_test`, ALLOW_ISOLATED_GPU_DB_TEST: 'YES' };
     delete env.DATABASE_URL;
+    run(process.execPath, ['-e', `
+      const assert = require('node:assert/strict');
+      const { Client } = require('pg');
+      const target = new URL(process.env.TEST_DATABASE_URL);
+      target.password = 'deliberately-incorrect';
+      const client = new Client({connectionString:target.toString(),connectionTimeoutMillis:5000});
+      (async()=>{try {await assert.rejects(client.connect(), e=>e.code==='28P01');
+        console.log('PASS: disposable PostgreSQL rejects incorrect TCP password');
+      } finally {await client.end();}})().catch(e=>{console.error(e.message);process.exitCode=1;});
+    `], env);
     run(process.execPath, ['--import', 'tsx', 'test/prepaidPostgresIntegrationSuite.ts'], env);
     console.log('PASS: disposable local reservation certification; broader financial-system certification remains blocked');
+  } catch (error) {
+    failed = true;
+    throw error;
   } finally {
-    if (started) run('pg_ctl', ['-D', cluster, '-m', 'fast', '-w', 'stop']);
+    if (startupAttempted) {
+      try { run('pg_ctl', ['-D', cluster, '-m', 'fast', '-w', 'stop']); }
+      catch (error) {
+        if (!failed) throw error;
+        console.error('Cleanup also failed:', error.message);
+      }
+    }
     console.log(`Local test artifacts retained at ${root}`);
   }
 }

@@ -1,11 +1,15 @@
-import type { RequestHandler } from 'express';
+import type { Request, RequestHandler } from 'express';
 
 /** Use Express's peer address policy; never trust a caller-supplied forwarding header. */
-export function rateLimit(limit = 120, windowMs = 60_000, maxKeys = 10_000, clock = Date.now): RequestHandler {
-  const buckets = new Map<string, { count: number; resetAt: number }>();
+export function rateLimit(limit = 120, windowMs = 60_000, maxKeys = 10_000, clock = Date.now, verifiedIdentity?: (req: Request) => string | null): RequestHandler {
+  const anonymous = new Map<string, { count: number; resetAt: number }>();
+  const authenticated = new Map<string, { count: number; resetAt: number }>();
   return (req, res, next) => {
     const now = clock();
-    const key = req.ip || req.socket.remoteAddress || 'global';
+    const peer = req.ip || req.socket.remoteAddress || 'global';
+    const identity = verifiedIdentity?.(req);
+    const key = identity ? `authenticated:${identity}:${peer}` : `anonymous:${peer}`;
+    const buckets = identity ? authenticated : anonymous;
     for (const [address, bucket] of buckets) {
       if (now >= bucket.resetAt) buckets.delete(address);
     }

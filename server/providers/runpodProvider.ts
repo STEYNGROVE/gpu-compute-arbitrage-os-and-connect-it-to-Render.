@@ -108,7 +108,8 @@ export class RunpodProvider extends BaseProvider {
 
       const body = await res.json();
       const me = body.data?.myself;
-      const authenticated = !body.errors?.length && typeof me?.id === 'string' && me.id.length > 0;
+      const authenticated = !(body.errors && (!Array.isArray(body.errors) || body.errors.length > 0)) &&
+        typeof me?.id === 'string' && me.id.trim().length > 0;
 
       return {
         providerId: this.id,

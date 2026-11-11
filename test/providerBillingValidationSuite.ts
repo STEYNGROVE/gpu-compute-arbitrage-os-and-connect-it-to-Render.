@@ -107,6 +107,7 @@ try {
     globalThis.fetch = (async () => ({ok:true,json:async()=>payload} as Response)) as typeof fetch;
     const billing = await providers[0].instance.getBilling();
     assert.equal(billing.accountBalanceUsd, null);
+    assert.equal((await providers[0].instance.healthCheck()).authenticated, false);
     cases++;
   }
   // Preserve injected transport, escaped instance IDs and disabled workload submission.
@@ -120,6 +121,15 @@ try {
   assert.equal((await readOnly.getBilling()).accountBalanceUsd, 0);
   assert.equal((await readOnly.submitWorkload('fixture', {workloadId:'fixture'} as any)).success, false);
   assert.equal(requests, 1);
+  const podId = 'pod" }) { injected } #';
+  let capturedQuery = '';
+  const statusReader = new RunpodProvider({apiKey:()=> 'synthetic-only',request:async(_url, options)=>{
+    capturedQuery = JSON.parse(String(options.body)).query;
+    return Response.json({data:{pod:{id:podId,desiredStatus:'RUNNING',actualStatus:'RUNNING'}}});
+  }});
+  await statusReader.getInstanceStatus(podId);
+  assert.ok(capturedQuery.includes(`podId: ${JSON.stringify(podId)}`));
+
   console.log(`PASS: ${cases} direct billing cases plus injected transport/read-only submission; no live requests`);
 } finally {
   globalThis.fetch = originalFetch;

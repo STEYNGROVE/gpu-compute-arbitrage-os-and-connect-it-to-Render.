@@ -1,3 +1,5 @@
+import { commandCenterJobSummary } from './server/commandCenterJobSummary.js';
+import { verifiedOwnerRateIdentity } from './server/ownerRateIdentity.js';
 import { registerSpaceStationOne } from './server/spaceStationOne.js';
 import { registerCommercialEvidence } from './server/commercialEvidence.js';
 import { registerH100FleetController } from './server/h100FleetController.js';
@@ -165,7 +167,7 @@ class MutexLock {
 const financialMutex = new MutexLock();
 
 // --- Production Rate Limiter Middleware ---
-app.use(rateLimit(200, 60000));
+app.use(rateLimit(200, 60000, 10000, undefined, verifiedOwnerRateIdentity));
 
 // Phase 2/3: Public enquiry intake only. No execution, no payments.
 app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
@@ -2051,13 +2053,9 @@ app.get('/api/command-center/summary', async (_req, res) => {
       ? [...validPrices].sort((a, b) => a.hourlyPrice - b.hourlyPrice)[0]
       : null;
 
-    // Active compute jobs from memory db
-    const activeJobs = db.getActiveJobs().filter(j => j.status === 'RUNNING' || j.status === 'PROVISIONING');
-
-    // Calculate aggregated revenue & costs
+    const jobSummary = await commandCenterJobSummary(db.getActiveJobs(), pgDbService.isLiveDatabaseConnected(), () => computeJobRepo.findActiveJobs());
+    const activeJobs = jobSummary.activeJobs;
     const totalRev = Number(revenueSummary.verifiedCashTotal || 0);
-    const totalCost = activeJobs.reduce((acc: number, j: any) => acc + (j.currentAccruedCost || 0), 0);
-    const netProfit = Number((totalRev - totalCost).toFixed(2));
 
     res.json({
       status: 'ok',
@@ -2095,10 +2093,10 @@ app.get('/api/command-center/summary', async (_req, res) => {
           timestamp: nowIso
         },
         activeJobs: {
-          count: activeJobs.length,
-          provisionedGpus: activeJobs.length,
-          status: activeJobs.length > 0 ? 'RUNNING' : 'STANDBY',
-          source: 'EXECUTION_ENGINE',
+          count: jobSummary.count,
+          provisionedGpus: jobSummary.gpuCount,
+          status: jobSummary.status,
+          source: jobSummary.source,
           timestamp: nowIso
         },
         gpuUtilization: {
@@ -2116,17 +2114,18 @@ app.get('/api/command-center/summary', async (_req, res) => {
           timestamp: nowIso
         },
         computeCost: {
-          value: Number(totalCost.toFixed(2)),
+          value: jobSummary.invoicedCostUsd,
+          estimatedAccruedUsd: jobSummary.estimatedAccruedCost,
           currency: 'USD',
-          status: 'VERIFIED_INVOICED',
-          source: 'HARDWARE_PROVIDER_INVOICES',
+          status: 'INVOICE_EVIDENCE_UNAVAILABLE',
+          source: jobSummary.source,
           timestamp: nowIso
         },
         netProfit: {
-          value: netProfit,
+          value: jobSummary.realizedProfitUsd,
           currency: 'USD',
-          status: 'REALIZED_SETTLED',
-          source: 'TRUE_PROFIT_FORMULA',
+          status: 'SETTLEMENT_EVIDENCE_UNAVAILABLE',
+          source: 'NOT_INDEPENDENTLY_RECONCILED',
           timestamp: nowIso
         },
         settledCash: {
@@ -3194,7 +3193,8 @@ app.get('/api/database/status', async (req, res) => {
 // Login Endpoint: Authenticates OWNER or CUSTOMER credentials and sets secure cookie
 app.post('/api/auth/login', async (req, res) => {
   const { role = 'OWNER', secretOrKey, customerId } = req.body;
-  const ip = req.ip || req.socket.remoteAddress;
+  const peer = req.ip || req.socket.remoteAddress;
+  const ip = verifiedOwnerRateIdentity(req) ? `verified-owner:${peer}` : peer;
 
   const authResult = await authenticateAndCreateSession({
     role: role.toUpperCase() as 'OWNER' | 'CUSTOMER',
