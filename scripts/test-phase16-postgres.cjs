@@ -1,0 +1,36 @@
+/** Creates and stops only its own disposable local PostgreSQL cluster. Never uses DATABASE_URL. */
+const { mkdtempSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join } = require('node:path');
+const { spawnSync } = require('node:child_process');
+const net = require('node:net');
+const run = (command, args, env = process.env) => {
+  const result = spawnSync(command, args, { stdio: 'inherit', env });
+  if (result.error || result.status !== 0) throw Error(`${command} failed: ${result.error?.message || result.status}`);
+};
+async function main() {
+  if (process.env.RENDER || process.env.NODE_ENV === 'production') throw Error('DEPLOYMENT_ENVIRONMENT_FORBIDDEN');
+  const listener = net.createServer();
+  await new Promise((resolve, reject) => { listener.once('error', reject); listener.listen(0, '127.0.0.1', resolve); });
+  const port = listener.address().port;
+  await new Promise(resolve => listener.close(resolve));
+  const root = mkdtempSync(join(tmpdir(), 'phase16-pg-'));
+  const cluster = join(root, 'data');
+  let started = false;
+  try {
+    run('initdb', ['-D', cluster, '-U', 'phase16_testowner', '--auth=trust', '--no-locale']);
+    // If the selected port is taken in the meantime, startup fails; never use its occupant.
+    run('pg_ctl', ['-D', cluster, '-l', join(root, 'postgres.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}`, '-w', 'start']);
+    started = true;
+    run('createdb', ['-h', root, '-p', String(port), '-U', 'phase16_testowner', 'phase16_test']);
+    const env = { ...process.env, NODE_ENV: 'test', DISABLE_JSON_PERSISTENCE: 'true',
+      TEST_DATABASE_URL: `postgresql://phase16_testowner@127.0.0.1:${port}/phase16_test`, ALLOW_ISOLATED_GPU_DB_TEST: 'YES' };
+    delete env.DATABASE_URL;
+    run(process.execPath, ['--import', 'tsx', 'test/prepaidPostgresIntegrationSuite.ts'], env);
+    console.log('PASS: disposable local reservation certification; broader financial-system certification remains blocked');
+  } finally {
+    if (started) run('pg_ctl', ['-D', cluster, '-m', 'fast', '-w', 'stop']);
+    console.log(`Local test artifacts retained at ${root}`);
+  }
+}
+main().catch(error => { console.error(error); process.exitCode = 1; });

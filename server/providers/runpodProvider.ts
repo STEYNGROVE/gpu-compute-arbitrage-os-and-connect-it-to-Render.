@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { BaseProvider } from './baseProvider.js';
 import {
   GpuModelInfo,
@@ -20,17 +19,26 @@ import {
   ProviderHealthResult
 } from './types.js';
 
+/** Inject read-only transport and credentials for deterministic offline contract tests. */
+export type RunpodReadDependencies = {
+  apiKey?: () => string;
+  request?: (url: string, options: RequestInit) => Promise<Response>;
+};
+
 export class RunpodProvider extends BaseProvider {
-  private hash(data: string): string {
-    return crypto.createHash('sha256').update(data).digest('hex');
+  constructor(private readonly dependencies: RunpodReadDependencies = {}) { super(); }
+
+  private readRequest(url: string, options: RequestInit): Promise<Response> {
+    return this.dependencies.request ? this.dependencies.request(url, options) : this.safeFetch(url, options);
   }
+
   readonly id = 'runpod';
   readonly name = 'RunPod';
   readonly website = 'https://runpod.io';
   readonly tier = 'NEOCLOUD' as const;
 
   private get apiKey(): string {
-    return (process.env.RUNPOD_API_KEY || '').trim();
+    return (this.dependencies.apiKey ? this.dependencies.apiKey() : process.env.RUNPOD_API_KEY || '').trim();
   }
 
   async healthCheck(): Promise<ProviderHealthResult> {
@@ -64,7 +72,7 @@ export class RunpodProvider extends BaseProvider {
     }
 
     try {
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
+      const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +108,7 @@ export class RunpodProvider extends BaseProvider {
 
       const body = await res.json();
       const me = body.data?.myself;
-      const authenticated = Boolean(me && me.id);
+      const authenticated = !body.errors?.length && typeof me?.id === 'string' && me.id.length > 0;
 
       return {
         providerId: this.id,
@@ -110,9 +118,9 @@ export class RunpodProvider extends BaseProvider {
         authenticated,
         latencyMs: latency,
         endpoints: {
-          authentication: true,
-          pricing: true,
-          inventory: true,
+          authentication: authenticated,
+          pricing: false,
+          inventory: false,
           provisioning: false,
           instanceControl: false,
           telemetry: false,
@@ -151,7 +159,7 @@ export class RunpodProvider extends BaseProvider {
   async discoverGPUs(): Promise<GpuModelInfo[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
+      const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
         body: JSON.stringify({
@@ -178,7 +186,7 @@ export class RunpodProvider extends BaseProvider {
   async getLivePricing(): Promise<ProviderPriceRecord[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
+      const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
         body: JSON.stringify({
@@ -302,8 +310,8 @@ export class RunpodProvider extends BaseProvider {
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
     if (!this.apiKey) throw new Error('RUNPOD_API_KEY not configured');
     try {
-      const query = `query { pod(input: { podId: "${instanceId}" }) { id desiredStatus actualStatus runtime { uptimeInSeconds ports { ip isIpPublic privatePort publicPort } } costPerHr } }`;
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
+      const query = `query { pod(input: { podId: ${JSON.stringify(instanceId)} }) { id desiredStatus actualStatus runtime { uptimeInSeconds ports { ip isIpPublic privatePort publicPort } } costPerHr } }`;
+      const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
         body: JSON.stringify({ query })
@@ -376,35 +384,8 @@ export class RunpodProvider extends BaseProvider {
     };
   }
 
-  async submitWorkload(instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult> {
-    if (!this.apiKey) {
-      return this.createUnavailableWorkload(workload.workloadId, 'RUNPOD_API_KEY not configured');
-    }
-    const status = await this.getInstanceStatus(instanceId);
-    if (status.status !== 'RUNNING' && status.status !== 'PROVISIONING') {
-      return {
-        success: false,
-        workloadId: workload.workloadId,
-        providerId: this.id,
-        instanceId,
-        status: 'FAILED',
-        submittedAtIso: new Date().toISOString(),
-        error: `Pod ${instanceId} is not active (status: ${status.status})`
-      };
-    }
-
-    const submissionPayload = `${instanceId}:${workload.workloadId}:${workload.command.join(' ')}`;
-    const submissionHash = this.hash(submissionPayload);
-
-    return {
-      success: true,
-      workloadId: workload.workloadId,
-      providerId: this.id,
-      instanceId,
-      status: 'SUBMITTED',
-      submissionHash,
-      submittedAtIso: new Date().toISOString()
-    };
+  async submitWorkload(_instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult> {
+    return this.createUnavailableWorkload(workload.workloadId, 'READ_ONLY: workload submission disabled');
   }
 
   async retrieveOutput(_instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
@@ -433,7 +414,7 @@ export class RunpodProvider extends BaseProvider {
       };
     }
     try {
-      const res = await this.safeFetch('https://api.runpod.io/graphql', {
+      const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
         body: JSON.stringify({ query: 'query { myself { id email clientBalance } }' })
@@ -450,7 +431,12 @@ export class RunpodProvider extends BaseProvider {
         };
       }
       const json = await res.json();
-      const bal = Number(json.data?.myself?.clientBalance || 0);
+      const me = json.data?.myself;
+      const bal = me?.clientBalance;
+      if (json.errors?.length || typeof me?.id !== 'string' || !me.id ||
+          typeof bal !== 'number' || !Number.isFinite(bal) || bal < 0) {
+        throw new Error('BALANCE_SCHEMA_UNVERIFIED');
+      }
       return {
         providerId: this.id,
         accountBalanceUsd: bal,
@@ -458,7 +444,7 @@ export class RunpodProvider extends BaseProvider {
         currentUnbilledChargesUsd: null,
         currency: 'USD',
         billingMechanism: 'PREPAID_CREDIT',
-        invoiceCount: 1,
+        invoiceCount: 0,
         rawBillingInfo: json.data?.myself
       };
     } catch {

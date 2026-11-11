@@ -1,24 +1,20 @@
 /**
  * BUILD 57 — FINAL CRITICAL FIX TEST SUITE
  * 
- * Tests and certifies:
+ * Offline regressions only; fixtures do not certify live integrations.
+ * Tests:
  * 1. Rejection of fake funding references & UNAVAILABLE status when no genuine funding API exists
  * 2. Rejection of generated outputs, missing output, and non-zero exit codes
  * 3. Rejection of synthetic invoice IDs and estimated-cost fallbacks
  * 4. Rejection of missing/fabricated timestamps and stale prices (>30m) in routing
  * 5. Rejection of unverified GPU specifications and unavailable capacity
  * 6. Disqualification of providers without executable adapters
- * 7. Outbox execution lifecycle integration with WorkloadRunner
- * 8. End-to-end verified transaction lifecycle through Jake Grove CFO reconciliation
+ * 7. Offline RunPod identity, balance and unsupported evidence contracts
+ * 8. In-memory fixture lifecycle through Jake Grove CFO reconciliation
  * 9. Reality invariant: "PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN" display
  */
 
 import crypto from 'crypto';
-import { jakeGroveCfoService } from '../server/jakeGroveCfoService.js';
-import { realProviderFundingManager } from '../server/providerFundingAdapters.js';
-import { gpuPriceRouter } from '../server/gpuPriceRouter.js';
-import { workloadRunner } from '../server/workload/workloadRunner.js';
-import { providerRegistry } from '../server/providers/providerRegistry.js';
 
 let passed = 0;
 let total = 0;
@@ -35,6 +31,11 @@ function assert(condition: boolean, message: string) {
 }
 
 async function runBuild57Suite() {
+  // Import after credential isolation: funding adapters capture environment in constructors.
+  const { jakeGroveCfoService } = await import('../server/jakeGroveCfoService.js');
+  const { realProviderFundingManager } = await import('../server/providerFundingAdapters.js');
+  const { gpuPriceRouter } = await import('../server/gpuPriceRouter.js');
+  const { RunpodProvider } = await import('../server/providers/runpodProvider.js');
   console.log('================================================================');
   console.log('  BUILD 57 — FINAL CRITICAL REALITY & EXECUTION FIX TEST SUITE  ');
   console.log('================================================================');
@@ -53,8 +54,8 @@ async function runBuild57Suite() {
   } catch (err: any) {
     fundingThrewVast = true;
     assert(
-      err.message.includes('PROVIDER_FUNDING_UNAVAILABLE') || err.message.includes('REAL_FUNDING_BLOCKED'),
-      'Vast.ai autonomous deposit fails closed with PROVIDER_FUNDING_UNAVAILABLE / REAL_FUNDING_BLOCKED'
+      err.message.includes('SIMULATION_LOCKDOWN'),
+      'Vast.ai autonomous deposit fails closed with SIMULATION_LOCKDOWN'
     );
   }
   assert(fundingThrewVast, 'Attempting autonomous funding without deposit API strictly throws error');
@@ -69,8 +70,8 @@ async function runBuild57Suite() {
   } catch (err: any) {
     fundingThrewRunpod = true;
     assert(
-      err.message.includes('PROVIDER_FUNDING_UNAVAILABLE') || err.message.includes('REAL_FUNDING_BLOCKED'),
-      'RunPod autonomous deposit fails closed with PROVIDER_FUNDING_UNAVAILABLE / REAL_FUNDING_BLOCKED'
+      err.message.includes('SIMULATION_LOCKDOWN'),
+      'RunPod autonomous deposit fails closed with SIMULATION_LOCKDOWN'
     );
   }
   assert(fundingThrewRunpod, 'Attempting RunPod autonomous funding without deposit API strictly throws error');
@@ -223,30 +224,33 @@ async function runBuild57Suite() {
     'Impossible route returns recommendationReason starting with NO_EXECUTABLE_OFFER');
 
   // =========================================================================
-  // 5. RUNPOD END-TO-END EXECUTION ADAPTER CERTIFICATION
+  // 5. RUNPOD OFFLINE ADAPTER CONTRACT (NO LIVE CERTIFICATION)
   // =========================================================================
-  console.log('\n--- 5. RUNPOD END-TO-END WORKLOAD EXECUTION ---');
-  const runpod = providerRegistry.getProvider('runpod');
-  assert(runpod !== undefined, 'RunPod provider adapter is registered');
-  const rpHealth = await runpod!.healthCheck();
-  assert(rpHealth.authenticated === true, 'RunPod is authenticated with live API key');
-
-  const rpBilling = await runpod!.getBilling();
-  assert(typeof rpBilling.accountBalanceUsd === 'number' && rpBilling.accountBalanceUsd >= 0,
-    `RunPod reports authoritative live account balance ($${rpBilling.accountBalanceUsd} USD)`);
-
-  // Test real usage calculation on RunPod adapter
-  const rpUsage = await runpod!.getUsage('pod-test-eval-1');
-  assert(typeof rpUsage.totalCostUsd === 'number' && rpUsage.totalCostUsd > 0,
-    'RunPod getUsage calculates non-zero positive compute cost');
-  assert(Boolean(rpUsage.invoiceLineItemId), 'RunPod getUsage provides authoritative invoice line item reference');
-  assert(rpUsage.currency === 'USD', 'RunPod getUsage specifies USD currency');
-
-  // Test real output retrieval structure on RunPod adapter
-  const rpOutput = await runpod!.retrieveOutput('pod-test-eval-1', 'workload-test-eval');
-  assert(rpOutput.exitCode === 0, 'RunPod retrieveOutput returns exitCode: 0');
-  assert(Boolean(rpOutput.stdoutExcerpt), 'RunPod retrieveOutput returns non-empty stdout excerpt');
-  assert(Boolean(rpOutput.outputHash), 'RunPod retrieveOutput returns cryptographic output hash');
+  console.log('\n--- 5. RUNPOD OFFLINE CONTRACT FIXTURES ---');
+  // Offline contract fixtures are not live supplier evidence or certification.
+  let requests = 0;
+  const runpod = new RunpodProvider({
+    apiKey: () => 'synthetic-runpod-contract-fixture',
+    request: async (_url, init) => {
+      requests++;
+      if (init.method !== 'POST' || !String(init.body).includes('query')) throw Error('UNEXPECTED_REQUEST');
+      return new Response(JSON.stringify({ data: { myself: { id: 'fixture-account', clientBalance: 15 } } }));
+    }
+  });
+  const rpHealth = await runpod.healthCheck();
+  assert(rpHealth.authenticated, 'Offline fixture identity is parsed');
+  assert(!rpHealth.endpoints.provisioning && !rpHealth.endpoints.billing, 'Identity does not certify execution or billing');
+  const rpBilling = await runpod.getBilling();
+  assert(rpBilling.accountBalanceUsd === 15 && rpBilling.invoiceCount === 0, 'Balance fixture does not invent an invoice');
+  let usageRejected = false;
+  try { await runpod.getUsage('fixture-pod'); } catch (err: any) { usageRejected = err.message.includes('USAGE_UNVERIFIED'); }
+  assert(usageRejected, 'Missing independent usage evidence rejects');
+  const unavailableOutput = await runpod.retrieveOutput('fixture-pod', 'fixture-workload');
+  assert(!unavailableOutput.outputHash, 'Missing workload evidence does not fabricate output');
+  assert(requests === 2, 'Only two injected read-only requests occur');
+  // Explicit in-memory CFO fixtures; never obtained from RunPod or posted to PostgreSQL.
+  const rpOutput = { stdoutExcerpt: 'OFFLINE_CFO_OUTPUT_FIXTURE' };
+  const rpUsage = { invoiceLineItemId: 'offline-cfo-invoice-fixture' };
 
   // =========================================================================
   // 6. JAKE GROVE CFO FULL RECONCILIATION & DOUBLE-ENTRY SETTLEMENT
@@ -310,15 +314,29 @@ async function runBuild57Suite() {
     'Reconciliation status displays PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN');
 
   console.log('\n================================================================');
-  console.log(`  BUILD 57 TEST SUITE COMPLETE: ${passed}/${total} PASSED (100%)`);
+  console.log(`  BUILD 57 TEST SUITE COMPLETE: ${passed}/${total} PASSED`);
   console.log('================================================================\n');
 
   if (passed !== total) {
-    process.exit(1);
+    throw new Error('BUILD57_ASSERTIONS_FAILED');
   }
 }
 
-runBuild57Suite().catch(err => {
+const originalFetch = globalThis.fetch;
+const credentialNames = ['RUNPOD_API_KEY', 'VAST_API_KEY', 'LAMBDA_API_KEY'];
+const credentials = credentialNames.map(key => process.env[key]);
+credentialNames.forEach(key => { delete process.env[key]; });
+let networkAttempts = 0;
+globalThis.fetch = async () => { networkAttempts++; throw Error('OFFLINE_TEST_NETWORK_FORBIDDEN'); };
+runBuild57Suite().then(() => {
+  if (networkAttempts !== 0) throw Error('AMBIENT_NETWORK_ATTEMPT_DETECTED');
+}).catch(err => {
   console.error('FATAL ERROR in build 57 suite:', err);
-  process.exit(1);
+  process.exitCode = 1;
+}).finally(() => {
+  globalThis.fetch = originalFetch;
+  credentialNames.forEach((key, i) => {
+    if (credentials[i] === undefined) delete process.env[key];
+    else process.env[key] = credentials[i];
+  });
 });
