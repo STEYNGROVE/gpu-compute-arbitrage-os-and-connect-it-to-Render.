@@ -325,20 +325,20 @@ async function runTests() {
   if (overRes.success) throw new Error('Over-vault amount transfer unexpectedly succeeded');
   console.log('  -> PASS: Over-vault amount transfer safely rejected.');
 
-  // 6c: Valid transfer of $150.00 to Binance
+  // Even otherwise valid transfers must remain disabled and leave balances untouched.
+  const beforeCapital = JSON.stringify(db.getCapital());
+  const beforeLedger = JSON.stringify(db.getLedger());
   const validRes = await treasuryEngine.transferVaultToBinance({
     amountUsd: 150.00,
     destinationAsset: 'USDT',
     operator: 'test_operator'
   });
-  if (!validRes.success) throw new Error(`Vault transfer failed: ${validRes.error}`);
-  if (validRes.transferredAmountUsd !== 150.00) throw new Error('transferredAmountUsd mismatch');
-  if (validRes.remainingVaultBalanceUsd !== 350.00) throw new Error(`remainingVaultBalanceUsd expected 350.00, got ${validRes.remainingVaultBalanceUsd}`);
-  if (!validRes.auditHash) throw new Error('Expected auditHash on vault transfer');
-
-  const ledgerIntegrity = db.verifyLedgerIntegrity();
-  if (!ledgerIntegrity.valid) throw new Error(`Ledger integrity invalid after vault transfer: ${ledgerIntegrity.reason}`);
-  console.log(`  -> PASS: Transferred $150.00 to Binance (Remaining Vault: $${validRes.remainingVaultBalanceUsd.toFixed(2)}). Merkle integrity verified (Checked ${ledgerIntegrity.recordsChecked} blocks).`);
+  if (validRes.success || !validRes.error?.includes('SIMULATION_LOCKDOWN')) {
+    throw new Error('Vault transfer must remain disabled in simulation');
+  }
+  if (JSON.stringify(db.getCapital()) !== beforeCapital) throw new Error('Blocked transfer changed capital');
+  if (JSON.stringify(db.getLedger()) !== beforeLedger) throw new Error('Blocked transfer changed ledger');
+  console.log('  -> PASS: Valid transfer blocked without capital or ledger mutations.');
 
   // Restore vault balance
   db.updateCapital({ reinvestmentVaultBalance: 3200.00 });

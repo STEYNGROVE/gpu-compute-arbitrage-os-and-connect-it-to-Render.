@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from '../simulationSafety.js';
 import { BasePostgresRepository } from './baseRepo.js';
 import { AuthoritativeDemandOrder, AuthoritativeQuote } from './types.js';
 
@@ -364,6 +365,7 @@ export class PaymentRepository extends BasePostgresRepository {
     demandOrderId?: string;
     customerId: string;
   }): Promise<{ success: boolean; transactionId: string }> {
+    assertLiveOperationsAllowed();
     const crypto = await import('crypto');
 
     return this.withTransaction(async (client) => {

@@ -226,9 +226,9 @@ export class HardwareProviderProvisioner {
   }
 
   public async provisionComputeHardware(req: ProvisionRequest): Promise<ProvisionResult> {
+    assertLiveOperationsAllowed();
     // Permanent fail-closed legacy entry point until an audited execution gateway replaces it.
     throw new Error('DIRECT_GPU_PURCHASE_BLOCKED: Verified reservation and execution gateway not implemented');
-    assertLiveOperationsAllowed();
     const { provider, offerId, gpuModel, gpuCount, isLiveMode, workloadType, customerName, idempotencyKey } = req;
 
     // Reject any non-LIVE invocation: HardwareProviderProvisioner is strictly for authoritative LIVE hardware execution.

@@ -1,3 +1,5 @@
+import { liveOperationsAllowed } from './server/simulationSafety.js';
+import { financialLockdown } from './server/financialLockdown.js';
 import { registerReadinessHealth } from './server/readinessHealth.js';
 import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
@@ -198,12 +200,8 @@ registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.
-app.use('/api', (req, res, next) => {
-  if (req.method !== 'GET' && /^(\/compute\/(execute-deal|settle-deal|abort-job)|\/provisioning\/|\/treasury\/|\/capital\/|\/kill-switch\/disengage|\/autonomous\/deploy|\/zero-funded\/spending-gate)/.test(req.path)) {
-    return res.status(423).json({ error: 'FINANCIAL_EXECUTION_DISABLED_PHASE_2_3' });
-  }
-  next();
-});
+// FINANCIAL_EXECUTION_DISABLED_PHASE_2_3: enforced by the shared middleware.
+app.use('/api', financialLockdown);
 
 
 registerReadinessHealth(app);
@@ -2066,11 +2064,11 @@ app.get('/api/command-center/summary', async (_req, res) => {
       : null;
 
     // Active compute jobs from memory db
-    const activeJobs = db.getComputeJobs ? db.getComputeJobs().filter((j: any) => j.status === 'RUNNING' || j.status === 'PROVISIONED') : [];
+    const activeJobs = db.getActiveJobs().filter(j => j.status === 'RUNNING' || j.status === 'PROVISIONING');
 
     // Calculate aggregated revenue & costs
     const totalRev = Number(revenueSummary.verifiedCashTotal || 0);
-    const totalCost = activeJobs.reduce((acc: number, j: any) => acc + (j.actualCostUsd || j.costAccrued || 0), 0);
+    const totalCost = activeJobs.reduce((acc: number, j: any) => acc + (j.currentAccruedCost || 0), 0);
     const netProfit = Number((totalRev - totalCost).toFixed(2));
 
     res.json({
@@ -2437,7 +2435,7 @@ async function executeOpportunityDiscoveryPipeline(options: {
 
   // 3. Load Real Customer Demand Orders from PostgreSQL & Memory (excluding synthetic attack test orders)
   const customerOrders: any[] = [...db.getDemandOrders('ALL')].filter(
-    o => o.demandSource !== 'DEMO_SEED_ORDER' && o.demandSource !== 'ATTACK_TEST' && o.demandSource !== 'ATTACK_SUITE_VERIFY'
+    o => !['DEMO_SEED_ORDER', 'ATTACK_TEST', 'ATTACK_SUITE_VERIFY'].includes(o.demandSource)
   );
   if (pgDbService.isLiveDatabaseConnected()) {
     try {
@@ -4348,10 +4346,10 @@ app.get('/api/capital/treasury-status', requireAuth, (req, res) => {
     realBankCashBalance: capital.realBankCashBalance || 0.00,
     simulatedReserve: capital.simulatedReserve || 0.00,
     escrowVaultBalance: capital.escrowVaultBalance || 0.00,
-    paperBalance: capital.paperCurrentBalance,
+    paperBalance: capital.simulatedReserve,
     liveDeployedCapital: capital.liveDeployedCapital,
     isBinanceConnected: treasuryEngine.binance.isConfigured(),
-    isLiveMoneySafeToFund: pgStatus.isConnected && (capital.liveCurrentBalance || 0) > 0,
+    isLiveMoneySafeToFund: liveOperationsAllowed() && pgStatus.isConnected && (capital.liveCurrentBalance || 0) > 0,
     databaseLiveReady: pgStatus.isConnected,
     auditNote: 'Strict Capital Separation: Live balances start at $0.00 and are verified via authenticated Binance Institutional Treasury and customer escrow.'
   });
@@ -4715,7 +4713,7 @@ app.get('/api/ledger/verify-chain', async (req, res) => {
     }
   }
 
-  let pgChain = {
+  let pgChain: Awaited<ReturnType<typeof auditRepo.getChainSummary>> = {
     valid: true,
     totalBlocks: 0,
     inspectedCount: 0,

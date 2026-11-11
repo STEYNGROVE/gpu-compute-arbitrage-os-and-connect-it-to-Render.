@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed, liveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import type pg from 'pg';
 import { pgDbService } from './pgDatabase.js';
@@ -829,6 +830,16 @@ export class TreasuryEngine {
     message: string;
     error?: string;
   }> {
+    if (!liveOperationsAllowed()) {
+      return {
+        success: false, transferredAmountUsd: 0,
+        remainingVaultBalanceUsd: db.getCapital().reinvestmentVaultBalance || 0,
+        newBinanceAllocatedUsd: 0, transactionId: '', auditHash: '', blockHeight: 0,
+        destination: 'binance', destinationAsset: params.destinationAsset || 'USDT',
+        message: 'SIMULATION_LOCKDOWN: Vault transfers are disabled.',
+        error: 'SIMULATION_LOCKDOWN: Vault transfers are disabled.'
+      };
+    }
     const capital = db.getCapital();
     const currentVaultBalance = capital.reinvestmentVaultBalance || 0;
 
@@ -964,6 +975,7 @@ export class TreasuryEngine {
     newVaultBalanceUsd: number;
     message: string;
   }> {
+    assertLiveOperationsAllowed();
     const capital = db.getCapital();
     const currentVault = capital.reinvestmentVaultBalance || 0;
     const restoreAmount = params.amountUsd !== undefined && params.amountUsd > 0

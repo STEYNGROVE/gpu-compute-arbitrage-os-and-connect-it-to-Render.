@@ -1,3 +1,4 @@
+import { liveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { timingSafeMatch } from './auth.js';
 import { SupportedCurrency, toMinorUnits, fromMinorUnits, CanonicalPaymentState } from './moneyUtils.js';
@@ -111,6 +112,9 @@ export class PayFastPaymentProvider implements PaymentProvider {
     error?: string;
     payload?: Record<string, any>;
   }> {
+    if (!liveOperationsAllowed()) {
+      return { success: false, error: 'SIMULATION_LOCKDOWN: Live payment instructions are disabled.' };
+    }
     if (!this.isConfigured()) {
       return {
         success: false,

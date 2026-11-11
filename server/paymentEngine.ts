@@ -1,3 +1,4 @@
+import { liveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { pgDbService } from './pgDatabase.js';
 import { timingSafeMatch, getEffectiveEscrowSecret } from './auth.js';
@@ -506,6 +507,9 @@ export class BinancePaymentProvider implements PaymentProvider {
     expiresAt?: string;
     error?: string;
   }> {
+    if (!liveOperationsAllowed()) {
+      return { success: false, error: 'SIMULATION_LOCKDOWN: Live payment instructions are disabled.' };
+    }
     if (!this.isConfigured()) {
       return {
         success: false,
@@ -869,6 +873,10 @@ export class PaymentEngine {
       };
     }
 
+    if (!liveOperationsAllowed()) {
+      return { success: false, error: 'SIMULATION_LOCKDOWN: Live payment intents are disabled.' };
+    }
+
     // Safety Gate: Check Kill Switches
     const globalKs = await killSwitchRepo.isKillSwitchActive('GLOBAL_KILL_SWITCH');
     if (globalKs.active) {
@@ -1010,6 +1018,10 @@ export class PaymentEngine {
         errorCode: 'DATABASE_OFFLINE',
         message: 'POSTGRESQL_OFFLINE_FAIL_CLOSED: Authoritative PostgreSQL ledger is offline. Payment verification is blocked.'
       };
+    }
+
+    if (!liveOperationsAllowed()) {
+      return { success: false, errorCode: 'SIMULATION_LOCKDOWN', message: 'SIMULATION_LOCKDOWN: Live payment settlement is disabled.' };
     }
 
     // Safety Gate: Check Kill Switches

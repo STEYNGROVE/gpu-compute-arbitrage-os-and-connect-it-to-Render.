@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from '../simulationSafety.js';
 import crypto from 'crypto';
 import type pg from 'pg';
 import { BasePostgresRepository } from './baseRepo.js';
@@ -369,6 +370,7 @@ export class SettlementRepository extends BasePostgresRepository {
     reservationId?: string | null;
     idempotencyKey?: string | null;
   }): Promise<{ settlementId: string; netProfit: number }> {
+    assertLiveOperationsAllowed();
     return this.withTransaction(async (client) => {
       // 1. Acquire transaction advisory locks
       await client.query(`SELECT pg_advisory_xact_lock(hashtext('authoritative_treasury_ledger_lock'))`);

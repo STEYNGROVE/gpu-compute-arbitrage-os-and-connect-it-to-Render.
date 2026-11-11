@@ -1,3 +1,4 @@
+import { financialLockdown } from '../server/financialLockdown.js';
 /**
  * Phase 2 & Phase 3 Automated Verification Suite
  * 
@@ -45,12 +46,7 @@ async function runPhase23Suite() {
   };
 
   // Hard execution blocker (matching server.ts)
-  app.use('/api', (req, res, next) => {
-    if (req.method !== 'GET' && /^(\/compute\/(execute-deal|settle-deal|abort-job)|\/provisioning\/|\/treasury\/|\/capital\/|\/kill-switch\/disengage|\/autonomous\/deploy|\/zero-funded\/spending-gate)/.test(req.path)) {
-      return res.status(423).json({ error: 'FINANCIAL_EXECUTION_DISABLED_PHASE_2_3' });
-    }
-    next();
-  });
+  app.use('/api', financialLockdown);
 
   registerCommercialIntake(app, testRequireOwnerAuth);
   registerLeadDiscovery(app, testRequireOwnerAuth);

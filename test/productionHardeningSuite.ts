@@ -455,9 +455,11 @@ async function runProductionHardeningSuite() {
       ownerConfirmed: true
     });
     assert(
-      unallowlistedAttempt.success === false && Boolean(unallowlistedAttempt.error?.includes('ALLOWLIST')),
-      'executeVerifiedProfitWithdrawal rejects un-allowlisted address even when ownerConfirmed=true (no auto-allowlist bypass)'
+      unallowlistedAttempt.success === false && Boolean(unallowlistedAttempt.error?.includes('SIMULATION_LOCKDOWN')),
+      'Simulation lockdown rejects withdrawals even when ownerConfirmed=true'
     );
+    const unlistedCheck = await verifiedProfitWithdrawalService.isAddressAllowlisted('0x9999999999999999999999999999999999999999', 'BSC', 'USDT');
+    assert(!unlistedCheck.allowed, 'Unlisted address remains rejected by the allowlist policy');
     await verifiedProfitWithdrawalService.addAllowlistAddress({
       destinationAddress: '0x9999999999999999999999999999999999999999',
       network: 'BSC',
@@ -474,9 +476,11 @@ async function runProductionHardeningSuite() {
       ownerConfirmed: true
     });
     assert(
-      cooldownAttempt.success === false && Boolean(cooldownAttempt.error?.includes('DESTINATION_COOLDOWN_ACTIVE')),
-      'Newly allowlisted withdrawal address is strictly blocked during mandatory 24-hour cooldown'
+      cooldownAttempt.success === false && Boolean(cooldownAttempt.error?.includes('SIMULATION_LOCKDOWN')),
+      'Simulation lockdown also rejects newly allowlisted withdrawal destinations'
     );
+    const cooldownCheck = await verifiedProfitWithdrawalService.isAddressAllowlisted('0x9999999999999999999999999999999999999999', 'BSC', 'USDT');
+    assert(!cooldownCheck.allowed && Boolean(cooldownCheck.error?.includes('DESTINATION_COOLDOWN_ACTIVE')), 'Mandatory 24-hour allowlist cooldown remains enforced');
     const expectedFlow = [
       'CUSTOMER_PAYMENT_VERIFIED',
       'CAPITAL_AUTHORIZED',
