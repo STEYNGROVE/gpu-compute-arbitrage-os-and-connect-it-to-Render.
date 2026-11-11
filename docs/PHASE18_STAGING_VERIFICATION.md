@@ -25,7 +25,7 @@ GET-only smoke at **2026-11-11T11:56:31.035Z** passed **13/13**:
 
 Readiness executes `SELECT 1` after checking a live PostgreSQL connection; this proves connectivity at request time, not database durability or financial certification. Liveness plus readiness prove an application process successfully started and served these requests. Historical startup logs, Render deploy lifecycle, compute plan and selected source/auto-deploy configuration require account inspection; they have not been verified by HTTP. Render workspace discovery returned one workspace; account-level inspection awaits workspace confirmation. No secret values were requested.
 
-Repeat with `npm run test:staging`. The target origin is fixed; redirects reject, requests time out after 60 seconds, and only GET is implemented. `EXPECTED_STAGING_REVISION` can assert a separately confirmed 40-character deployed commit; default is the verified baseline. The runner never deploys.
+Repeat with `npm run test:staging`. The target origin is fixed; redirects reject, requests time out after 60 seconds, and only GET is implemented. `EXPECTED_STAGING_REVISION` must identify the exact separately confirmed 40-character deployed commit; there is no historical revision fallback. Manual workflow dispatch uses its selected workflow commit when no explicit revision is supplied. The runner never deploys.
 
 ## Security findings and repairs
 
