@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { performance } from 'node:perf_hooks';
 import https from 'node:https';
 import { readFileSync } from 'node:fs';
 import type { FeedHttpsTransport } from '../server/secureFeedFetch.ts';
@@ -58,7 +59,8 @@ async function main() {
   }) as FeedHttpsTransport;
 
   try {
-    const started = Date.now();
+    // Elapsed time must not change when the system wall clock is adjusted.
+    const started = performance.now();
 
     const result = await secureFeedFetch(
       'https://example.com/stall',
@@ -69,7 +71,7 @@ async function main() {
       error => String(error?.name || error?.message)
     );
 
-    const elapsed = Date.now() - started;
+    const elapsed = performance.now() - started;
 
     assert.notEqual(result, 'RESOLVED');
     assert.ok(
