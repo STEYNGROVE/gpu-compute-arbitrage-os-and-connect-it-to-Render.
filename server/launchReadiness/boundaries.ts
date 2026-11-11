@@ -22,6 +22,7 @@ function reviewed(e: EvidenceBinding, subjectId: string, accountId: string, now:
       !/^[a-f0-9]{64}$/.test(e.payloadSha256) || !Number.isSafeInteger(now) ||
       !Number.isSafeInteger(e.observedAtMs) || !Number.isSafeInteger(e.expiresAtMs) ||
       e.observedAtMs > now || now - e.observedAtMs > 300_000 || e.expiresAtMs <= now ||
+      e.observedAtMs < 0 || e.expiresAtMs - e.observedAtMs > 300_000 ||
       e.expiresAtMs <= e.observedAtMs) return false;
   try { return review.verify(e) === true; } catch { return false; }
 }
@@ -46,7 +47,7 @@ export type PaymentEvidence = EvidenceBinding & {
 export function assessPrepaidPayment(e: PaymentEvidence, orderId: string, customerId: string, accountId: string, expectedCents: number, now: number, review: IndependentReview): Assessment {
   if (!e || !customerId || e.customerId !== customerId || e.rail !== 'BINANCE' || e.currency !== 'USD' ||
       !money(expectedCents) || expectedCents === 0 || e.amountCents !== expectedCents ||
-      !e.externalEventId || e.state !== 'FINAL' || !reviewed(e, orderId, accountId, now, review)) return decision('PAYMENT_EVIDENCE_UNVERIFIED');
+      typeof e.externalEventId !== 'string' || !e.externalEventId.trim() || e.externalEventId.length > 200 || e.state !== 'FINAL' || !reviewed(e, orderId, accountId, now, review)) return decision('PAYMENT_EVIDENCE_UNVERIFIED');
   return decision('PAYMENT_REVIEWED_REPLAY_AND_LEDGER_CERTIFICATION_REQUIRED', true);
 }
 
@@ -58,7 +59,7 @@ export type TerminationEvidence = EvidenceBinding & {
 /** An acknowledged stop is insufficient: missing, late or conflicting evidence quarantines funds. */
 export function reconcileTermination(e: TerminationEvidence, instanceId: string, accountId: string, maxCostCents: number, deadlineMs: number, now: number, review: IndependentReview): Assessment {
   if (!e || !reviewed(e, instanceId, accountId, now, review) || e.instanceId !== instanceId ||
-      e.providerState !== 'TERMINATED' || !e.invoiceId || e.invoiceFinal !== true ||
+      e.providerState !== 'TERMINATED' || typeof e.invoiceId !== 'string' || !e.invoiceId.trim() || e.invoiceId.length > 200 || e.invoiceFinal !== true ||
       !money(e.finalCostCents) || !money(maxCostCents) || e.finalCostCents > maxCostCents ||
       !Number.isSafeInteger(deadlineMs) || !Number.isSafeInteger(e.startedAtMs) || !Number.isSafeInteger(e.stoppedAtMs) ||
       e.startedAtMs < 0 || e.stoppedAtMs < e.startedAtMs || e.stoppedAtMs > deadlineMs ||

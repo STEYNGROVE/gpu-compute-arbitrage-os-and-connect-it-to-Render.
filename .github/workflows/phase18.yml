@@ -1,0 +1,49 @@
+name: Phase 18 staging verification
+on:
+  push:
+    branches: [security/phase18-staging-verification]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      verify_existing_staging:
+        description: Run GET-only checks against the existing Free Tier service
+        type: boolean
+        default: false
+      expected_revision:
+        description: Expected deployed commit (does not deploy it)
+        default: '32321cbece4ccd7c1481466c3f416adf79749e26'
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run security:check
+      - run: npm test
+      - run: npm run test:purchase-boundary
+      - name: Isolated PostgreSQL reservation integration
+        run: |
+          export PATH="$(pg_config --bindir):$PATH"
+          npm run test:phase16-postgres
+      - run: npm run build
+  staging:
+    if: github.event_name == 'workflow_dispatch' && inputs.verify_existing_staging
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Existing service GET-only smoke (no credentials)
+        env:
+          EXPECTED_STAGING_REVISION: ${{ inputs.expected_revision }}
+        run: node scripts/staging-smoke.mjs

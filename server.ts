@@ -1,3 +1,4 @@
+import { rateLimit } from './server/rateLimit.js';
 import { liveOperationsAllowed } from './server/simulationSafety.js';
 import { financialLockdown } from './server/financialLockdown.js';
 import { registerReadinessHealth } from './server/readinessHealth.js';
@@ -161,25 +162,6 @@ class MutexLock {
 const financialMutex = new MutexLock();
 
 // --- Production Rate Limiter Middleware ---
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-function rateLimit(limit = 120, windowMs = 60000) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const key = (req.headers['x-forwarded-for'] as string) || req.ip || 'global';
-    const now = Date.now();
-    const item = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
-    if (now > item.resetAt) {
-      item.count = 0;
-      item.resetAt = now + windowMs;
-    }
-    item.count++;
-    rateLimitMap.set(key, item);
-    if (item.count > limit) {
-      return res.status(429).json({ status: 'error', message: 'Rate limit exceeded. Please throttle requests.' });
-    }
-    next();
-  };
-}
-
 app.use(rateLimit(200, 60000));
 
 // Phase 2/3: Public enquiry intake only. No execution, no payments.

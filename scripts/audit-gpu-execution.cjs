@@ -29,7 +29,7 @@ check('SUPPLIER_DIAGNOSTICS',exists('server/supplierReadOnlyDiagnostics.ts'),'Re
 check('SINGLE_AUTHORIZED_PURCHASE_GATE',false,'Direct purchase implementation still exists in server/providerProvisioner.ts; all purchase paths require audited reservation enforcement','blocker');
 check('VERIFIED_BALANCE_ADAPTER',false,'No trusted, fresh supplier balance evidence adapter is verified end-to-end','blocker');
 check('PROVIDER_KILL_SWITCH',false,'No independently tested cost/time-based instance termination and reconciliation','blocker');
-check('REAL_DB_CONCURRENCY_TEST',false,'Mocked tests are not real PostgreSQL concurrency tests','blocker');
+check('REAL_DB_CONCURRENCY_TEST',false,'Isolated reservation concurrency tests exist; full financial repositories, crash recovery and migration upgrade/replay remain uncertified','blocker');
 check('PAYMENT_EVIDENCE_ADAPTER',false,'No independently verified prepaid customer payment adapter','blocker');
 const report={generatedAt:new Date().toISOString(),mode:'READ_ONLY_NO_PURCHASES',safeControlsPassed:findings.filter(f=>f.severity==='critical'&&f.pass).length,safeControlsFailed:findings.filter(f=>f.severity==='critical'&&!f.pass).length,remainingBlockers:findings.filter(f=>f.severity==='blocker').length,findings};
 console.log(JSON.stringify(report,null,2));
