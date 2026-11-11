@@ -427,7 +427,12 @@ export class VastAiProvider extends BaseProvider {
         };
       }
       const data = await res.json();
-      const credit = Number(data.credit || 0);
+      const rawCredit = data?.credit;
+      const credit = typeof rawCredit === 'number' &&
+        Number.isFinite(rawCredit) &&
+        rawCredit >= 0 &&
+        rawCredit < 100000000
+          ? rawCredit : null;
       return {
         providerId: this.id,
         accountBalanceUsd: credit,
@@ -436,7 +441,7 @@ export class VastAiProvider extends BaseProvider {
         currency: 'USD',
         billingMechanism: 'PREPAID_CREDIT',
         invoiceCount: 1,
-        rawBillingInfo: { username: data.username, email: data.email, credit }
+        rawBillingInfo: { balanceEvidenceAvailable: credit !== null }
       };
     } catch {
       return {

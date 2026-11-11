@@ -78,7 +78,7 @@ export class RunpodProvider extends BaseProvider {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this.apiKey}`
         },
-        body: JSON.stringify({ query: 'query { myself { id email clientBalance } }' })
+        body: JSON.stringify({ query: 'query { myself { id clientBalance } }' })
       });
       const latency = Date.now() - start;
 
@@ -417,7 +417,7 @@ export class RunpodProvider extends BaseProvider {
       const res = await this.readRequest('https://api.runpod.io/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ query: 'query { myself { id email clientBalance } }' })
+        body: JSON.stringify({ query: 'query { myself { id clientBalance } }' })
       });
       if (!res.ok) {
         return {
@@ -433,8 +433,9 @@ export class RunpodProvider extends BaseProvider {
       const json = await res.json();
       const me = json.data?.myself;
       const bal = me?.clientBalance;
-      if (json.errors?.length || typeof me?.id !== 'string' || !me.id ||
-          typeof bal !== 'number' || !Number.isFinite(bal) || bal < 0) {
+      if ((json.errors && (!Array.isArray(json.errors) || json.errors.length > 0)) ||
+          typeof me?.id !== 'string' || !me.id.trim() ||
+          typeof bal !== 'number' || !Number.isFinite(bal) || bal < 0 || bal >= 100000000) {
         throw new Error('BALANCE_SCHEMA_UNVERIFIED');
       }
       return {
@@ -445,7 +446,11 @@ export class RunpodProvider extends BaseProvider {
         currency: 'USD',
         billingMechanism: 'PREPAID_CREDIT',
         invoiceCount: 0,
-        rawBillingInfo: json.data?.myself
+        rawBillingInfo: {
+          balanceVerifiedFromProviderResponse: true,
+          invoiceCountVerified: false,
+          procurementAuthorized: false
+        }
       };
     } catch {
       return {

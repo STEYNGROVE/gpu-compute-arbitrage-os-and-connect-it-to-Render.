@@ -1,7 +1,7 @@
 name: Phase 18 staging verification
 on:
   push:
-    branches: [security/phase18-staging-verification]
+    branches: [security/phase18-staging-verification, integration/phase18-safe-consolidation-20261111]
   pull_request:
   workflow_dispatch:
     inputs:
