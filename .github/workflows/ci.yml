@@ -37,6 +37,9 @@ jobs:
       - name: Execute Automated Regression Tests
         run: npm test
 
+      - name: Validate supplier billing safety
+        run: npm run test:provider-billing
+
       - name: Secure Feed Regression Tests
         run: NODE_ENV=test npx tsx test/secureFeedIntegrationSuite.ts
 
