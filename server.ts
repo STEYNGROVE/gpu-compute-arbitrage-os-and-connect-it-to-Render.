@@ -1,5 +1,11 @@
+import { commandCenterJobSummary } from './server/commandCenterJobSummary.js';
+import { verifiedOwnerRateIdentity } from './server/ownerRateIdentity.js';
 import { registerSpaceStationOne } from './server/spaceStationOne.js';
+import { registerCommercialEvidence } from './server/commercialEvidence.js';
 import { registerH100FleetController } from './server/h100FleetController.js';
+import { rateLimit } from './server/rateLimit.js';
+import { liveOperationsAllowed } from './server/simulationSafety.js';
+import { financialLockdown } from './server/financialLockdown.js';
 import { registerReadinessHealth } from './server/readinessHealth.js';
 import { createUsdtInvoice, getUsdtInvoice, reconcileUsdtInvoice } from './server/usdtInvoiceLedger.js';
 import { registerSupplierBalanceDiagnostics } from './server/supplierBalanceDiagnosticsRoute.js';
@@ -15,7 +21,6 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { registerCommercialIntake } from './server/commercialIntake.js';
-import { registerCommercialEvidence } from './server/commercialEvidence.js';
 import { registerPreapprovedWorkloads } from './server/preapprovedWorkloads.js';
 import { registerOwnerOperations } from './server/ownerOperations.js';
 import { registerOwnerCommandCentre } from './server/ownerCommandCentre.js';
@@ -162,26 +167,7 @@ class MutexLock {
 const financialMutex = new MutexLock();
 
 // --- Production Rate Limiter Middleware ---
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-function rateLimit(limit = 120, windowMs = 60000) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const key = (req.headers['x-forwarded-for'] as string) || req.ip || 'global';
-    const now = Date.now();
-    const item = rateLimitMap.get(key) || { count: 0, resetAt: now + windowMs };
-    if (now > item.resetAt) {
-      item.count = 0;
-      item.resetAt = now + windowMs;
-    }
-    item.count++;
-    rateLimitMap.set(key, item);
-    if (item.count > limit) {
-      return res.status(429).json({ status: 'error', message: 'Rate limit exceeded. Please throttle requests.' });
-    }
-    next();
-  };
-}
-
-app.use(rateLimit(200, 60000));
+app.use(rateLimit(200, 60000, 10000, undefined, verifiedOwnerRateIdentity));
 
 // Phase 2/3: Public enquiry intake only. No execution, no payments.
 app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
@@ -204,12 +190,8 @@ registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
 // Hard stop: financial actions stay disabled even if a UI toggle or API key exists.
 // This release intentionally has no mechanism to turn them on via environment variables.
-app.use('/api', (req, res, next) => {
-  if (req.method !== 'GET' && /^(\/compute\/(execute-deal|settle-deal|abort-job)|\/provisioning\/|\/treasury\/|\/capital\/|\/kill-switch\/disengage|\/autonomous\/deploy|\/zero-funded\/spending-gate)/.test(req.path)) {
-    return res.status(423).json({ error: 'FINANCIAL_EXECUTION_DISABLED_PHASE_2_3' });
-  }
-  next();
-});
+// FINANCIAL_EXECUTION_DISABLED_PHASE_2_3: enforced by the shared middleware.
+app.use('/api', financialLockdown);
 
 
 registerReadinessHealth(app);
@@ -2071,13 +2053,9 @@ app.get('/api/command-center/summary', async (_req, res) => {
       ? [...validPrices].sort((a, b) => a.hourlyPrice - b.hourlyPrice)[0]
       : null;
 
-    // Active compute jobs from memory db
-    const activeJobs = db.getComputeJobs ? db.getComputeJobs().filter((j: any) => j.status === 'RUNNING' || j.status === 'PROVISIONED') : [];
-
-    // Calculate aggregated revenue & costs
+    const jobSummary = await commandCenterJobSummary(db.getActiveJobs(), pgDbService.isLiveDatabaseConnected(), ids => computeJobRepo.listExposureJobs(ids));
+    const activeJobs = jobSummary.activeJobs;
     const totalRev = Number(revenueSummary.verifiedCashTotal || 0);
-    const totalCost = activeJobs.reduce((acc: number, j: any) => acc + (j.actualCostUsd || j.costAccrued || 0), 0);
-    const netProfit = Number((totalRev - totalCost).toFixed(2));
 
     res.json({
       status: 'ok',
@@ -2115,10 +2093,10 @@ app.get('/api/command-center/summary', async (_req, res) => {
           timestamp: nowIso
         },
         activeJobs: {
-          count: activeJobs.length,
-          provisionedGpus: activeJobs.length,
-          status: activeJobs.length > 0 ? 'RUNNING' : 'STANDBY',
-          source: 'EXECUTION_ENGINE',
+          count: jobSummary.count,
+          provisionedGpus: jobSummary.gpuCount,
+          status: jobSummary.status,
+          source: jobSummary.source,
           timestamp: nowIso
         },
         gpuUtilization: {
@@ -2136,17 +2114,18 @@ app.get('/api/command-center/summary', async (_req, res) => {
           timestamp: nowIso
         },
         computeCost: {
-          value: Number(totalCost.toFixed(2)),
+          value: jobSummary.invoicedCostUsd,
+          estimatedAccruedUsd: jobSummary.estimatedAccruedCost,
           currency: 'USD',
-          status: 'VERIFIED_INVOICED',
-          source: 'HARDWARE_PROVIDER_INVOICES',
+          status: 'INVOICE_EVIDENCE_UNAVAILABLE',
+          source: jobSummary.source,
           timestamp: nowIso
         },
         netProfit: {
-          value: netProfit,
+          value: jobSummary.realizedProfitUsd,
           currency: 'USD',
-          status: 'REALIZED_SETTLED',
-          source: 'TRUE_PROFIT_FORMULA',
+          status: 'SETTLEMENT_EVIDENCE_UNAVAILABLE',
+          source: 'NOT_INDEPENDENTLY_RECONCILED',
           timestamp: nowIso
         },
         settledCash: {
@@ -2443,7 +2422,7 @@ async function executeOpportunityDiscoveryPipeline(options: {
 
   // 3. Load Real Customer Demand Orders from PostgreSQL & Memory (excluding synthetic attack test orders)
   const customerOrders: any[] = [...db.getDemandOrders('ALL')].filter(
-    o => o.demandSource !== 'DEMO_SEED_ORDER' && o.demandSource !== 'ATTACK_TEST' && o.demandSource !== 'ATTACK_SUITE_VERIFY'
+    o => !['DEMO_SEED_ORDER', 'ATTACK_TEST', 'ATTACK_SUITE_VERIFY'].includes(o.demandSource)
   );
   if (pgDbService.isLiveDatabaseConnected()) {
     try {
@@ -3214,7 +3193,8 @@ app.get('/api/database/status', async (req, res) => {
 // Login Endpoint: Authenticates OWNER or CUSTOMER credentials and sets secure cookie
 app.post('/api/auth/login', async (req, res) => {
   const { role = 'OWNER', secretOrKey, customerId } = req.body;
-  const ip = req.ip || req.socket.remoteAddress;
+  const peer = req.ip || req.socket.remoteAddress;
+  const ip = verifiedOwnerRateIdentity(req) ? `verified-owner:${peer}` : peer;
 
   const authResult = await authenticateAndCreateSession({
     role: role.toUpperCase() as 'OWNER' | 'CUSTOMER',
@@ -4354,10 +4334,10 @@ app.get('/api/capital/treasury-status', requireAuth, (req, res) => {
     realBankCashBalance: capital.realBankCashBalance || 0.00,
     simulatedReserve: capital.simulatedReserve || 0.00,
     escrowVaultBalance: capital.escrowVaultBalance || 0.00,
-    paperBalance: capital.paperCurrentBalance,
+    paperBalance: capital.simulatedReserve,
     liveDeployedCapital: capital.liveDeployedCapital,
     isBinanceConnected: treasuryEngine.binance.isConfigured(),
-    isLiveMoneySafeToFund: pgStatus.isConnected && (capital.liveCurrentBalance || 0) > 0,
+    isLiveMoneySafeToFund: liveOperationsAllowed() && pgStatus.isConnected && (capital.liveCurrentBalance || 0) > 0,
     databaseLiveReady: pgStatus.isConnected,
     auditNote: 'Strict Capital Separation: Live balances start at $0.00 and are verified via authenticated Binance Institutional Treasury and customer escrow.'
   });
@@ -4721,7 +4701,7 @@ app.get('/api/ledger/verify-chain', async (req, res) => {
     }
   }
 
-  let pgChain = {
+  let pgChain: Awaited<ReturnType<typeof auditRepo.getChainSummary>> = {
     valid: true,
     totalBlocks: 0,
     inspectedCount: 0,

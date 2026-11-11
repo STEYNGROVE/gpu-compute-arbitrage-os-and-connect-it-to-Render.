@@ -31,7 +31,9 @@
   "include": [
     "src",
     "server",
-    "test"
+    "test",
+    "server.ts",
+    "scripts/**/*.ts"
   ],
   "exclude": [
     "node_modules",

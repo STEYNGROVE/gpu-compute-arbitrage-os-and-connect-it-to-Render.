@@ -11,9 +11,9 @@ export type PayoutInput = {
   destination: Evidence; settledProfitCents: number; previouslyPaidCents: number;
   requestedCents: number; duplicatePayoutId: boolean; destinationAllowlisted: boolean;
 };
-export type Decision = { allowed: boolean; reason: string };
-const deny = (reason: string): Decision => ({allowed:false,reason});
-const ok = (reason: string): Decision => ({allowed:true,reason});
+export type Decision = { allowed: boolean; executionAuthorized: false; reason: string };
+const deny = (reason: string): Decision => ({allowed:false,executionAuthorized:false,reason});
+const ok = (reason: string): Decision => ({allowed:true,executionAuthorized:false,reason});
 const cents = (v:number) => Number.isSafeInteger(v) && v >= 0;
 const evidenceValid = (e:Evidence | undefined, now:number) => !!e && e.source === 'trusted_adapter' && e.verified === true && /^[A-Za-z0-9_-]{8,120}$/.test(e.id) && Number.isSafeInteger(e.verifiedAtMs) && Number.isSafeInteger(e.expiresAtMs) && e.verifiedAtMs <= now && now < e.expiresAtMs;
 export function assessPurchase(i:PurchaseInput):Decision {

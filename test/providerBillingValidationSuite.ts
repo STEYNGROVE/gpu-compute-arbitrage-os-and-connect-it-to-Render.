@@ -15,7 +15,7 @@ const providers = [
     instance: new RunpodProvider(),
     url: 'https://api.runpod.io/graphql',
     response: (value: unknown) => ({
-      data: { myself: { id: 'test-user', clientBalance: value } }
+      data: { myself: { id: 'private-runpod-id', email: 'private@example.test', clientBalance: value } }
     })
   },
   {
@@ -71,7 +71,7 @@ try {
       const raw = JSON.stringify(billing);
       assert.ok(
         !raw.includes('private@example.test') &&
-        !raw.includes('private-user'),
+        !raw.includes('private-user') && !raw.includes('private-runpod-id'),
         `${provider.name}: personal data exposed`
       );
 
@@ -96,9 +96,41 @@ try {
     cases++;
   }
 
-  console.log(
-    `PASS: ${cases} direct provider billing validation cases; no live supplier requests`
-  );
+  for (const payload of [
+    {data:{myself:{id:'',clientBalance:12}}},
+    {data:{myself:{id:'   ',clientBalance:12}}},
+    {data:{myself:{id:123,clientBalance:12}}},
+    {data:{myself:{clientBalance:12}}},
+    {errors:[{message:'denied'}],data:{myself:{id:'test-user',clientBalance:12}}},
+    {errors:{message:'malformed'},data:{myself:{id:'test-user',clientBalance:12}}}
+  ]) {
+    globalThis.fetch = (async () => ({ok:true,json:async()=>payload} as Response)) as typeof fetch;
+    const billing = await providers[0].instance.getBilling();
+    assert.equal(billing.accountBalanceUsd, null);
+    assert.equal((await providers[0].instance.healthCheck()).authenticated, false);
+    cases++;
+  }
+  // Preserve injected transport, escaped instance IDs and disabled workload submission.
+  let requests = 0;
+  const readOnly = new RunpodProvider({apiKey:()=> 'synthetic-only',request:async(_url, options)=>{
+    requests++;
+    const query = JSON.parse(String(options.body)).query;
+    assert.ok(!query.includes('email'));
+    return Response.json({data:{myself:{id:'fixture',clientBalance:0}}});
+  }});
+  assert.equal((await readOnly.getBilling()).accountBalanceUsd, 0);
+  assert.equal((await readOnly.submitWorkload('fixture', {workloadId:'fixture'} as any)).success, false);
+  assert.equal(requests, 1);
+  const podId = 'pod" }) { injected } #';
+  let capturedQuery = '';
+  const statusReader = new RunpodProvider({apiKey:()=> 'synthetic-only',request:async(_url, options)=>{
+    capturedQuery = JSON.parse(String(options.body)).query;
+    return Response.json({data:{pod:{id:podId,desiredStatus:'RUNNING',actualStatus:'RUNNING'}}});
+  }});
+  await statusReader.getInstanceStatus(podId);
+  assert.ok(capturedQuery.includes(`podId: ${JSON.stringify(podId)}`));
+
+  console.log(`PASS: ${cases} direct billing cases plus injected transport/read-only submission; no live requests`);
 } finally {
   globalThis.fetch = originalFetch;
 

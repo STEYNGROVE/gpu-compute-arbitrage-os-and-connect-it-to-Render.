@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { performance } from 'node:perf_hooks';
 import { EventEmitter } from 'node:events';
 import type { ClientRequest } from 'node:http';
 import {
@@ -83,7 +84,8 @@ async function main() {
   const stalledDns: FeedDnsResolver =
     async () => new Promise(() => {});
 
-  const started = Date.now();
+  // Elapsed time must not change when the system wall clock is adjusted.
+  const started = performance.now();
 
   const keepAlive = setInterval(() => {}, 1000);
 
@@ -96,7 +98,7 @@ async function main() {
     clearInterval(keepAlive);
   }
 
-  const elapsed = Date.now() - started;
+  const elapsed = performance.now() - started;
 
   assert.ok(
     elapsed >= 8000 && elapsed < 15000,

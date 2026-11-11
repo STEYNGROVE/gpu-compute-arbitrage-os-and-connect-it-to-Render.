@@ -1,3 +1,4 @@
+import { isCommercialComputeLead } from './commercialLeadFilter.js';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import crypto from 'crypto';
@@ -44,8 +45,6 @@ db?.on('error', (err: Error) => {
 
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
-
-import { isCommercialComputeLead } from './commercialLeadFilter.js';
 
 const xmlDecode = (s: string) =>
   s

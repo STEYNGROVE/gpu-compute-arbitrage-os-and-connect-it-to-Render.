@@ -1,3 +1,4 @@
+import { liveOperationsAllowed } from './simulationSafety.js';
 import crypto from 'crypto';
 import { computeAddress } from 'ethers';
 import { db } from './databaseEngine.js';
@@ -140,6 +141,7 @@ export class VerifiedProfitWithdrawalService {
     totalProfitSynced: number;
     calculation?: VerifiedProfitCalculation;
   }> {
+    if (!liveOperationsAllowed()) return { syncedCount: 0, totalProfitSynced: 0 };
     let syncedCount = 0;
     let totalProfitSyncedMinor = 0n;
 
@@ -607,6 +609,9 @@ export class VerifiedProfitWithdrawalService {
     error?: string;
     blockReasons?: string[];
   }> {
+    if (!liveOperationsAllowed()) {
+      return { success: false, error: 'SIMULATION_LOCKDOWN: Profit withdrawals are disabled.' };
+    }
     const { coin = 'USDT', amount, destinationAddress, network = 'BSC', operator, ownerConfirmed, idempotencyKey } = params;
 
     // 0. Idempotency check
@@ -913,6 +918,9 @@ export class VerifiedProfitWithdrawalService {
     auditHash?: string;
     error?: string;
   }> {
+    if (!liveOperationsAllowed()) {
+      return { success: false, error: 'SIMULATION_LOCKDOWN: Profit withdrawals are disabled.' };
+    }
     const hotWalletAddr = hotWalletService.getAddress();
     if (!hotWalletAddr) {
       return { success: false, error: 'Internal hot wallet address could not be derived.' };

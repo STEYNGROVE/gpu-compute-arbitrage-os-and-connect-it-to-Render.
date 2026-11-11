@@ -29,74 +29,9 @@ check('SUPPLIER_DIAGNOSTICS',exists('server/supplierReadOnlyDiagnostics.ts'),'Re
 check('SINGLE_AUTHORIZED_PURCHASE_GATE',false,'Direct purchase implementation still exists in server/providerProvisioner.ts; all purchase paths require audited reservation enforcement','blocker');
 check('VERIFIED_BALANCE_ADAPTER',false,'No trusted, fresh supplier balance evidence adapter is verified end-to-end','blocker');
 check('PROVIDER_KILL_SWITCH',false,'No independently tested cost/time-based instance termination and reconciliation','blocker');
-
-// Re-run the real isolated PostgreSQL test when explicitly requested.
-let postgresVerified = false;
-let postgresDetail = 'Real isolated PostgreSQL test not executed';
-
-if (process.env.RUN_GPU_POSTGRES_AUDIT === 'YES') {
-  const { spawnSync } = require('node:child_process');
-  const url = process.env.TEST_DATABASE_URL;
-
-  try {
-    if (!url) throw Error('TEST_DATABASE_URL_REQUIRED');
-
-    const parsed = new URL(url);
-    const dbName = decodeURIComponent(parsed.pathname.slice(1));
-
-    if (!['127.0.0.1', 'localhost'].includes(parsed.hostname))
-      throw Error('LOCALHOST_ONLY');
-
-    if (!/(test|sandbox|scratch)/i.test(dbName))
-      throw Error('TEST_DATABASE_REQUIRED');
-
-    if (process.env.ALLOW_ISOLATED_GPU_DB_TEST !== 'YES')
-      throw Error('EXPLICIT_OPT_IN_REQUIRED');
-
-    if (process.env.RENDER || process.env.NODE_ENV === 'production')
-      throw Error('DEPLOYMENT_ENVIRONMENT_REFUSED');
-
-    if (process.env.DATABASE_URL &&
-        url === process.env.DATABASE_URL)
-      throw Error('REFUSE_PRODUCTION_DATABASE_URL');
-
-    const env = { ...process.env };
-    delete env.DATABASE_URL;
-    delete env.RENDER;
-
-    const result = spawnSync(
-      process.execPath,
-      [require.resolve('tsx/cli'), 'test/prepaidPostgresIntegrationSuite.ts'],
-      {
-        cwd: root,
-        env: { ...env, NODE_ENV: 'test', DISABLE_JSON_PERSISTENCE: 'true' },
-        encoding: 'utf8',
-        timeout: 120000,
-        maxBuffer: 1024 * 1024
-      }
-    );
-
-    const marker = 'PASS: isolated PostgreSQL schema migration, public fail-closed, concurrent serialization, duplicate prevention, active-job limit, rollback and recovery';
-
-    postgresVerified = result.status === 0 &&
-      !result.error &&
-      result.stdout.includes(marker) &&
-      !result.stdout.includes('SKIP:');
-
-    postgresDetail = postgresVerified
-      ? 'Fresh isolated PostgreSQL concurrency and rollback test passed'
-      : 'PostgreSQL integration test failed or did not prove execution';
-
-  } catch (err) {
-    postgresDetail = 'PostgreSQL audit setup rejected: ' + err.message;
-  }
-}
-
-check('REAL_DB_CONCURRENCY_TEST',
-  postgresVerified, postgresDetail, 'blocker');
-
+check('REAL_DB_CONCURRENCY_TEST',false,'Isolated reservation concurrency tests exist; full financial repositories, crash recovery and migration upgrade/replay remain uncertified','blocker');
 check('PAYMENT_EVIDENCE_ADAPTER',false,'No independently verified prepaid customer payment adapter','blocker');
-const report={generatedAt:new Date().toISOString(),mode:'READ_ONLY_NO_PURCHASES',safeControlsPassed:findings.filter(f=>f.severity==='critical'&&f.pass).length,safeControlsFailed:findings.filter(f=>f.severity==='critical'&&!f.pass).length,remainingBlockers:findings.filter(f=>f.severity==='blocker'&&!f.pass).length,findings};
+const report={generatedAt:new Date().toISOString(),mode:'READ_ONLY_NO_PURCHASES',safeControlsPassed:findings.filter(f=>f.severity==='critical'&&f.pass).length,safeControlsFailed:findings.filter(f=>f.severity==='critical'&&!f.pass).length,remainingBlockers:findings.filter(f=>f.severity==='blocker').length,findings};
 console.log(JSON.stringify(report,null,2));
 if (
   process.argv.includes('--strict') &&
