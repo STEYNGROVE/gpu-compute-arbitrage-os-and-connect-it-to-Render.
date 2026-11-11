@@ -22,7 +22,8 @@ assert.equal(reconciled.count,2);assert.equal(reconciled.gpuCount,3);assert.equa
 const unknown=await commandCenterJobSummary([],true,async()=>[{jobId:'missing-estimate',gpuCount:1,status:'RUNNING'}]);
 assert.equal(unknown.estimatedAccruedCost,null,'Missing telemetry is not zero cost');
 assert.equal(summary.invoicedCostUsd,null);assert.equal(summary.realizedProfitUsd,null);
-assert.equal((await commandCenterJobSummary([],false,async()=>{throw Error('not called');})).count,null);
+const disconnected=await commandCenterJobSummary([],false,async()=>{throw Error('not called');});
+assert.equal(disconnected.count,null);assert.equal(disconnected.estimatedAccruedCost,null);
 await assert.rejects(commandCenterJobSummary([],true,async()=>{throw Error('unavailable');}));
 const app=express();app.use(express.json());app.use(rateLimit(2,60000,1,undefined,verifiedOwnerRateIdentity));
 app.get('/public',(_q,r)=>r.json({ok:true}));app.get('/owner',requireOwnerAuth,(_q,r)=>r.json({ok:true}));
