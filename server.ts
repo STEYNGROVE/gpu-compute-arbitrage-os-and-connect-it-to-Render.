@@ -1,3 +1,5 @@
+import { registerSpaceStationOne } from './server/spaceStationOne.js';
+import { registerCommercialEvidence } from './server/commercialEvidence.js';
 import { registerH100FleetController } from './server/h100FleetController.js';
 import { rateLimit } from './server/rateLimit.js';
 import { liveOperationsAllowed } from './server/simulationSafety.js';
@@ -168,9 +170,11 @@ app.use(rateLimit(200, 60000));
 // Phase 2/3: Public enquiry intake only. No execution, no payments.
 app.get('/request-quote', (_req, res) => res.sendFile(path.join(process.cwd(), 'request-quote.html')));
 registerCommercialIntake(app, requireOwnerAuth);
+registerCommercialEvidence(app, requireOwnerAuth);
 registerPreapprovedWorkloads(app, requireOwnerAuth);
   registerOwnerOperations(app, requireOwnerAuth);
 registerOwnerCommandCentre(app, requireOwnerAuth);
+registerSpaceStationOne(app, requireOwnerAuth);
 registerOwnerSalesWorkspace(app, requireOwnerAuth);
 registerCustomerIntelligence(app, requireOwnerAuth);
 registerGpuHunterX(app, requireOwnerAuth);
