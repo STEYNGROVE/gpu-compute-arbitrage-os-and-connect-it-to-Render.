@@ -450,7 +450,12 @@ export class RunpodProvider extends BaseProvider {
         };
       }
       const json = await res.json();
-      const bal = Number(json.data?.myself?.clientBalance || 0);
+      const rawBalance = json.data?.myself?.clientBalance;
+      const bal = typeof rawBalance === 'number' &&
+        Number.isFinite(rawBalance) &&
+        rawBalance >= 0 &&
+        rawBalance < 100000000
+          ? rawBalance : null;
       return {
         providerId: this.id,
         accountBalanceUsd: bal,

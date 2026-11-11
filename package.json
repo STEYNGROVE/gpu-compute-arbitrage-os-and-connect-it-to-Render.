@@ -20,7 +20,8 @@
     "test:purchase-boundary": "node test/directPurchaseBoundarySuite.cjs",
     "test:gpu-postgres": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/prepaidPostgresIntegrationSuite.ts",
     "test:supplier-balances": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/supplierBalanceReadOnlySuite.ts",
-    "test:v5-commercial": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/v5CommercialEvidenceSuite.ts"
+    "test:v5-commercial": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/v5CommercialEvidenceSuite.ts",
+    "test:provider-billing": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/providerBillingValidationSuite.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
