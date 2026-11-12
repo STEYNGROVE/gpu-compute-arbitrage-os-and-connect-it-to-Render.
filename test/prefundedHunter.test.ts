@@ -564,7 +564,9 @@ test("HTTP owner isolation, CSRF, malformed JSON, secret-safe failures and no ex
     const { requireOwnerAuth, createBrowserSession } =
       await import("../server/auth.js");
     const app = express();
+    let collectorCalls = 0;
     registerPrefundedHunter(app, requireOwnerAuth, hunter, async () => {
+      collectorCalls++;
       throw Error("PRIVATE-UPSTREAM-KEY");
     });
     const server = app.listen(0, "127.0.0.1");
@@ -581,12 +583,26 @@ test("HTTP owner isolation, CSRF, malformed JSON, secret-safe failures and no ex
     try {
       for (const headers of [
         {},
+        { "X-Owner-Api-Key": "invalid" },
         {
           "X-Session-Id": createBrowserSession("CUSTOMER", "customer")
             .sessionId,
         },
-      ])
+      ]) {
         assert.equal((await fetch(base, { headers })).status, 403);
+        for (const route of ["/discover", "/proposals", "/review", "/stop"])
+          assert.equal(
+            (
+              await fetch(base + route, {
+                method: "POST",
+                headers: { ...headers, "Content-Type": "application/json" },
+                body: "{}",
+              })
+            ).status,
+            403,
+          );
+      }
+      assert.equal(collectorCalls, 0);
       const snapshot = await fetch(base, { headers: owner });
       assert.equal(snapshot.status, 200);
       assert.equal(snapshot.headers.get("cache-control"), "no-store");
@@ -756,4 +772,113 @@ test("independently signed negative facts still reject eligibility, firm price, 
       ),
     );
   }
+});
+
+test("public diagnostic maps actual transport rows and cannot promote fixture data or failed reads to funding", async () => {
+  const { probePrefundedPublic } =
+    await import("../scripts/probePrefundedPublic.js");
+  const operations: string[] = [];
+  const report = await probePrefundedPublic(async (request) => {
+    operations.push(request.operation);
+    if (request.operation !== "runpodCatalog") throw Error("SOURCE_HTTP_501");
+    return {
+      sourceUrl: "https://api.runpod.io/graphql",
+      retrievedAt: new Date().toISOString(),
+      data: {
+        data: {
+          gpuTypes: [
+            {
+              id: "synthetic-gpu",
+              displayName: "Fixture GPU",
+              memoryInGb: 24,
+              lowestPrice: { uninterruptablePrice: 1.23 },
+            },
+          ],
+        },
+      },
+    };
+  });
+  assert.equal(report.origin, "OFFLINE_INJECTED");
+  assert.equal(report.financialExecutionAllowed, false);
+  assert.equal(report.fundedCustomerOpportunitiesVerified, 0);
+  assert.equal(
+    report.escrowFundingVerification,
+    "NOT_IMPLEMENTED_NO_TRUSTED_COLLECTOR",
+  );
+  assert.equal(report.results[0].normalizedOffers, 1);
+  assert.equal(report.results[0].samples[0].hourlyUsd, 1.23);
+  assert.equal(report.results[1].status, "BLOCKED");
+  assert.deepEqual(operations, [
+    "runpodCatalog",
+    "akashOrders",
+    "akashDeployments",
+  ]);
+});
+test("dashboard renders and backend/dashboard/navigation/test entrypoints are wired", async () => {
+  const React = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const { PrefundedHunterDashboard } =
+    await import("../src/components/PrefundedHunterDashboard.js");
+  const { readFile } = await import("node:fs/promises");
+  const html = renderToStaticMarkup(
+    React.createElement(PrefundedHunterDashboard),
+  );
+  assert(html.includes("Pre-Funded GPU Job Hunter"));
+  assert(html.includes("Financial execution stays disabled"));
+  const backend = await readFile("server.ts", "utf8");
+  assert(backend.includes("registerPrefundedHunter(app, requireOwnerAuth)"));
+  assert(
+    (await readFile("src/App.tsx", "utf8")).includes(
+      "activeTab === 'prefunded_hunter'",
+    ),
+  );
+  assert(
+    (await readFile("src/components/Header.tsx", "utf8")).includes(
+      "id: 'prefunded_hunter'",
+    ),
+  );
+  assert(
+    JSON.parse(await readFile("package.json", "utf8")).scripts.test.includes(
+      "npm run test:prefunded",
+    ),
+  );
+});
+
+test("public Akash diagnostics distinguish readable open GPU orders from verified escrow funding", async () => {
+  const { probePrefundedPublic } =
+    await import("../scripts/probePrefundedPublic.js");
+  const report = await probePrefundedPublic(async (request) => {
+    if (request.operation === "runpodCatalog") throw Error("SOURCE_HTTP_503");
+    return {
+      sourceUrl: "https://api.akashnet.net/akash",
+      retrievedAt: new Date().toISOString(),
+      data:
+        request.operation === "akashOrders"
+          ? {
+              orders: [
+                {
+                  id: {
+                    owner: "akash1synthetic",
+                    dseq: "123",
+                    gseq: 1,
+                    oseq: 1,
+                  },
+                  state: "open",
+                  spec: {
+                    resources: [{ resource: { gpu: { units: { val: "1" } } } }],
+                  },
+                },
+              ],
+            }
+          : { deployments: [] },
+    };
+  });
+  assert.equal(report.results[1].observedRecords, 1);
+  assert.equal(report.results[1].openGpuOrdersUnverified, 1);
+  assert.equal(report.results[1].orderSamples[0].funding, "UNVERIFIED");
+  assert.equal(report.fundedCustomerOpportunitiesVerified, 0);
+  assert.equal(
+    report.escrowFundingVerification,
+    "NOT_IMPLEMENTED_NO_TRUSTED_COLLECTOR",
+  );
 });
