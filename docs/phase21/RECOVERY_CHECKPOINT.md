@@ -40,3 +40,5 @@ Files modified at recovery:
 ```
 
 Milestone: recovered rerun passed 52 named Phase 21 tests, 9 archive + 7 control PostgreSQL scenarios including backup restoration. Added post-commit entry balancing and collector circuit regression. Final suite rerun includes additional HTTP-header/lifecycle-fault tests. Documentation now covers architecture, release, privacy/security, finance, business, agents and provider gaps; final matrix/report pending.
+
+Milestone commit: `93c2cb340c7f2f2ed943aa3d21de1370ec750825` contains verified code/tests and baseline. Full npm test, typecheck/lint/security/build and both dependency audits passed; strict launch audit remains exit 1. Final named Phase 21 suite: 64 passed/0 failed/0 skipped. Final PostgreSQL rerun and documentation/GitHub delivery still completing.

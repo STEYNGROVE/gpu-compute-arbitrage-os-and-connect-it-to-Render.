@@ -1,0 +1,127 @@
+[
+  {
+    "id": 1,
+    "name": "Unified GPU purchase gateway",
+    "severity": "CRITICAL",
+    "status": "PARTIAL",
+    "required": "Authoritative gateway; adapters and provider/account approvals; durable idempotency/state/audit; exposure ceilings; expiry/retry/timeouts/circuit; leases/fences/recovery; emergency stop; no bypasses",
+    "implemented": "Phase 20 serializable simulation journal, digest/key deduplication and caps, atomic audited transitions, uncertain-commit lookup; Phase 21 recorded contract validation, DB-clock simulation leases/fenced transitions, permanent real-execution latch, collector circuit",
+    "sources": [
+      "server/phase20/gateway.ts",
+      "server/phase21/workerLease.ts",
+      "server/phase21/providerContract.ts",
+      "server/phase21/reconciliation.ts",
+      "server/simulationSafety.ts"
+    ],
+    "tests": [
+      "npm run test:phase20",
+      "npm run test:phase21",
+      "npm run test:phase21-postgres",
+      "npm run test:purchase-boundary",
+      "npm run test:simulation-safety"
+    ],
+    "externalEvidence": "No live provisioning or independent adapter certification",
+    "remaining": "No certified live dispatch/authorization integration; optional fencing applies only to simulation callers; legacy implementations retained behind denial; no production journal deployment",
+    "risk": "Cannot authorize a resource purchase; simulation correctness does not establish provider idempotency",
+    "acceptance": "Independent reviewed single live boundary and separately authorized provider-backed duplicate/crash/uncertain-response/exposure tests; no enabled bypass"
+  },
+  {
+    "id": 2,
+    "name": "Trusted supplier balances and capacity",
+    "severity": "HIGH",
+    "status": "PARTIAL",
+    "required": "Account-authenticated collectors; hardware/quantity/region/all charges/terms/auto-charge/freshness; signed provenance/rotation/revocation/replay/retention/rate limits; verified independent origin",
+    "implemented": "Fixed read-only Vast/RunPod operations, pinned TLS/DNS, deadlines/body limits; expected-account snapshot/digest/explicit unknown fields; recorded metadata contracts; Ed25519 validity/revocation and append-only receipt/event archive; circuit/rate control",
+    "sources": [
+      "server/phase21/supplierReadOnly.ts",
+      "server/phase21/circuitBreaker.ts",
+      "server/phase20/evidence.ts",
+      "server/phase21/evidenceArchive.ts",
+      "server/phase20/supplierEvidence.ts"
+    ],
+    "tests": [
+      "npm run test:phase21",
+      "npm run test:phase21-postgres",
+      "npm run test:phase20",
+      "npm run test:provider-billing"
+    ],
+    "externalEvidence": "Official API documentation only; authenticated supplier facts NOT_VERIFIED",
+    "remaining": "No credential/root configured, independently validated real account/balance/guaranteed capacity, production archive/retention; missing live billing/region/auto-charge fields",
+    "risk": "Catalog stock is not reserved capacity; default trust empty; production provenance unestablished",
+    "acceptance": "Independent authenticated account-bound complete fresh evidence and root governance review; capacity and auto-charge cannot be inferred"
+  },
+  {
+    "id": 3,
+    "name": "GPU termination and billing reconciliation",
+    "severity": "CRITICAL",
+    "status": "PARTIAL",
+    "required": "Durable stop intent/ownership/runtime/exposure; workload completion; status/invoice reconciliation; retries/quarantine/orphans/continuing charges; storage/network matching; recovery/alerts/manual escalation",
+    "implemented": "Persistent Phase 20 stop intent/attempt/backoff and quarantined exposure, final simulated invoice gate; Phase 21 lease/fence primitives, permanent emergency latch, signed billing-review boundary and fault cases",
+    "sources": [
+      "server/phase20/termination.ts",
+      "server/phase20/gateway.ts",
+      "server/phase21/reconciliation.ts",
+      "server/phase21/workerLease.ts"
+    ],
+    "tests": [
+      "npm run test:phase20",
+      "npm run test:phase21",
+      "npm run test:phase21-postgres"
+    ],
+    "externalEvidence": "No real cancellation, final provider invoice or continuing-charge cessation proof",
+    "remaining": "No running independently certified cutoff worker; detailed real storage/network invoice line matching, monitoring alert integration and live outage/restart certification",
+    "risk": "Acknowledged stop never proves end of billing; uncertainty must retain exposure",
+    "acceptance": "Separately authorized provider-backed cutoff/failure/restart/invoice tests and independently reconciled remaining exposure"
+  },
+  {
+    "id": 4,
+    "name": "PostgreSQL financial integrity",
+    "severity": "HIGH",
+    "status": "PARTIAL",
+    "required": "Authoritative immutable double-entry ledger, atomic event deduplication, account/asset/minor-unit invariants, reversals/refunds/settlement/prepaid liabilities/revenue policy; roles/backups/replay/restart/replica; baseline migration certification",
+    "implemented": "Disposable integer double-entry transfer prototype, unique digests, owner/currency/negative-balance controls/full reversal, deferred balancing including later insert; schema/checksum planning, receipt archive, pg_dump/restore rehearsal; legacy financial denial remains",
+    "sources": [
+      "server/phase21/ledgerLab.ts",
+      "docs/migration-proposals/20261112_phase21_control_lab.sql",
+      "server/phase21/migrations.ts",
+      "scripts/phase21MigrationPlan.ts",
+      "test/phase21ControlsPostgres.ts"
+    ],
+    "tests": [
+      "npm run test:phase21-postgres",
+      "npm run test:phase20-postgres",
+      "npm run test:phase21",
+      "npm run plan:phase21-migrations"
+    ],
+    "externalEvidence": "Actual disposable local PostgreSQL; no authorized production baseline or independent financial audit",
+    "remaining": "Prototype is not production ledger; full chart/partial refunds/tax/FX/settlement/out-of-order policy and historical replay/replicas; actual least-privilege roles/production backup restoration/upgrade",
+    "risk": "Legacy float or simulation journal must never become financial authority by configuration",
+    "acceptance": "Independently reproducible complete ledger and restored production-baseline upgrade/roles/recovery certification with accountant/DBA acceptance"
+  },
+  {
+    "id": 5,
+    "name": "Independent commercial/payment evidence",
+    "severity": "HIGH",
+    "status": "PARTIAL",
+    "required": "Lawful fresh buyer opportunities; identity/procurement/human approvals; full cost quote; enforceable contract/payment binding/signature/dedup/refund/chargeback/delivery/cost/revenue recognition",
+    "implemented": "Existing secure discovery/qualification/draft complete-cost quote and cumulative evidence chain retained; Phase 21 event conflict archive, payment-order review, bounded advisory roles and integer assumption model; no collection/posting",
+    "sources": [
+      "server/leadDiscovery.ts",
+      "server/phase20/commercialEvidence.ts",
+      "server/phase20/quotation.ts",
+      "server/phase21/paymentBoundary.ts",
+      "server/phase21/evidenceArchive.ts",
+      "server/phase21/agents.ts"
+    ],
+    "tests": [
+      "npm run test:phase19",
+      "npm run test:phase20",
+      "npm run test:phase21",
+      "npm run test:phase21-postgres"
+    ],
+    "externalEvidence": "No independently verified buyer, contract, payment or earned revenue",
+    "remaining": "No named production payment webhook/signature lifecycle, complete refund/chargeback integration, genuine contract/delivery/cost/recognition chain, professional legal/tax advice",
+    "risk": "Fixtures/drafts/LLM statements do not establish demand or money; no operational commercial certification",
+    "acceptance": "Independent genuine customer/contract/payment/delivery/cost evidence plus trusted event processing and professional policy review"
+  }
+]

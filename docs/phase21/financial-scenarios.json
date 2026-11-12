@@ -1,0 +1,77 @@
+[
+  {
+    "origin": "UNVERIFIED_ASSUMPTIONS",
+    "utilizationBps": 2500,
+    "usd": {
+      "revenueCents": "3000",
+      "gpuCents": "5000",
+      "storageNetworkCents": "500",
+      "operationsCents": "1000",
+      "feesCents": "105",
+      "refundReserveCents": "150",
+      "contingencyCents": "550",
+      "fixedOverheadCents": "2000",
+      "grossContributionCents": "-4305",
+      "netCents": "-6305"
+    },
+    "zar": {
+      "revenueCents": "54000",
+      "netCents": "-113490"
+    },
+    "breakEvenBilledHoursAtFullUtilization": "53",
+    "minimumContractUsdCents": "6360",
+    "realizedRevenueCents": "0",
+    "recommendedPrepayment": "FULL_CUSTOMER_PRICE_PLUS_AGREED_EXPOSURE_RESERVE",
+    "liveSpendingLimitCents": 0
+  },
+  {
+    "origin": "UNVERIFIED_ASSUMPTIONS",
+    "utilizationBps": 6000,
+    "usd": {
+      "revenueCents": "7200",
+      "gpuCents": "5000",
+      "storageNetworkCents": "500",
+      "operationsCents": "1000",
+      "feesCents": "252",
+      "refundReserveCents": "360",
+      "contingencyCents": "550",
+      "fixedOverheadCents": "2000",
+      "grossContributionCents": "-462",
+      "netCents": "-2462"
+    },
+    "zar": {
+      "revenueCents": "129600",
+      "netCents": "-44316"
+    },
+    "breakEvenBilledHoursAtFullUtilization": "53",
+    "minimumContractUsdCents": "6360",
+    "realizedRevenueCents": "0",
+    "recommendedPrepayment": "FULL_CUSTOMER_PRICE_PLUS_AGREED_EXPOSURE_RESERVE",
+    "liveSpendingLimitCents": 0
+  },
+  {
+    "origin": "UNVERIFIED_ASSUMPTIONS",
+    "utilizationBps": 9000,
+    "usd": {
+      "revenueCents": "10800",
+      "gpuCents": "5000",
+      "storageNetworkCents": "500",
+      "operationsCents": "1000",
+      "feesCents": "378",
+      "refundReserveCents": "540",
+      "contingencyCents": "550",
+      "fixedOverheadCents": "2000",
+      "grossContributionCents": "2832",
+      "netCents": "832"
+    },
+    "zar": {
+      "revenueCents": "194400",
+      "netCents": "14976"
+    },
+    "breakEvenBilledHoursAtFullUtilization": "53",
+    "minimumContractUsdCents": "6360",
+    "realizedRevenueCents": "0",
+    "recommendedPrepayment": "FULL_CUSTOMER_PRICE_PLUS_AGREED_EXPOSURE_RESERVE",
+    "liveSpendingLimitCents": 0
+  }
+]

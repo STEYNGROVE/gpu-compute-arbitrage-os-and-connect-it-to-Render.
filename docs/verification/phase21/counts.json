@@ -1,0 +1,57 @@
+{
+  "npm run test:phase21": {
+    "exitStatus": 0,
+    "namedTests": {
+      "tests": 64,
+      "pass": 64,
+      "fail": 0,
+      "skipped": 0
+    },
+    "scenarios": {},
+    "log": "check-28-attempt-5.log"
+  },
+  "npm run test:phase21-postgres": {
+    "exitStatus": 0,
+    "namedTests": {},
+    "scenarios": {
+      "PHASE20_POSTGRES_COUNTS": {
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0
+      },
+      "PHASE21_POSTGRES_COUNTS": {
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "PHASE21_CONTROL_POSTGRES_COUNTS": {
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "log": "check-29-attempt-5.log"
+  },
+  "npm run test:phase20": {
+    "exitStatus": 0,
+    "namedTests": {
+      "tests": 57,
+      "pass": 57,
+      "fail": 0,
+      "skipped": 0
+    },
+    "scenarios": {},
+    "log": "check-08-attempt-1.log"
+  },
+  "NODE_ENV=production STRICT_AUTH_ENFORCEMENT=true tsx --test server/gpuOfferEvidence.test.ts server/gpuEvidenceIntegration.test.ts server/gpuEvidenceHttp.test.ts server/gpuAuthIsolation.test.ts server/gpuOwnerAuthHttp.test.ts": {
+    "exitStatus": 0,
+    "namedTests": {
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "skipped": 0
+    },
+    "scenarios": {},
+    "log": "check-26-attempt-1.log"
+  }
+}
