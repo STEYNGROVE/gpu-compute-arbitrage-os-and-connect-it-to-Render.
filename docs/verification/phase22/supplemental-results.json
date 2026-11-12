@@ -1,0 +1,12 @@
+[
+  {
+    "command": "npm audit --json",
+    "exit_code": 0,
+    "log": "dependency-audit.json"
+  },
+  {
+    "command": "npm run security:check (after staging complete Phase22 dossier)",
+    "exit_code": 0,
+    "log": "final-tracked-security.log"
+  }
+]
