@@ -111,4 +111,3 @@ All five remain PARTIAL. None is CERTIFIED, EXTERNALLY_VERIFIED or a financial l
 **Residual risk:** Fixtures/drafts/LLM statements do not establish demand or money; no operational commercial certification.
 
 **Acceptance criteria:** Independent genuine customer/contract/payment/delivery/cost evidence plus trusted event processing and professional policy review.
-
