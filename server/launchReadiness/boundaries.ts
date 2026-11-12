@@ -1,3 +1,4 @@
+import { denyRealExecution } from '../phase20/gateway.js';
 /** Offline assessment only. These contracts cannot authorize reservations or external actions. */
 export type EvidenceBinding = {
   id: string;
@@ -69,5 +70,6 @@ export function reconcileTermination(e: TerminationEvidence, instanceId: string,
 
 /** The proposed gateway deliberately has no provider, database or payment adapter dependency. */
 export async function requestPurchase(_request: unknown): Promise<Assessment> {
+  denyRealExecution(); // Shared Phase 20 permanent denial; legacy error contract retained.
   return decision('SIMULATION_LOCKDOWN_PURCHASING_GATEWAY_NOT_CERTIFIED');
 }

@@ -1,3 +1,4 @@
+import { configuredDiscoverySources } from './phase20/discoverySources.js';
 import { qualifyPublishedLead } from './leadQualification.js';
 import { parseFeedXml, feedEntries } from './boundedFeedXml.js';
 import { assessFeedPublication } from './feedPublicationEvidence.js';
@@ -55,12 +56,7 @@ db?.on('error', (err: Error) => {
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
 
-const feeds = () =>
-  (process.env.LEAD_RSS_FEEDS || '')
-    .split(',')
-    .map((x) => x.trim())
-    .filter(Boolean)
-    .slice(0, MAX_FEEDS);
+const feeds = () => configuredDiscoverySources(process.env.LEAD_SOURCE_REGISTRY_JSON,process.env.LEAD_RSS_FEEDS || '').map(source=>source.feedUrl).slice(0,MAX_FEEDS);
 
 function publicFeedReference(input: string): string {
   try { const url = new URL(input); return url.origin + url.pathname; }
@@ -116,7 +112,7 @@ export async function persistAcquisitionLead(
   if (store) {
     const result = await store.query(
       `INSERT INTO acquisition_leads (id,title,source_url,source_feed,description,published_at)
-       VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(source_url) DO NOTHING RETURNING id`,
+       VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING RETURNING id`,
       [lead.id, lead.title, lead.source_url, lead.source_feed, lead.description ?? null, lead.published_at ?? null]
     );
     return result.rows.length === 1;
@@ -170,6 +166,7 @@ async function scan(
         const plain = (value: string, max: number) => value.replace(/<[^<>]*>/g, '').trim().slice(0,max);
         const title = plain(text('title'), 240);
         const description = plain(text('description') || text('summary'), 600);
+        if (!qualifyPublishedLead({title,description,source_url:'',source_feed:feed,published_at:publication.publishedAt}).freshForReview) {reject('PROCUREMENT_DEADLINE_PASSED');continue;}
         if (!title || !isCommercialComputeLead(title, description, feed)) { reject('NO_CLEAR_BUYER_INTENT'); continue; }
         let url = text('link').trim();
         if (!url) url = entry.children.find(n => n.name === 'link' && (!n.attributes.rel || n.attributes.rel === 'alternate'))?.attributes.href || '';

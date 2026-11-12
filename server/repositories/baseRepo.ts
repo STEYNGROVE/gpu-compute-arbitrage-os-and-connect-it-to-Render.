@@ -12,6 +12,7 @@ export class TransactionFailedError extends Error {
   constructor(message: string, public readonly originalError?: Error) {
     super(message);
     this.name = 'TransactionFailedError';
+    Object.defineProperty(this,'originalError',{value:originalError,enumerable:false});
   }
 }
 
@@ -39,9 +40,9 @@ export abstract class BasePostgresRepository {
       try {
         await client.query('ROLLBACK');
       } catch (rollbackErr: any) {
-        console.error('[TRANSACTION ROLLBACK FAILED]', rollbackErr.message);
+        console.error('[TRANSACTION ROLLBACK FAILED]', {name:rollbackErr.name,code:rollbackErr.code || 'UNKNOWN'});
       }
-      throw new TransactionFailedError(`PostgreSQL transaction failed: ${err.message}`, err);
+      throw new TransactionFailedError('PostgreSQL transaction failed', err);
     } finally {
       client.release();
     }
