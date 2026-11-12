@@ -1,0 +1,14 @@
+{
+  "attempts": [
+    {
+      "command": "npm run test:launch-recovery-postgres",
+      "result": "FAIL",
+      "evidence": "/data/data/com.termux/files/usr/tmp/recovery-postgres.log",
+      "cause": "Historical Phase23 fixture included future acquisition migration history, causing expected prefix preflight rejection before its proposal.",
+      "repair": "Historical fixture now copies only the prefix before its proposal; complete current fresh installation independently tested.",
+      "recheck": "recovery-postgres-recheck.log and recovery-postgres-final.log passed."
+    }
+  ],
+  "publicRuntimeChecks": "All six GET attempts timed out; no HTTP behavior claimed verified.",
+  "hostedStagingSmoke": "Not triggered; existing workflow is manual-only and deployment is unauthorized."
+}

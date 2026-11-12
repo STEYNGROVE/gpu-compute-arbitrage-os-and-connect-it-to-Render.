@@ -22,8 +22,20 @@ export function compareWholesale(
     plan.contingencyMinor +
     plan.taxMinor;
   return offers
+    .map((offer, index) => {
+      const observed = Date.parse(offer.retrievedAt);
+      return {
+        offer,
+        index,
+        time:
+          Number.isFinite(observed) && observed <= now ? observed : -Infinity,
+      };
+    })
+    .sort((a, b) =>
+      a.time === b.time ? a.index - b.index : a.time > b.time ? -1 : 1,
+    )
     .slice(0, 500)
-    .map((offer) => {
+    .map(({ offer }) => {
       const reasons: string[] = [];
       const observed = Date.parse(offer.retrievedAt),
         expires = Date.parse(offer.expiresAt);
@@ -83,6 +95,13 @@ export function compareWholesale(
     })
     .sort(
       (a, b) =>
-        (b.estimatedNetMinor ?? -Infinity) - (a.estimatedNetMinor ?? -Infinity),
+        Number(b.screeningPassed) - Number(a.screeningPassed) ||
+        ((a.estimatedNetMinor ?? -Infinity) ===
+        (b.estimatedNetMinor ?? -Infinity)
+          ? 0
+          : (a.estimatedNetMinor ?? -Infinity) >
+              (b.estimatedNetMinor ?? -Infinity)
+            ? -1
+            : 1),
     );
 }

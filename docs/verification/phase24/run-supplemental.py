@@ -10,3 +10,6 @@ for i,command in enumerate(commands):
  with (root/log).open('w') as f:r=subprocess.run(command,shell=True,env=env,stdout=f,stderr=subprocess.STDOUT)
  row=dict(command=command,exit_code=r.returncode,seconds=round(time.monotonic()-start,2),log=log)
  rows.append(row);(root/'supplemental-commands.json').write_text(json.dumps(rows,indent=2)+'\n');print(json.dumps(row),flush=True)
+
+# Collect every result, but never report process success after a failed check.
+raise SystemExit(1 if any(row['exit_code'] != 0 for row in rows) else 0)

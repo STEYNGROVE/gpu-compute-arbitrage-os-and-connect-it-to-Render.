@@ -1,3 +1,4 @@
+import { strictPublicationTimestamp } from "../publicationTimestamp.js";
 import { createHash } from "node:crypto";
 import {
   readOfficial,
@@ -74,14 +75,24 @@ abstract class Adapter {
 }
 export class AkashDiscoveryAdapter extends Adapter {
   async discover() {
-    const response = await this.read({ operation: "akashOrders" }),
+    const response = await this.read({ operation: "akashOrders" });
+    let deployments: Awaited<ReturnType<ReadTransport>>;
+    try {
       deployments = await this.read({ operation: "akashDeployments" });
+    } catch (error) {
+      // Both versions are documented by the official chain SDK. Only an unsupported-service response permits compatibility fallback.
+      if (!(error instanceof Error) || error.message !== "SOURCE_HTTP_501")
+        throw error;
+      deployments = await this.read({ operation: "akashDeploymentsV1Beta4" });
+    }
     // Validate both interfaces; escrow deposit is neither an award nor a fixed-duration funding guarantee.
     list(object(deployments.data).deployments);
     const batch = this.batch(
       "akash",
       response,
-      "Open chain orders only. Deployment/escrow, per-block pricing, duration, SDL, provider registration and award require independent review. Deployment response digest: " +
+      "Open chain orders only. Deployment/escrow, per-block pricing, duration, SDL, provider registration and award require independent review. Deployment source: " +
+        deployments.sourceUrl +
+        ". Deployment response digest: " +
         digest(deployments.data),
     );
     for (const row of list(object(response.data).orders)) {
@@ -157,7 +168,16 @@ export class EnterpriseRfqAdapter extends Adapter {
       if (record.active !== "Yes") continue;
       const notice = id(record.noticeId),
         link = "https://sam.gov/opp/" + encodeURIComponent(notice) + "/view";
-      const deadline = Date.parse(text(record.responseDeadLine));
+      const deadline = strictPublicationTimestamp(
+        text(record.responseDeadLine),
+        true,
+      );
+      // SAM active means not archived, not necessarily open for responses. Ambiguous/missing deadlines fail closed per notice.
+      if (
+        !Number.isFinite(deadline) ||
+        deadline <= Math.max(Date.now(), Date.parse(response.retrievedAt))
+      )
+        continue;
       batch.candidates.push({
         id: "sam:" + notice,
         source: "enterprise",

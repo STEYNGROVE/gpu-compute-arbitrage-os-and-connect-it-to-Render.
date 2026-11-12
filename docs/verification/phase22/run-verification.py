@@ -12,3 +12,6 @@ for i,cmd in enumerate(commands):
     with (root/name).open('w') as f:r=subprocess.run(cmd,shell=True,env=env,stdout=f,stderr=subprocess.STDOUT)
     row=dict(command=cmd,exit_code=r.returncode,seconds=round(time.monotonic()-start,2),log=name)
     results.append(row);(root/'commands.json').write_text(json.dumps(results,indent=2)+'\n');print(json.dumps(row),flush=True)
+
+# Propagate aggregate status after collecting every check.
+raise SystemExit(1 if any(row['exit_code'] != 0 for row in results) else 0)

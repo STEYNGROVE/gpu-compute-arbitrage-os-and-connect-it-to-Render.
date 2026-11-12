@@ -1,0 +1,88 @@
+{
+  "decisions": {
+    "PUBLIC_COMMERCIAL_LAUNCH": "NO-GO",
+    "VERIFIED_ORDER_OPERATIONS": "NO-GO",
+    "AUTOMATED_FINANCIAL_EXECUTION": "NO-GO"
+  },
+  "historicalRevenueRequiredForPublicLaunch": false,
+  "gates": [
+    {
+      "gate": "codeQuality",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "tests",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "security",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "database",
+      "status": "UNVERIFIED_EXTERNAL",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Independent deployed/runtime/continuity evidence and owner authorization"
+    },
+    {
+      "gate": "github",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "render",
+      "status": "UNVERIFIED_EXTERNAL",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Independent deployed/runtime/continuity evidence and owner authorization"
+    },
+    {
+      "gate": "authentication",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "gpuDiscovery",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "customerAcquisition",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "quotation",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "financialSafeguards",
+      "status": "PENDING_COMBINED_VERIFICATION",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Complete candidate verification and review"
+    },
+    {
+      "gate": "monitoring",
+      "status": "UNVERIFIED_EXTERNAL",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Independent deployed/runtime/continuity evidence and owner authorization"
+    },
+    {
+      "gate": "operations",
+      "status": "UNVERIFIED_EXTERNAL",
+      "evidence": "See corresponding report and tests.json",
+      "minimumRemainingAction": "Independent deployed/runtime/continuity evidence and owner authorization"
+    }
+  ]
+}

@@ -51,6 +51,7 @@ async function main() {
     `], env);
     run(process.execPath, ['--import', 'tsx', 'test/prepaidPostgresIntegrationSuite.ts'], env);
     run(process.execPath, ['--import', 'tsx', 'test/postgresTimeoutIntegration.ts'], env);
+    if(process.argv.includes('--launch-recovery'))run(process.execPath,['--import','tsx','test/launchRecoveryPostgres.ts'],env);
     if (process.argv.includes('--phase23')) run(process.execPath, ['--import', 'tsx', 'test/phase23DatabaseRemediation.ts'], env);
     console.log('PASS: disposable local reservation certification; broader financial-system certification remains blocked');
   } catch (error) {

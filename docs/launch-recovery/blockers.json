@@ -1,0 +1,300 @@
+{
+  "observedAt": "2026-11-12T22:18:14.967392+00:00",
+  "blockers": [
+    {
+      "ID": "DB-01",
+      "severity": "high",
+      "classification": "Database defect",
+      "component": "commercial migrations",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Four runtime tables have no versioned creation migrations",
+      "repair": "Versioned prerequisite, explicit fresh bootstrap and additive acquisition schema; read-only runtime shape checks",
+      "verification": [
+        "test:launch-recovery-postgres"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "DB-02",
+      "severity": "high",
+      "classification": "Code defect",
+      "component": "pool lifecycle",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Stale fallback catch changes newer pool state",
+      "repair": "Coalesced initialization, pool identity/generation guards and stale fallback exit",
+      "verification": [
+        "test/postgresLifecycle.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "DB-03",
+      "severity": "high",
+      "classification": "Code defect",
+      "component": "migration environment",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Development .env ignored",
+      "repair": "Development-only quiet dotenv load without application bootstrap",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "HUNT-01",
+      "severity": "medium",
+      "classification": "Code defect",
+      "component": "SAM expiry",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Expired active RFQ poisons whole batch",
+      "repair": "Skip expired/missing/invalid/ambiguous deadline notices independently",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "HUNT-02",
+      "severity": "medium",
+      "classification": "Code defect",
+      "component": "offer selection",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "500-limit precedes recency sorting",
+      "repair": "Stable newest-valid observation sorting before 500-offer cap",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "HUNT-03",
+      "severity": "medium",
+      "classification": "Code defect",
+      "component": "profit ranking",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Failed high spreads hide valid comparisons",
+      "repair": "Passing screening group before failed spreads, stable net ranking",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "UI-01",
+      "severity": "medium",
+      "classification": "Code defect",
+      "component": "dashboard load",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "No initial snapshot load or cancellation",
+      "repair": "Mount session coalescing, abort/unmount guard, auth expiry clearing",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "UI-02",
+      "severity": "medium",
+      "classification": "Code defect",
+      "component": "proposal errors",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "Errors detached from form and not cleared on edit",
+      "repair": "Inline proposal error; edit/retry clear and submission revision guard",
+      "verification": [
+        "src/components/PrefundedHunterDashboard.tsx"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+    },
+    {
+      "ID": "INFRA-01",
+      "severity": "high",
+      "classification": "External permission",
+      "component": "Render workspace",
+      "evidence": "Render connector: no selected workspace; list_workspaces returned tea-d71ou663jp1c739fnubg; confirmation question pending.",
+      "root_cause": "No selected workspace; confirmation pending",
+      "repair": "Owner confirms intended workspace; perform read-only metadata/logs/DB checks.",
+      "verification": [],
+      "owner": "owner",
+      "status": "BLOCKED_EXTERNAL",
+      "residual_risk": "Actual services and deployment revisions unverified."
+    },
+    {
+      "ID": "INFRA-02",
+      "severity": "high",
+      "classification": "Infrastructure defect",
+      "component": "database continuity",
+      "evidence": "Historical expiry 2026-11-27 approximately 19:21 SAST; current expiry not directly verified.",
+      "root_cause": "Current expiry and durable recovery not yet verified",
+      "repair": "Confirm workspace and inspect instance; authorize durable continuity and approved backup/restore destination before expiry.",
+      "verification": [],
+      "owner": "owner/Render",
+      "status": "BLOCKED_EXTERNAL",
+      "residual_risk": "Continuity not established; no production backup is certified."
+    },
+    {
+      "ID": "FIN-01",
+      "severity": "high",
+      "classification": "Commercial dependency",
+      "component": "verified order operations",
+      "evidence": "Fresh baseline audit and PR review threads 55/56",
+      "root_cause": "No independent live payment, eligibility, firm capacity or customer order evidence",
+      "repair": "Independent payment/supplier/contract/fulfillment evidence and explicit owner authorization in separate release.",
+      "verification": [
+        "permanent financial lockdown tests"
+      ],
+      "owner": "owner/external",
+      "status": "BLOCKED_EXTERNAL",
+      "residual_risk": "Modes B/C remain NO-GO; this does not impose a historical revenue gate on Mode A."
+    },
+    {
+      "ID": "MERGE-01",
+      "severity": "high",
+      "classification": "Integration defect",
+      "component": "PR 55/56 integration",
+      "evidence": "Common base 1d450b9; conflicts in package.json/server.ts",
+      "root_cause": "Independent branches changed same integration points",
+      "repair": "Combined in isolated branch; retained both test chains/imports",
+      "verification": [
+        "combined npm test"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
+      "residual_risk": "Source PRs unchanged; owner merge approval still required."
+    },
+    {
+      "ID": "VERIFY-01",
+      "severity": "high",
+      "classification": "Code defect",
+      "component": "historical verification collectors",
+      "evidence": "Review body findings; six collectors terminated 0 after a failed command",
+      "root_cause": "Aggregate exit status was not propagated",
+      "repair": "Exit nonzero after collecting all checks; fake-command success/failure regression",
+      "verification": [
+        "test:verification-runners"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_VERIFIED",
+      "residual_risk": "Historical result files are not overwritten or reclassified."
+    },
+    {
+      "ID": "AKA-01",
+      "severity": "high",
+      "classification": "Integration defect",
+      "component": "Akash deployment discovery",
+      "evidence": "supplier-public-probe.json and akash-collector.json",
+      "root_cause": "v1beta5 service unsupported on queried node (HTTP 501)",
+      "repair": "Official v1beta4 compatibility query on HTTP 501 only",
+      "verification": [
+        "live read-only collection: 48 unverified candidates",
+        "compatibility regression"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_VERIFIED",
+      "residual_risk": "No chain freshness, escrow coverage, award or eligibility established."
+    },
+    {
+      "ID": "SUP-01",
+      "severity": "high",
+      "classification": "Code defect",
+      "component": "legacy supplier estimates",
+      "evidence": "Legacy Akash adapter supplied assumed stock/VRAM/fees/spot prices",
+      "root_cause": "Unverified metadata presented as live wholesale records",
+      "repair": "Quarantine unsupported Akash quotes; preserve official order discovery; mark aggregate rows catalog-only",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
+      "residual_risk": "Other legacy estimates remain indicative and cannot authorize a binding quote."
+    },
+    {
+      "ID": "SEC-01",
+      "severity": "high",
+      "classification": "Security defect",
+      "component": "supplier error boundaries",
+      "evidence": "Shared transport propagated raw upstream error text",
+      "root_cause": "Query-only redaction did not cover arbitrary bearer/header data",
+      "repair": "Bound shared errors and catalog collection diagnostics to fixed safe categories",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
+      "residual_risk": "Actual deployed configuration remains unverified."
+    },
+    {
+      "ID": "RENDER-01",
+      "severity": "high",
+      "classification": "External permission",
+      "component": "deployed revision/health",
+      "evidence": "public-runtime.json: six bounded GET timeouts; no selected workspace",
+      "root_cause": "Live infrastructure inaccessible without confirmed workspace and working read path",
+      "repair": "Owner confirms workspace; inspect live deployment/logs/metrics and runtime behavior",
+      "verification": [
+        "bounded public probes attempted"
+      ],
+      "owner": "owner/Render",
+      "status": "BLOCKED_EXTERNAL",
+      "residual_risk": "Failed historical deploy 1d450b9 cannot yet be diagnosed."
+    },
+    {
+      "ID": "GH-01",
+      "severity": "medium",
+      "classification": "External permission",
+      "component": "connector write grants",
+      "evidence": "Connector write 403, connector read succeeds; git/gh owner admin path works",
+      "root_cause": "Exact installation grants not exposed; contents/PR operation scope likely constrained",
+      "repair": "Use authorized git/gh for candidate; optionally approve connector Contents/PR write for this repo",
+      "verification": [
+        "existing feature branch push/PR verified"
+      ],
+      "owner": "owner/GitHub",
+      "status": "WORKAROUND_VERIFIED",
+      "residual_risk": "Do not request or print personal access tokens; no need to retry unchanged connector grant."
+    },
+    {
+      "ID": "OPTIONAL-01",
+      "severity": "low",
+      "classification": "Optional enhancement",
+      "component": "local journal committed head",
+      "evidence": "PR56 optional review suggestion; README documents tail truncation boundary",
+      "root_cause": "Filesystem admin can truncate tail or replace entire chain",
+      "repair": "Deferred: local head does not replace durable external anchoring",
+      "verification": [
+        "local chain corruption/lock tests"
+      ],
+      "owner": "engineering",
+      "status": "DEFERRED_OPTIONAL",
+      "residual_risk": "Externally anchored durable audit remains mandatory for financial modes."
+    },
+    {
+      "ID": "OPTIONAL-02",
+      "severity": "medium",
+      "classification": "Optional enhancement",
+      "component": "repository governance",
+      "evidence": "GitHub branch protection read returned 404 Branch not protected",
+      "root_cause": "Repository has no legacy main branch protection",
+      "repair": "Owner may approve required review/status-check rules; not changed automatically",
+      "verification": [],
+      "owner": "owner",
+      "status": "DEFERRED_OPTIONAL",
+      "residual_risk": "Manual release discipline retained; no merge by this task."
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {releaseOperatingMode} from '../launchRecovery/modes.js';
 import express from 'express';
 import {releaseEmergencyStop} from './reconciliation.js';
 import type {Express,RequestHandler} from 'express';
@@ -7,7 +8,7 @@ import {deploymentLifecycle} from './lifecycle.js';
 import {launchRequirements} from './launchReview.js';
 export function registerPhase21Readiness(app:Express,owner:RequestHandler) {
   app.get('/api/owner/phase21/readiness',owner,rateLimit(30,60000),(_req,res)=>{
-    res.set('Cache-Control','no-store');res.json({configuration:validateProductionConfiguration(process.env),runtime:deploymentLifecycle.snapshot(),
+    res.set('Cache-Control','no-store');res.json({operatingModes:releaseOperatingMode(process.env.APP_OPERATING_MODE),configuration:validateProductionConfiguration(process.env),runtime:deploymentLifecycle.snapshot(),
       launchRequirements,emergencyStop:releaseEmergencyStop.snapshot(),externalEvidence:'NOT_VERIFIED',productionArchiveConnected:false,independentCollectorsConfigured:false,
       deploymentAllowed:false,financialExecutionAllowed:false,separateReviewedAuthorizationRequired:true});
   });

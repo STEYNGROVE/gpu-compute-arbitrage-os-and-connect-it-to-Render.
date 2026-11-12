@@ -26,7 +26,8 @@ function command(exe:string,argv:string[]) {const r=spawnSync(exe,argv,{env,enco
 let passed=0;
 async function check(name:string,fn:()=>Promise<void>){await fn();passed++;console.log('PHASE23_PG_PASS '+name);}
 const migrationDir=path.join(directory,'supabase','migrations');mkdirSync(migrationDir,{recursive:true});
-const files=readdirSync('supabase/migrations').filter(f=>f.endsWith('.sql')).sort();
+// Historical Phase 23 upgrade fixture contains only the prefix before its proposal, not future release migrations.
+const files=readdirSync('supabase/migrations').filter(f=>f.endsWith('.sql')&&f.slice(0,-4)<version).sort();
 for(const file of files)writeFileSync(path.join(migrationDir,file),readFileSync(path.join('supabase/migrations',file)));
 writeFileSync(path.join(migrationDir,version+'.sql'),sql);
 const sourceUrl=new URL(target);sourceUrl.pathname='/'+source;

@@ -1,9 +1,11 @@
+import {loadDevelopmentMigrationEnvironment} from './migrationEnvironment.js';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import {Client} from 'pg';
 import {secureDatabaseOptions} from '../server/phase21/configuration.js';
 import {classifyPostgresError} from '../server/diagnostics/postgres.js';
+loadDevelopmentMigrationEnvironment();
 let migrationClient:Client|undefined;
 
 type Migration = {
@@ -16,7 +18,7 @@ const MIGRATION_LOCK_ID = 9112026;
 
 function migrationErrorCode(error:unknown):string {
   const message=error instanceof Error?error.message:'';
-  const allowed=['MIGRATION_BLOCKED','MIGRATION_DATABASE_REQUIRED','MIGRATION_IDENTITY_REQUIRED','MIGRATION_TARGET_IDENTITY_MISMATCH','MIGRATION_LOCK_TIMEOUT','MIGRATION_PREFLIGHT_FAILED','MIGRATION_INTEGRITY_FAILURE','PHASE23_BASELINE_REQUIRED','PHASE23_BASELINE_INCOMPATIBLE','PHASE23_COLUMN_POLICY_CONFLICT'];
+  const allowed=['MIGRATION_BLOCKED','MIGRATION_DATABASE_REQUIRED','MIGRATION_IDENTITY_REQUIRED','MIGRATION_TARGET_IDENTITY_MISMATCH','MIGRATION_LOCK_TIMEOUT','MIGRATION_PREFLIGHT_FAILED','MIGRATION_INTEGRITY_FAILURE','PHASE23_BASELINE_REQUIRED','PHASE23_BASELINE_INCOMPATIBLE','PHASE23_COLUMN_POLICY_CONFLICT','COMMERCIAL_SCHEMA_INCOMPATIBLE'];
   const code=message.split(':')[0];
   if(allowed.includes(code))return code;
   const sqlstate=typeof error==='object'&&error!==null&&'code' in error?error.code:undefined;
@@ -219,11 +221,8 @@ async function runVersionedMigrations() {
     );
 
     if (!tableCheck.rows[0]?.table_name) {
-      throw new Error(
-        'MIGRATION_PREFLIGHT_FAILED: ' +
-        'schema_migrations missing. ' +
-        'Fresh database bootstrap is not authorized.'
-      );
+      if(process.env.DB_MIGRATION_FRESH_INSTALL!=='EXPLICITLY_AUTHORIZED')throw new Error('MIGRATION_PREFLIGHT_FAILED: Fresh database bootstrap is not authorized.');
+      await client.query(`CREATE TABLE schema_migrations (version varchar(64) PRIMARY KEY,checksum varchar(128) NOT NULL,applied_at timestamptz NOT NULL DEFAULT now())`);
     }
 
     const history = await client.query(
@@ -276,6 +275,9 @@ async function runVersionedMigrations() {
 
     for (const migration of migrations) {
       if (!applied.has(migration.version)) {
+        // One explicit additive prerequisite was introduced after legacy v5 deployments.
+        // It is still applied and checksummed below; no other history hole is accepted.
+        if(migration.version==='20261109999999_commercial_intake_prerequisites' && applied.has('20261110_v5_commercial_evidence'))continue;
         missingSeen = true;
       } else if (missingSeen) {
         throw new Error(

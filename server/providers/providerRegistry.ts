@@ -6,20 +6,28 @@ import {
   CostEstimateRequest,
   CostEstimateResult,
   ProvisionRequest,
-  ProvisionResult
-} from './types.js';
-import { VastAiProvider } from './vastProvider.js';
-import { RunpodProvider } from './runpodProvider.js';
-import { TensordockProvider } from './tensordockProvider.js';
-import { AkashProvider } from './akashProvider.js';
-import { SaladProvider } from './saladProvider.js';
-import { LightningProvider } from './lightningProvider.js';
-import { HyperstackProvider } from './hyperstackProvider.js';
-import { CoreweaveProvider } from './coreweaveProvider.js';
-import { LambdaProvider } from './lambdaProvider.js';
-import { HostingerProvider } from './hostingerProvider.js';
-import { classifyWorkload, normalizeGpu, NORMALIZED_GPU_CATALOG } from './workloadClassifier.js';
-import { calculateTrueCostAndMargin, MINIMUM_PROFIT_THRESHOLD_USD, MINIMUM_GROSS_MARGIN_PCT } from './trueCostEngine.js';
+  ProvisionResult,
+} from "./types.js";
+import { VastAiProvider } from "./vastProvider.js";
+import { RunpodProvider } from "./runpodProvider.js";
+import { TensordockProvider } from "./tensordockProvider.js";
+import { AkashProvider } from "./akashProvider.js";
+import { SaladProvider } from "./saladProvider.js";
+import { LightningProvider } from "./lightningProvider.js";
+import { HyperstackProvider } from "./hyperstackProvider.js";
+import { CoreweaveProvider } from "./coreweaveProvider.js";
+import { LambdaProvider } from "./lambdaProvider.js";
+import { HostingerProvider } from "./hostingerProvider.js";
+import {
+  classifyWorkload,
+  normalizeGpu,
+  NORMALIZED_GPU_CATALOG,
+} from "./workloadClassifier.js";
+import {
+  calculateTrueCostAndMargin,
+  MINIMUM_PROFIT_THRESHOLD_USD,
+  MINIMUM_GROSS_MARGIN_PCT,
+} from "./trueCostEngine.js";
 
 export interface ProviderReadinessReport {
   timestamp: string;
@@ -39,16 +47,40 @@ export interface LiveMatrixRow {
   cheapestOnDemand: { providerId: string; price: number } | null;
   cheapestSpot: { providerId: string; price: number } | null;
   spreadPct: number;
-  vast_ai: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  runpod: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  tensordock: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  akash: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  salad: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  lightning_ai: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  hyperstack: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  coreweave: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  lambda: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
-  hostinger: { status: 'LIVE' | 'N/A'; price: number | null; spot: number | null };
+  vast_ai: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
+  runpod: { status: "LIVE" | "N/A"; price: number | null; spot: number | null };
+  tensordock: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
+  akash: { status: "LIVE" | "N/A"; price: number | null; spot: number | null };
+  salad: { status: "LIVE" | "N/A"; price: number | null; spot: number | null };
+  lightning_ai: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
+  hyperstack: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
+  coreweave: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
+  lambda: { status: "LIVE" | "N/A"; price: number | null; spot: number | null };
+  hostinger: {
+    status: "LIVE" | "N/A";
+    price: number | null;
+    spot: number | null;
+  };
 }
 
 export class ProviderRegistry {
@@ -56,13 +88,24 @@ export class ProviderRegistry {
   private cachedHealth: Map<ProviderId, ProviderHealthResult> = new Map();
   private lastHealthCheckIso: string | null = null;
   private lastHealthCheckMs = 0;
-  private inFlightHealthPromise: Promise<Record<ProviderId, ProviderHealthResult>> | null = null;
+  private inFlightHealthPromise: Promise<
+    Record<ProviderId, ProviderHealthResult>
+  > | null = null;
 
-  private cachedPricing: { records: ProviderPriceRecord[]; timestampMs: number } | null = null;
+  private cachedPricing: {
+    records: ProviderPriceRecord[];
+    timestampMs: number;
+  } | null = null;
   private inFlightPricingPromise: Promise<ProviderPriceRecord[]> | null = null;
 
-  private cachedMatrix: { data: { matrix: LiveMatrixRow[]; summary: any }; timestampMs: number } | null = null;
-  private inFlightMatrixPromise: Promise<{ matrix: LiveMatrixRow[]; summary: any }> | null = null;
+  private cachedMatrix: {
+    data: { matrix: LiveMatrixRow[]; summary: any };
+    timestampMs: number;
+  } | null = null;
+  private inFlightMatrixPromise: Promise<{
+    matrix: LiveMatrixRow[];
+    summary: any;
+  }> | null = null;
 
   constructor() {
     this.registerProvider(new VastAiProvider());
@@ -92,9 +135,15 @@ export class ProviderRegistry {
   /**
    * Run automated health check across all 10 providers with 30s TTL cache and deduplication
    */
-  public async runHealthChecks(forceFresh: boolean = false): Promise<Record<ProviderId, ProviderHealthResult>> {
+  public async runHealthChecks(
+    forceFresh: boolean = false,
+  ): Promise<Record<ProviderId, ProviderHealthResult>> {
     const now = Date.now();
-    if (!forceFresh && (now - this.lastHealthCheckMs) < 30000 && this.cachedHealth.size === this.providers.size) {
+    if (
+      !forceFresh &&
+      now - this.lastHealthCheckMs < 30000 &&
+      this.cachedHealth.size === this.providers.size
+    ) {
       const cachedObj: Partial<Record<ProviderId, ProviderHealthResult>> = {};
       for (const [id, res] of this.cachedHealth.entries()) {
         cachedObj[id] = res;
@@ -119,8 +168,8 @@ export class ProviderRegistry {
             const fallback: ProviderHealthResult = {
               providerId: provider.id,
               providerName: provider.name,
-              status: 'ERROR',
-              healthColor: 'RED',
+              status: "ERROR",
+              healthColor: "RED",
               authenticated: false,
               latencyMs: 0,
               endpoints: {
@@ -130,17 +179,17 @@ export class ProviderRegistry {
                 provisioning: false,
                 instanceControl: false,
                 telemetry: false,
-                billing: false
+                billing: false,
               },
               lastCheckIso: new Date().toISOString(),
-              message: err.message || 'Health check execution error',
+              message: err.message || "Health check execution error",
               configuredCredentials: [],
-              missingCredentials: []
+              missingCredentials: [],
             };
             results[provider.id] = fallback;
             this.cachedHealth.set(provider.id, fallback);
           }
-        })
+        }),
       );
 
       this.lastHealthCheckIso = new Date().toISOString();
@@ -160,10 +209,14 @@ export class ProviderRegistry {
     const health = await this.runHealthChecks();
     const providersList = Object.values(health);
 
-    const liveCount = providersList.filter(p => p.status === 'LIVE').length;
-    const authCount = providersList.filter(p => p.status === 'AUTHENTICATED').length;
-    const configCount = providersList.filter(p => p.status === 'CONFIGURATION_REQUIRED').length;
-    const errorCount = providersList.filter(p => p.status === 'ERROR').length;
+    const liveCount = providersList.filter((p) => p.status === "LIVE").length;
+    const authCount = providersList.filter(
+      (p) => p.status === "AUTHENTICATED",
+    ).length;
+    const configCount = providersList.filter(
+      (p) => p.status === "CONFIGURATION_REQUIRED",
+    ).length;
+    const errorCount = providersList.filter((p) => p.status === "ERROR").length;
 
     return {
       timestamp: new Date().toISOString(),
@@ -173,16 +226,23 @@ export class ProviderRegistry {
       configurationRequiredCount: configCount,
       errorCount: errorCount,
       providers: health,
-      overallProductionReady: liveCount >= 1 || authCount >= 1
+      overallProductionReady: liveCount >= 1 || authCount >= 1,
     };
   }
 
   /**
    * Aggregates real-time price records across all 10 providers with 30s TTL cache
    */
-  public async getAllLivePricing(forceFresh: boolean = false): Promise<ProviderPriceRecord[]> {
+  public async getAllLivePricing(
+    forceFresh: boolean = false,
+  ): Promise<ProviderPriceRecord[]> {
     const now = Date.now();
-    if (!forceFresh && this.cachedPricing && (now - this.cachedPricing.timestampMs) < 30000 && this.cachedPricing.records.length > 0) {
+    if (
+      !forceFresh &&
+      this.cachedPricing &&
+      now - this.cachedPricing.timestampMs < 30000 &&
+      this.cachedPricing.records.length > 0
+    ) {
       return this.cachedPricing.records;
     }
 
@@ -197,11 +257,22 @@ export class ProviderRegistry {
         Array.from(this.providers.values()).map(async (provider) => {
           try {
             const prices = await provider.getLivePricing();
-            allRecords.push(...prices);
+            allRecords.push(
+              ...prices.map((price) => ({
+                ...price,
+                evidenceLevel: "CATALOG_ONLY" as const,
+                bindingQuote: false as const,
+                availabilityVerified: false as const,
+                additionalChargesVerified: false as const,
+                providerEligibilityVerified: false as const,
+              })),
+            );
           } catch (err) {
-            console.error(`Failed to collect pricing from ${provider.name}:`, err);
+            console.warn("[SUPPLIER_CATALOG_UNAVAILABLE]", {
+              providerId: provider.id,
+            });
           }
-        })
+        }),
       );
 
       this.cachedPricing = { records: allRecords, timestampMs: Date.now() };
@@ -216,9 +287,16 @@ export class ProviderRegistry {
   /**
    * Build the Live Multi-Provider Price Matrix (Requirement 9) with 30s TTL cache
    */
-  public async getLivePriceMatrix(forceFresh: boolean = false): Promise<{ matrix: LiveMatrixRow[]; summary: any }> {
+  public async getLivePriceMatrix(
+    forceFresh: boolean = false,
+  ): Promise<{ matrix: LiveMatrixRow[]; summary: any }> {
     const now = Date.now();
-    if (!forceFresh && this.cachedMatrix && (now - this.cachedMatrix.timestampMs) < 30000 && this.cachedMatrix.data.matrix.length > 0) {
+    if (
+      !forceFresh &&
+      this.cachedMatrix &&
+      now - this.cachedMatrix.timestampMs < 30000 &&
+      this.cachedMatrix.data.matrix.length > 0
+    ) {
       return this.cachedMatrix.data;
     }
 
@@ -228,50 +306,74 @@ export class ProviderRegistry {
 
     this.inFlightMatrixPromise = (async () => {
       const prices = await this.getAllLivePricing(forceFresh);
-      const canonicalGpus = ['RTX 4090', 'RTX 3090', 'A100 80GB', 'H100', 'A6000', 'A5000', 'A4000', 'L40S'];
+      const canonicalGpus = [
+        "RTX 4090",
+        "RTX 3090",
+        "A100 80GB",
+        "H100",
+        "A6000",
+        "A5000",
+        "A4000",
+        "L40S",
+      ];
       const rows: LiveMatrixRow[] = [];
 
       for (const model of canonicalGpus) {
         const spec = normalizeGpu(model);
         const vram = spec?.vramGb || 24;
 
-        const matchingPrices = prices.filter(p =>
-          p.canonicalModel.toUpperCase() === model.toUpperCase() ||
-          p.gpuModel.toUpperCase().includes(model.toUpperCase())
+        const matchingPrices = prices.filter(
+          (p) =>
+            p.canonicalModel.toUpperCase() === model.toUpperCase() ||
+            p.gpuModel.toUpperCase().includes(model.toUpperCase()),
         );
 
         const cellFor = (providerId: ProviderId) => {
-          const item = matchingPrices.find(p => p.providerId === providerId);
+          const item = matchingPrices.find((p) => p.providerId === providerId);
           if (!item || item.hourlyPrice <= 0) {
-            return { status: 'N/A' as const, price: null, spot: null };
+            return { status: "N/A" as const, price: null, spot: null };
           }
           return {
-            status: 'LIVE' as const,
+            status: "LIVE" as const,
             price: item.hourlyPrice,
-            spot: item.spotPriceHourly || null
+            spot: item.spotPriceHourly || null,
           };
         };
 
-        const validPrices = matchingPrices.filter(p => p.hourlyPrice > 0);
-        let cheapestOnDemand: { providerId: string; price: number } | null = null;
+        const validPrices = matchingPrices.filter((p) => p.hourlyPrice > 0);
+        let cheapestOnDemand: { providerId: string; price: number } | null =
+          null;
         let cheapestSpot: { providerId: string; price: number } | null = null;
 
         if (validPrices.length > 0) {
-          const sorted = [...validPrices].sort((a, b) => a.hourlyPrice - b.hourlyPrice);
-          cheapestOnDemand = { providerId: sorted[0].providerId, price: sorted[0].hourlyPrice };
+          const sorted = [...validPrices].sort(
+            (a, b) => a.hourlyPrice - b.hourlyPrice,
+          );
+          cheapestOnDemand = {
+            providerId: sorted[0].providerId,
+            price: sorted[0].hourlyPrice,
+          };
 
-          const spots = validPrices.filter(p => p.spotPriceHourly && p.spotPriceHourly > 0);
+          const spots = validPrices.filter(
+            (p) => p.spotPriceHourly && p.spotPriceHourly > 0,
+          );
           if (spots.length > 0) {
-            spots.sort((a, b) => (a.spotPriceHourly || 999) - (b.spotPriceHourly || 999));
-            cheapestSpot = { providerId: spots[0].providerId, price: spots[0].spotPriceHourly! };
+            spots.sort(
+              (a, b) => (a.spotPriceHourly || 999) - (b.spotPriceHourly || 999),
+            );
+            cheapestSpot = {
+              providerId: spots[0].providerId,
+              price: spots[0].spotPriceHourly!,
+            };
           }
         }
 
         let spreadPct = 0;
         if (validPrices.length >= 2) {
-          const min = Math.min(...validPrices.map(p => p.hourlyPrice));
-          const max = Math.max(...validPrices.map(p => p.hourlyPrice));
-          spreadPct = min > 0 ? Number((((max - min) / min) * 100).toFixed(1)) : 0;
+          const min = Math.min(...validPrices.map((p) => p.hourlyPrice));
+          const max = Math.max(...validPrices.map((p) => p.hourlyPrice));
+          spreadPct =
+            min > 0 ? Number((((max - min) / min) * 100).toFixed(1)) : 0;
         }
 
         rows.push({
@@ -281,16 +383,16 @@ export class ProviderRegistry {
           cheapestOnDemand,
           cheapestSpot,
           spreadPct,
-          vast_ai: cellFor('vast_ai'),
-          runpod: cellFor('runpod'),
-          tensordock: cellFor('tensordock'),
-          akash: cellFor('akash'),
-          salad: cellFor('salad'),
-          lightning_ai: cellFor('lightning_ai'),
-          hyperstack: cellFor('hyperstack'),
-          coreweave: cellFor('coreweave'),
-          lambda: cellFor('lambda'),
-          hostinger: cellFor('hostinger')
+          vast_ai: cellFor("vast_ai"),
+          runpod: cellFor("runpod"),
+          tensordock: cellFor("tensordock"),
+          akash: cellFor("akash"),
+          salad: cellFor("salad"),
+          lightning_ai: cellFor("lightning_ai"),
+          hyperstack: cellFor("hyperstack"),
+          coreweave: cellFor("coreweave"),
+          lambda: cellFor("lambda"),
+          hostinger: cellFor("hostinger"),
         });
       }
 
@@ -299,8 +401,8 @@ export class ProviderRegistry {
         summary: {
           totalGpuModels: canonicalGpus.length,
           totalOffersCollected: prices.length,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       };
 
       this.cachedMatrix = { data: res, timestampMs: Date.now() };
@@ -323,7 +425,10 @@ export class ProviderRegistry {
     gpuCount?: number;
     storageGb?: number;
     egressGb?: number;
-    interruptionTolerance?: 'STRICT_NO_INTERRUPTIONS' | 'CHECKPOINTABLE_BATCH' | 'LOW_PRIORITY_FAULT_TOLERANT';
+    interruptionTolerance?:
+      | "STRICT_NO_INTERRUPTIONS"
+      | "CHECKPOINTABLE_BATCH"
+      | "LOW_PRIORITY_FAULT_TOLERANT";
     regionPreference?: string;
   }) {
     const workloadReq = classifyWorkload(params.workloadType);
@@ -340,15 +445,20 @@ export class ProviderRegistry {
       if (!offerSpec) continue;
 
       if (offerSpec.vramGb < workloadReq.minVramGb) continue;
-      if (offerSpec.cudaComputeCapability < workloadReq.minCudaCapability) continue;
+      if (offerSpec.cudaComputeCapability < workloadReq.minCudaCapability)
+        continue;
       if (workloadReq.requiresBf16 && offerSpec.bf16Tflops <= 0) continue;
-      if (offerSpec.memoryBandwidthGbps < workloadReq.minMemoryBandwidthGbps) continue;
+      if (offerSpec.memoryBandwidthGbps < workloadReq.minMemoryBandwidthGbps)
+        continue;
 
       const provider = this.getProvider(offer.providerId);
       if (!provider) continue;
 
       const economics = calculateTrueCostAndMargin({
-        gpuHourlyPrice: offer.isInterruptible && offer.spotPriceHourly ? offer.spotPriceHourly : offer.hourlyPrice,
+        gpuHourlyPrice:
+          offer.isInterruptible && offer.spotPriceHourly
+            ? offer.spotPriceHourly
+            : offer.hourlyPrice,
         gpuCount: params.gpuCount || 1,
         durationHours: params.durationHours,
         storageGb: params.storageGb || 50,
@@ -357,7 +467,7 @@ export class ProviderRegistry {
         spotEvictionRiskPct: offer.estimatedInterruptionRiskPct,
         customerGrossRevenue: params.customerOfferPriceUsd,
         benchmarkScore: offerSpec.benchmarkScore,
-        uptimeGuaranteePct: 99.5
+        uptimeGuaranteePct: 99.5,
       });
 
       candidates.push({
@@ -372,12 +482,14 @@ export class ProviderRegistry {
         spotPrice: offer.spotPriceHourly,
         isInterruptible: offer.isInterruptible,
         region: offer.region,
-        economics
+        economics,
       });
     }
 
     // Sort by Maximum Expected Profit (Provider Score descending)
-    candidates.sort((a, b) => b.economics.providerScore - a.economics.providerScore);
+    candidates.sort(
+      (a, b) => b.economics.providerScore - a.economics.providerScore,
+    );
 
     const winningProvider = candidates[0] || null;
     const alternatives = candidates.slice(1, 4);
@@ -392,8 +504,8 @@ export class ProviderRegistry {
       isExecutionApproved: Boolean(
         winningProvider &&
         winningProvider.economics.meetsMinimumMargin &&
-        winningProvider.economics.netProfitUsd >= MINIMUM_PROFIT_THRESHOLD_USD
-      )
+        winningProvider.economics.netProfitUsd >= MINIMUM_PROFIT_THRESHOLD_USD,
+      ),
     };
   }
 
@@ -409,25 +521,34 @@ export class ProviderRegistry {
     customerPaymentAuthorized: boolean;
     maxCostLimitUsd: number;
     maxLossLimitUsd: number;
-  }): Promise<{ pass: boolean; reasons: string[]; marginPct: number; projectedProfitUsd: number }> {
+  }): Promise<{
+    pass: boolean;
+    reasons: string[];
+    marginPct: number;
+    projectedProfitUsd: number;
+  }> {
     const reasons: string[] = [];
     const provider = this.getProvider(params.providerId);
 
     // 1. Verify provider credentials
     if (!provider) {
-      reasons.push('Provider not registered in system');
+      reasons.push("Provider not registered in system");
       return { pass: false, reasons, marginPct: 0, projectedProfitUsd: 0 };
     }
 
     const health = await provider.healthCheck();
-    if (!health.authenticated && health.status !== 'LIVE') {
-      reasons.push(`Provider ${provider.name} credentials not authenticated (Status: ${health.status})`);
+    if (!health.authenticated && health.status !== "LIVE") {
+      reasons.push(
+        `Provider ${provider.name} credentials not authenticated (Status: ${health.status})`,
+      );
     }
 
     // 2. Verify GPU availability & price
     const avail = await provider.getAvailability(params.gpuModel);
-    if (!avail.available && health.status === 'LIVE') {
-      reasons.push(`Target GPU ${params.gpuModel} currently out of capacity on ${provider.name}`);
+    if (!avail.available && health.status === "LIVE") {
+      reasons.push(
+        `Target GPU ${params.gpuModel} currently out of capacity on ${provider.name}`,
+      );
     }
 
     const currentPrice = avail.currentPriceHourly || params.maxHourlyPriceUsd;
@@ -440,35 +561,45 @@ export class ProviderRegistry {
       storageGb: 50,
       networkEgressGb: 10,
       isInterruptible: false,
-      customerGrossRevenue: params.expectedRevenueUsd
+      customerGrossRevenue: params.expectedRevenueUsd,
     });
 
     // 4. Verify expected revenue & margin
     if (economics.netProfitUsd < MINIMUM_PROFIT_THRESHOLD_USD) {
-      reasons.push(`Projected net profit ($${economics.netProfitUsd.toFixed(2)}) is below safety floor ($${MINIMUM_PROFIT_THRESHOLD_USD.toFixed(2)})`);
+      reasons.push(
+        `Projected net profit ($${economics.netProfitUsd.toFixed(2)}) is below safety floor ($${MINIMUM_PROFIT_THRESHOLD_USD.toFixed(2)})`,
+      );
     }
     if (economics.grossMarginPct < MINIMUM_GROSS_MARGIN_PCT) {
-      reasons.push(`Projected margin (${economics.grossMarginPct.toFixed(1)}%) is below minimum threshold (${MINIMUM_GROSS_MARGIN_PCT}%)`);
+      reasons.push(
+        `Projected margin (${economics.grossMarginPct.toFixed(1)}%) is below minimum threshold (${MINIMUM_GROSS_MARGIN_PCT}%)`,
+      );
     }
 
     // 5. Customer payment authorization verification
     if (!params.customerPaymentAuthorized) {
-      reasons.push('Customer payment authorization not confirmed by payment provider');
+      reasons.push(
+        "Customer payment authorization not confirmed by payment provider",
+      );
     }
 
     // 6. Cost limits
     if (economics.totalTrueComputeCostUsd > params.maxCostLimitUsd) {
-      reasons.push(`True compute cost ($${economics.totalTrueComputeCostUsd.toFixed(2)}) exceeds maximum cost limit ($${params.maxCostLimitUsd.toFixed(2)})`);
+      reasons.push(
+        `True compute cost ($${economics.totalTrueComputeCostUsd.toFixed(2)}) exceeds maximum cost limit ($${params.maxCostLimitUsd.toFixed(2)})`,
+      );
     }
     if (economics.netProfitUsd < -params.maxLossLimitUsd) {
-      reasons.push(`Projected loss exceeds maximum loss limit ($${params.maxLossLimitUsd.toFixed(2)})`);
+      reasons.push(
+        `Projected loss exceeds maximum loss limit ($${params.maxLossLimitUsd.toFixed(2)})`,
+      );
     }
 
     return {
       pass: reasons.length === 0,
       reasons,
       marginPct: economics.grossMarginPct,
-      projectedProfitUsd: economics.netProfitUsd
+      projectedProfitUsd: economics.netProfitUsd,
     };
   }
 
@@ -479,33 +610,33 @@ export class ProviderRegistry {
     failedProviderId: ProviderId,
     req: ProvisionRequest,
     expectedRevenueUsd: number,
-    retryCount = 0
+    retryCount = 0,
   ): Promise<ProvisionResult> {
     const maxRetries = 3;
     if (retryCount >= maxRetries) {
       return {
         success: false,
         providerId: failedProviderId,
-        status: 'FAILED',
+        status: "FAILED",
         actualHourlyPriceUsd: 0,
         error: `Max failover retry count (${maxRetries}) reached`,
-        provisionedAtIso: new Date().toISOString()
+        provisionedAtIso: new Date().toISOString(),
       };
     }
 
     // Rank fallback providers excluding the failed provider
     const fallbackRanking: ProviderId[] = [
-      'vast_ai',
-      'runpod',
-      'akash',
-      'salad',
-      'tensordock',
-      'hyperstack',
-      'hostinger',
-      'lambda',
-      'lightning_ai',
-      'coreweave'
-    ].filter(p => p !== failedProviderId) as ProviderId[];
+      "vast_ai",
+      "runpod",
+      "akash",
+      "salad",
+      "tensordock",
+      "hyperstack",
+      "hostinger",
+      "lambda",
+      "lightning_ai",
+      "coreweave",
+    ].filter((p) => p !== failedProviderId) as ProviderId[];
 
     for (const nextProviderId of fallbackRanking) {
       const nextProvider = this.getProvider(nextProviderId);
@@ -520,7 +651,7 @@ export class ProviderRegistry {
         jobDurationHours: 4,
         customerPaymentAuthorized: true,
         maxCostLimitUsd: 150,
-        maxLossLimitUsd: 0
+        maxLossLimitUsd: 0,
       });
 
       if (!preflight.pass) {
@@ -537,10 +668,10 @@ export class ProviderRegistry {
     return {
       success: false,
       providerId: failedProviderId,
-      status: 'FAILED',
+      status: "FAILED",
       actualHourlyPriceUsd: 0,
-      error: 'All eligible failover providers failed preflight or provisioning',
-      provisionedAtIso: new Date().toISOString()
+      error: "All eligible failover providers failed preflight or provisioning",
+      provisionedAtIso: new Date().toISOString(),
     };
   }
 }

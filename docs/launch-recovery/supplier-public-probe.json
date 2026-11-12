@@ -1,0 +1,86 @@
+{
+  "checkedAt": "2026-11-12T22:02:43.619Z",
+  "origin": "LIVE_PUBLIC_HTTPS",
+  "financialExecutionAllowed": false,
+  "fundedCustomerOpportunitiesVerified": 0,
+  "escrowFundingVerification": "NOT_IMPLEMENTED_NO_TRUSTED_COLLECTOR",
+  "realizedRevenueVerified": false,
+  "results": [
+    {
+      "operation": "runpodCatalog",
+      "status": "READ_SUCCEEDED",
+      "sourceUrl": "https://api.runpod.io/graphql",
+      "retrievedAt": "2026-11-12T22:02:39.817Z",
+      "responseDigest": "af976c737a855c4f46ee4f8d7249e81e0ea38af2cff083ce7717f880b11f89a3",
+      "normalizedOffers": 12,
+      "mappingVerifiedAgainstResponse": true,
+      "samples": [
+        {
+          "id": "runpod:65b34a80ef7c32fea2d41fee6ad031a2",
+          "model": "A100 SXM",
+          "vramGb": 80,
+          "hourlyUsd": 2.19,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T22:03:39.817Z"
+        },
+        {
+          "id": "runpod:e278c989183b463a449f075ee3540744",
+          "model": "B200",
+          "vramGb": 180,
+          "hourlyUsd": 7.99,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T22:03:39.817Z"
+        },
+        {
+          "id": "runpod:55c7baa7351f091768274be42e2671ed",
+          "model": "RTX 3090",
+          "vramGb": 24,
+          "hourlyUsd": 0.5,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T22:03:39.817Z"
+        }
+      ],
+      "note": "Public supplier catalog only. No reserved capacity, customer demand, firm all-in quote, funding or profit verified."
+    },
+    {
+      "operation": "akashOrders",
+      "status": "READ_SUCCEEDED",
+      "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+      "retrievedAt": "2026-11-12T22:02:43.614Z",
+      "responseDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+      "observedRecords": 50,
+      "openGpuOrdersUnverified": 48,
+      "orderSamples": [
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805457:1:1",
+          "funding": "UNVERIFIED"
+        },
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805471:1:1",
+          "funding": "UNVERIFIED"
+        },
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805486:1:1",
+          "funding": "UNVERIFIED"
+        }
+      ],
+      "note": "Read access alone does not establish chain freshness, escrow funding, provider eligibility or award."
+    },
+    {
+      "operation": "akashDeployments",
+      "status": "BLOCKED",
+      "error": "SOURCE_HTTP_501"
+    },
+    {
+      "operation": "akashDeploymentsV1Beta4",
+      "status": "READ_SUCCEEDED",
+      "sourceUrl": "https://api.akashnet.net/akash/deployment/v1beta4/deployments/list",
+      "retrievedAt": "2026-11-12T22:02:41.231Z",
+      "responseDigest": "17553b13cde4855165966c5eb1ffec35063c420717df8f3c830187539cf6697b",
+      "observedRecords": 50,
+      "openGpuOrdersUnverified": 0,
+      "orderSamples": [],
+      "note": "Read access alone does not establish chain freshness, escrow funding, provider eligibility or award."
+    }
+  ]
+}

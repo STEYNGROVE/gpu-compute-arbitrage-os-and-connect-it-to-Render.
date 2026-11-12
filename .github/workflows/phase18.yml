@@ -32,7 +32,7 @@ jobs:
       - name: Isolated PostgreSQL, Phase 23 migration and recovery
         run: |
           export PATH="$(pg_config --bindir):$PATH"
-          npm run test:phase23-postgres
+          npm run test:launch-recovery-postgres
       - run: npm run build
   staging:
     if: github.event_name == 'workflow_dispatch' && inputs.verify_existing_staging

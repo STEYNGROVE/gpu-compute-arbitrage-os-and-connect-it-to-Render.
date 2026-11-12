@@ -1,6 +1,6 @@
 /**
  * UNIFIED GPU PROVIDER ADAPTER ARCHITECTURE
- * 
+ *
  * Standardized interface for all 10 GPU providers:
  * 1. Vast.ai
  * 2. RunPod
@@ -12,7 +12,7 @@
  * 8. CoreWeave
  * 9. Lambda
  * 10. Hostinger GPU
- * 
+ *
  * Strict Reality Rules:
  * - Providers are NOT marked "LIVE" unless their API has authenticated AND returned real valid data.
  * - No simulated provider capacity, fake prices, or fake telemetry.
@@ -20,52 +20,50 @@
  */
 
 export type ProviderId =
-  | 'vast_ai'
-  | 'runpod'
-  | 'tensordock'
-  | 'akash'
-  | 'salad'
-  | 'lightning_ai'
-  | 'hyperstack'
-  | 'coreweave'
-  | 'lambda'
-  | 'hostinger';
+  | "vast_ai"
+  | "runpod"
+  | "tensordock"
+  | "akash"
+  | "salad"
+  | "lightning_ai"
+  | "hyperstack"
+  | "coreweave"
+  | "lambda"
+  | "hostinger";
 
 export type ProviderStatus =
-  | 'LIVE'
-  | 'AUTHENTICATED'
-  | 'PARTIAL'
-  | 'DISCOVERY_ONLY'
-  | 'UNAVAILABLE'
-  | 'FAILED'
-  | 'UNVERIFIED'
-  | 'CONFIGURATION_REQUIRED'
-  | 'ERROR';
+  | "LIVE"
+  | "AUTHENTICATED"
+  | "PARTIAL"
+  | "DISCOVERY_ONLY"
+  | "UNAVAILABLE"
+  | "FAILED"
+  | "UNVERIFIED"
+  | "CONFIGURATION_REQUIRED"
+  | "ERROR";
 
-export type HealthColor = 'GREEN' | 'YELLOW' | 'RED' | 'GREY';
+export type HealthColor = "GREEN" | "YELLOW" | "RED" | "GREY";
 
 export type ProviderFinancialState =
-  | 'NOT_FUNDED'
-  | 'FUNDED'
-  | 'INSUFFICIENT_BALANCE'
-  | 'CREDIT_AVAILABLE'
-  | 'PAY_AS_YOU_GO'
-  | 'PAYMENT_REQUIRED'
-  | 'UNKNOWN'
-  | 'FUNDING_STATUS_UNKNOWN';
+  | "NOT_FUNDED"
+  | "FUNDED"
+  | "INSUFFICIENT_BALANCE"
+  | "CREDIT_AVAILABLE"
+  | "PAY_AS_YOU_GO"
+  | "PAYMENT_REQUIRED"
+  | "UNKNOWN"
+  | "FUNDING_STATUS_UNKNOWN";
 
 export type ProviderExecutionState =
-  | 'BLOCKED'
-  | 'WAITING_FOR_FUNDING'
-  | 'EXECUTABLE'
-  | 'CUSTOMER_FUNDED_ONLY'
-  | 'OWNER_FUNDED_ONLY'
-  | 'UNAVAILABLE';
+  | "BLOCKED"
+  | "WAITING_FOR_FUNDING"
+  | "EXECUTABLE"
+  | "CUSTOMER_FUNDED_ONLY"
+  | "OWNER_FUNDED_ONLY"
+  | "UNAVAILABLE";
 
 export type GpuExecutionFeasibility =
-  | 'AVAILABLE_GPU'
-  | 'PURCHASABLE_GPU'
-  | 'EXECUTABLE_GPU';
+  "AVAILABLE_GPU" | "PURCHASABLE_GPU" | "EXECUTABLE_GPU";
 
 export interface CustomerFundedJobEscrow {
   jobId: string;
@@ -81,7 +79,15 @@ export interface CustomerFundedJobEscrow {
   reservedAmount: number;
   actualProviderCost: number | null;
   refundLiability: number;
-  state: 'PAYMENT_RECEIVED' | 'FUNDS_RESERVED_FOR_JOB' | 'WAITING_FOR_FUNDING' | 'EXECUTION_BLOCKED' | 'EXECUTING' | 'COMPLETED' | 'SETTLED' | 'REFUNDED';
+  state:
+    | "PAYMENT_RECEIVED"
+    | "FUNDS_RESERVED_FOR_JOB"
+    | "WAITING_FOR_FUNDING"
+    | "EXECUTION_BLOCKED"
+    | "EXECUTING"
+    | "COMPLETED"
+    | "SETTLED"
+    | "REFUNDED";
   providerId: ProviderId;
   createdAt: string;
   updatedAt: string;
@@ -94,7 +100,8 @@ export interface ZeroFundedProviderStatus {
   authStatus: ProviderStatus;
   fundingStatus: ProviderFinancialState;
   executionStatus: ProviderExecutionState;
-  billingMechanism: 'PREPAID_CREDIT' | 'POSTPAID_CARD' | 'HYBRID' | 'ON_DEMAND' | 'UNKNOWN';
+  billingMechanism:
+    "PREPAID_CREDIT" | "POSTPAID_CARD" | "HYBRID" | "ON_DEMAND" | "UNKNOWN";
   verifiedBalanceDisplay: string;
   verifiedBalanceUsd: number | null;
   genuineCreditsDetected: boolean;
@@ -156,6 +163,11 @@ export interface GpuModelInfo {
 }
 
 export interface ProviderPriceRecord {
+  evidenceLevel?: "CATALOG_ONLY";
+  bindingQuote?: false;
+  availabilityVerified?: false;
+  additionalChargesVerified?: false;
+  providerEligibilityVerified?: false;
   id: string;
   providerId: ProviderId;
   gpuModel: string;
@@ -163,7 +175,7 @@ export interface ProviderPriceRecord {
   vramGb: number;
   gpuCount: number;
   region: string;
-  availability: 'AVAILABLE' | 'LOW_STOCK' | 'OUT_OF_STOCK' | 'UNKNOWN';
+  availability: "AVAILABLE" | "LOW_STOCK" | "OUT_OF_STOCK" | "UNKNOWN";
   hourlyPrice: number;
   minutePrice?: number;
   secondPrice?: number;
@@ -178,7 +190,7 @@ export interface ProviderPriceRecord {
   timestamp: string; // UTC ISO-8601
   source: string; // Real Provider API Endpoint
   currency: string;
-  status: 'LIVE' | 'STALE' | 'UNAVAILABLE';
+  status: "LIVE" | "STALE" | "UNAVAILABLE";
   rawReference?: Record<string, unknown>;
 }
 
@@ -261,7 +273,7 @@ export interface ProvisionResult {
   success: boolean;
   providerId: ProviderId;
   instanceId?: string;
-  status: 'PROVISIONING' | 'RUNNING' | 'FAILED' | 'REJECTED';
+  status: "PROVISIONING" | "RUNNING" | "FAILED" | "REJECTED";
   actualHourlyPriceUsd: number;
   ipAddress?: string;
   sshPort?: number;
@@ -275,7 +287,7 @@ export interface InstanceActionResult {
   success: boolean;
   providerId: ProviderId;
   instanceId: string;
-  action: 'START' | 'STOP' | 'RESTART' | 'TERMINATE';
+  action: "START" | "STOP" | "RESTART" | "TERMINATE";
   resultingStatus: string;
   timestamp: string;
   message?: string;
@@ -285,7 +297,13 @@ export interface InstanceActionResult {
 export interface InstanceStatusResult {
   providerId: ProviderId;
   instanceId: string;
-  status: 'PROVISIONING' | 'RUNNING' | 'STOPPED' | 'TERMINATED' | 'FAILED' | 'UNKNOWN';
+  status:
+    | "PROVISIONING"
+    | "RUNNING"
+    | "STOPPED"
+    | "TERMINATED"
+    | "FAILED"
+    | "UNKNOWN";
   ipAddress?: string;
   uptimeSeconds: number;
   currentCostAccruedUsd: number;
@@ -299,7 +317,7 @@ export interface ProviderTelemetryResult {
   instanceId: string;
   timestamp: string;
   isVerified: boolean;
-  source: 'PROVIDER_API' | 'INSTANCE_AGENT' | 'UNKNOWN';
+  source: "PROVIDER_API" | "INSTANCE_AGENT" | "UNKNOWN";
   gpuUtilizationPct: number | null;
   gpuTemperatureC: number | null;
   vramUsedGb: number | null;
@@ -332,7 +350,8 @@ export interface WorkloadSubmissionResult {
   workloadId: string;
   providerId: ProviderId;
   instanceId?: string;
-  status: 'SUBMITTED' | 'QUEUED' | 'RUNNING' | 'UNAVAILABLE' | 'REJECTED' | 'FAILED';
+  status:
+    "SUBMITTED" | "QUEUED" | "RUNNING" | "UNAVAILABLE" | "REJECTED" | "FAILED";
   submissionHash?: string;
   submittedAtIso: string;
   error?: string;
@@ -342,7 +361,7 @@ export interface WorkloadOutputResult {
   workloadId: string;
   instanceId?: string;
   providerId: ProviderId;
-  status: 'COMPLETED' | 'RUNNING' | 'UNAVAILABLE' | 'FAILED' | 'UNKNOWN';
+  status: "COMPLETED" | "RUNNING" | "UNAVAILABLE" | "FAILED" | "UNKNOWN";
   outputArtifactUrls: string[];
   stdoutExcerpt?: string;
   stderrExcerpt?: string;
@@ -373,7 +392,7 @@ export interface ProviderBillingResult {
   creditRemainingUsd: number | null;
   currentUnbilledChargesUsd: number | null;
   currency: string;
-  billingMechanism: 'PREPAID_CREDIT' | 'POSTPAID_CARD' | 'HYBRID' | 'ON_DEMAND';
+  billingMechanism: "PREPAID_CREDIT" | "POSTPAID_CARD" | "HYBRID" | "ON_DEMAND";
   invoiceCount: number;
   lastInvoiceAmountUsd?: number;
   lastInvoiceDateIso?: string;
@@ -388,7 +407,12 @@ export interface GPUProvider {
   readonly id: ProviderId;
   readonly name: string;
   readonly website: string;
-  readonly tier: 'MARKETPLACE' | 'DECENTRALIZED' | 'DISTRIBUTED_EDGE' | 'NEOCLOUD' | 'ENTERPRISE_HYPERSCALER';
+  readonly tier:
+    | "MARKETPLACE"
+    | "DECENTRALIZED"
+    | "DISTRIBUTED_EDGE"
+    | "NEOCLOUD"
+    | "ENTERPRISE_HYPERSCALER";
 
   /** 1. Discover all GPUs offered by this provider */
   discoverGPUs(): Promise<GpuModelInfo[]>;
@@ -397,7 +421,10 @@ export interface GPUProvider {
   getLivePricing(): Promise<ProviderPriceRecord[]>;
 
   /** 3. Check specific availability */
-  getAvailability(gpuModel: string, region?: string): Promise<ProviderAvailability>;
+  getAvailability(
+    gpuModel: string,
+    region?: string,
+  ): Promise<ProviderAvailability>;
 
   /** 4. Retrieve hardware instance types */
   getInstanceTypes(): Promise<InstanceTypeInfo[]>;
@@ -427,10 +454,16 @@ export interface GPUProvider {
   getTelemetry(instanceId: string): Promise<ProviderTelemetryResult>;
 
   /** 13. Submit compute workload */
-  submitWorkload(instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult>;
+  submitWorkload(
+    instanceId: string,
+    workload: WorkloadSpec,
+  ): Promise<WorkloadSubmissionResult>;
 
   /** 14. Retrieve workload output */
-  retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult>;
+  retrieveOutput(
+    instanceId: string,
+    workloadId: string,
+  ): Promise<WorkloadOutputResult>;
 
   /** 15. Retrieve instance usage & billing accrual */
   getUsage(instanceId: string): Promise<ProviderUsageResult>;

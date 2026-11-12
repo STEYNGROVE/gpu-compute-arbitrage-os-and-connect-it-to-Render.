@@ -37,7 +37,12 @@ export async function probePrefundedPublic(
 ) {
   const results = await Promise.all(
     (
-      ["runpodCatalog", "akashOrders", "akashDeployments"] as ReadOperation[]
+      [
+        "runpodCatalog",
+        "akashOrders",
+        "akashDeployments",
+        "akashDeploymentsV1Beta4",
+      ] as ReadOperation[]
     ).map(async (operation): Promise<PublicProbeResult> => {
       try {
         const response = await transport({ operation });

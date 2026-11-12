@@ -12,3 +12,6 @@ for i,cmd in enumerate(commands):
     results.append(row)
     with open(root+'/commands.json','w') as f:json.dump(results,f,indent=2)
     print(json.dumps(row),flush=True)
+
+# Propagate aggregate status after collecting every check.
+raise SystemExit(1 if any(row['exit_code'] != 0 for row in results) else 0)

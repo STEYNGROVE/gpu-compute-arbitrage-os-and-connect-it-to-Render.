@@ -811,7 +811,7 @@ test("public diagnostic maps actual transport rows and cannot promote fixture da
   assert.deepEqual(operations, [
     "runpodCatalog",
     "akashOrders",
-    "akashDeployments",
+    "akashDeployments", "akashDeploymentsV1Beta4",
   ]);
 });
 test("dashboard renders and backend/dashboard/navigation/test entrypoints are wired", async () => {

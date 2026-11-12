@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { createHunterSnapshotSession } from "../services/hunterSnapshotSession";
+import React, { useState, useEffect, useRef } from "react";
 import type { Candidate, Offer } from "../../server/prefunded/model";
 import type { compareWholesale } from "../../server/prefunded/matching";
 import type { qualify } from "../../server/prefunded/model";
@@ -23,42 +24,47 @@ export function PrefundedHunterDashboard() {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [proposal, setProposal] = useState("");
-  async function request(path = "", body?: unknown) {
-    const response = await fetch("/api/owner/prefunded-hunter" + path, {
-      method: body === undefined ? "GET" : "POST",
-      credentials: "same-origin",
-      cache: "no-store",
-      headers: body === undefined ? {} : { "Content-Type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
+  const [proposalError, setProposalError] = useState("");
+  const proposalRevision = useRef(0);
+  const session = useRef<ReturnType<
+    typeof createHunterSnapshotSession<Snapshot>
+  > | null>(null);
+  useEffect(() => {
+    const current = createHunterSnapshotSession<Snapshot>({
+      onData: setData,
+      onBusy: setBusy,
+      onError: setError,
     });
-    if (!response.ok)
-      throw Error(
-        response.status === 403
-          ? "Owner authentication required."
-          : "Request blocked. Check evidence, freshness, credentials, or archive availability; refresh before retrying.",
-      );
-    return response.json();
-  }
-  async function run(path = "", body?: unknown) {
-    setBusy(true);
-    setError("");
+    session.current = current;
+    void current.run();
+    return () => {
+      current.close();
+      if (session.current === current) session.current = null;
+    };
+  }, []);
+  const run = (path = "", body?: unknown) =>
+    session.current?.run(path, body) ?? Promise.resolve(false);
+  const submitProposal = async () => {
+    setProposalError("");
+    let payload: unknown;
     try {
-      if (path) await request(path, body);
-      const snapshot = await request();
-      if (
-        snapshot.mode !== "READ_ONLY" ||
-        snapshot.financialExecutionAllowed !== false
-      )
-        throw Error("Unsafe response rejected.");
-      setData(snapshot);
+      payload = JSON.parse(proposal);
     } catch {
-      setError(
-        "Request unavailable or blocked. Owner authentication, fresh evidence and a writable archive are required.",
-      );
-    } finally {
-      setBusy(false);
+      setProposalError("Invalid JSON.");
+      return;
     }
-  }
+    const current = session.current;
+    const submittedRevision = proposalRevision.current;
+    const success = await current?.run("/proposals", payload);
+    if (
+      session.current === current &&
+      proposalRevision.current === submittedRevision &&
+      !success
+    )
+      setProposalError(
+        "Plan rejected or unavailable. Review the evidence and sign-in status.",
+      );
+  };
   const money = (amount: number, currency: string) =>
     `${currency} ${(amount / 100).toFixed(2)}`;
   const assessment = (item: Assessment) => (
@@ -226,19 +232,15 @@ export function PrefundedHunterDashboard() {
                 className="block w-full bg-slate-900 border p-2"
                 rows={6}
                 value={proposal}
-                onChange={(event) => setProposal(event.target.value)}
+                onChange={(event) => {
+                  proposalRevision.current++;
+                  setProposal(event.target.value);
+                  setProposalError("");
+                }}
               />
             </label>
-            <button
-              disabled={busy}
-              onClick={() => {
-                try {
-                  void run("/proposals", JSON.parse(proposal));
-                } catch {
-                  setError("Invalid JSON.");
-                }
-              }}
-            >
+            {proposalError && <p role="alert">{proposalError}</p>}
+            <button disabled={busy} onClick={() => void submitProposal()}>
               Assess plan
             </button>
           </details>

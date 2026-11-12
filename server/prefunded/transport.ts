@@ -5,6 +5,7 @@ import { isPublicIPv4 } from "../secureFeedFetch.js";
 export type ReadOperation =
   | "akashOrders"
   | "akashDeployments"
+  | "akashDeploymentsV1Beta4"
   | "vastOffers"
   | "runpodCatalog"
   | "enterpriseRfqs";
@@ -13,6 +14,8 @@ const urls: Record<ReadOperation, string> = {
     "https://api.akashnet.net/akash/market/v1beta5/orders/list?filters.state=open&pagination.limit=50",
   akashDeployments:
     "https://api.akashnet.net/akash/deployment/v1beta5/deployments/list?filters.state=active&pagination.limit=50",
+  akashDeploymentsV1Beta4:
+    "https://api.akashnet.net/akash/deployment/v1beta4/deployments/list?filters.state=active&pagination.limit=50",
   vastOffers: "https://cloud.vast.ai/api/v0/bundles/",
   runpodCatalog: "https://api.runpod.io/graphql",
   enterpriseRfqs: "https://api.sam.gov/opportunities/v2/search",
