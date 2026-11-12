@@ -549,3 +549,9 @@ test("supplier connectivity cannot certify production readiness or turn unknown 
   assert.equal(report.readinessScope, "CONNECTIVITY_ONLY");
   assert.equal(report.financialExecutionAllowed, false);
 });
+
+test('HTML payment callback text cannot reflect markup or query-array objects, even behind owner authentication',async()=>{
+ const {safeHtmlText}=await import('../server/phase21/httpSecurity.js');const {readFile}=await import('node:fs/promises');
+ assert.equal(safeHtmlText('<img src=x onerror="x">'),'&lt;img src=x onerror=&quot;x&quot;&gt;');assert.equal(safeHtmlText(['malformed']),'N/A');assert.equal(safeHtmlText('x'.repeat(257)),'N/A');assert.equal(safeHtmlText('valid-reference_1'),'valid-reference_1');
+ const source=await readFile('server.ts','utf8');assert.equal((source.match(/const intentId = safeHtmlText\(req.query.intent_id\)/g)||[]).length,2);
+});

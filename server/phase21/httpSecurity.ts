@@ -13,3 +13,9 @@ export const productionHeaders:RequestHandler=(req,res,next)=>{
  }
  next();
 };
+
+/** Only for HTML text nodes, never scripts, URLs or attributes. Unknown/query-array values are not rendered. */
+export function safeHtmlText(value:unknown):string {
+ if(typeof value!=='string'||value.length>256)return 'N/A';
+ return value.replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]!));
+}

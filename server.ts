@@ -1,6 +1,6 @@
 import {registerProductionStatic} from './server/phase21/staticAssets.js';
 import { registerPrefundedHunter } from './server/prefunded/routes.js';
-import {productionHeaders,runtimePort} from './server/phase21/httpSecurity.js';
+import {productionHeaders,runtimePort,safeHtmlText} from './server/phase21/httpSecurity.js';
 import { registerPhase21Readiness } from './server/phase21/routes.js';
 import { deploymentLifecycle, gracefulShutdown } from './server/phase21/lifecycle.js';
 import { operationalEvent, safeRequestErrorHandler } from './server/phase21/observability.js';
@@ -5139,7 +5139,7 @@ app.post('/api/safety/kill-switches/toggle', requireAdminAuth, async (req, res) 
 
 // Payment Customer Return Handlers
 app.get('/api/payments/success', async (req, res) => {
-  const intentId = req.query.intent_id as string;
+  const intentId = safeHtmlText(req.query.intent_id);
 
   res.send(`
     <html>
@@ -5157,7 +5157,7 @@ app.get('/api/payments/success', async (req, res) => {
 });
 
 app.get('/api/payments/cancel', (req, res) => {
-  const intentId = req.query.intent_id as string;
+  const intentId = safeHtmlText(req.query.intent_id);
   res.send(`
     <html>
       <head><title>Payment Cancelled</title><style>body{font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;} .card{background:#111827;padding:32px;border-radius:12px;border:1px solid #1f2937;text-align:center;max-width:420px;}</style></head>
