@@ -95,3 +95,6 @@ jobs:
 
       - name: Compile Production Bundle
         run: npm run build
+
+      - name: Reject public backend bundles and source maps
+        run: NODE_ENV=test DISABLE_JSON_PERSISTENCE=true npx --no-install tsx --test test/productionStaticAssets.test.ts

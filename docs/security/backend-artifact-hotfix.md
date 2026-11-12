@@ -1,0 +1,9 @@
+# Backend artifact exposure hotfix — review only
+
+A read-only bounded Range probe of the known staging URL at 2026-11-12T22:41:04Z observed HTTP 206 for /server.cjs and /server.cjs.map. The readiness endpoint reported revision c9d903330db55892ed2d4f18a2e54524917a85b4 and database connected. Only metadata and prefix digests were retained; no backend bundle, source map or customer records were exported. Readiness is application-reported evidence, not Render control-plane verification.
+
+The production server placed its backend bundle beside Vite output and served the entire dist directory. This patch exposes only the client assets subtree and index fallback, rejects backend .cjs and source-map paths before static routing, retains API JSON 404s, and tests encoded/traversal/case variants and Range requests. Normal frontend routing is preserved. Authentication, financial lockdown, provider/payment code, database schema and environment configuration are unchanged.
+
+This small hotfix is also included in the combined launch-recovery candidate. Its separate PR permits focused review without applying that candidate's database migrations. Do not merge or deploy automatically. It is based on current main; investigate the prior failed main deployment and confirm actual service configuration before requesting rollout approval. No production migration, Render branch change, restart, payment or procurement was performed.
+
+Public launch remains NO-GO while the actual deployed exposure or database continuity is unresolved. Owner actions: confirm Render workspace for read-only control-plane audit; review/approve the exact security patch and recovery-compatible deployment separately; after approved rollout, verify actual revision, readiness/authentication and 404 responses for all private artifact variants. A passing local/CI test alone does not close the running vulnerability.
