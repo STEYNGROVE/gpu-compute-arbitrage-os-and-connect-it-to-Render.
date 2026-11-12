@@ -1,32 +1,18 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
+
 import crypto from 'node:crypto';
 
 type Auth = (req: Request, res: Response, next: NextFunction) => void;
 type EvidenceType = 'SIGNED_CONTRACT' | 'APPROVED_PURCHASE_ORDER' | 'VERIFIED_PREPAYMENT';
 type State = 'PENDING_VERIFICATION' | 'APPROVAL_VERIFIED' | 'REJECTED';
 const types: EvidenceType[] = ['SIGNED_CONTRACT', 'APPROVED_PURCHASE_ORDER', 'VERIFIED_PREPAYMENT'];
-const dbUrl = process.env.DATABASE_URL;
-const host = dbUrl ? new URL(dbUrl).hostname : '';
-const internal = host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host);
-const pool = dbUrl ? new Pool({connectionString: dbUrl, ssl: internal ? undefined : {rejectUnauthorized: true}, max: 2}) : null;
+const pool=configuredApplicationDatabase();
 const limit = (s: unknown, n: number) => typeof s === 'string' ? s.trim().slice(0,n) : '';
 let readyPromise: Promise<unknown> | undefined;
 async function ready() {
   if (!pool) throw Error('DATABASE_URL_NOT_CONFIGURED');
-  if (!readyPromise) readyPromise = pool.query(`CREATE TABLE IF NOT EXISTS preapproved_workload_evidence (
-    id uuid PRIMARY KEY, customer_name text NOT NULL, customer_email text NOT NULL,
-    workload_description text NOT NULL, evidence_type text NOT NULL,
-    evidence_sha256 text NOT NULL, document_reference text NOT NULL,
-    issuer_name text NOT NULL, issuer_contact text NOT NULL,
-    budget_currency text NOT NULL, approved_budget numeric(18,2) NOT NULL,
-    valid_until date, state text NOT NULL DEFAULT 'PENDING_VERIFICATION',
-    reviewer text, verification_notes text, verified_at timestamptz,
-    created_at timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT valid_evidence_type CHECK (evidence_type IN ('SIGNED_CONTRACT','APPROVED_PURCHASE_ORDER','VERIFIED_PREPAYMENT')),
-    CONSTRAINT valid_approval_state CHECK (state IN ('PENDING_VERIFICATION','APPROVAL_VERIFIED','REJECTED')),
-    CONSTRAINT positive_budget CHECK (approved_budget > 0)
-  )`).catch(e=>{readyPromise=undefined; throw e;});
+  if (!readyPromise) readyPromise = pool.query('SELECT id,customer_name,customer_email,workload_description,evidence_type,evidence_sha256,document_reference,issuer_name,issuer_contact,budget_currency,approved_budget,valid_until,state,reviewer,verification_notes,verified_at,created_at FROM preapproved_workload_evidence LIMIT 0').catch(e=>{readyPromise=undefined; throw e;});
   await readyPromise;
 }
 // Owner-only workflow. This records documentary evidence metadata; it never accepts a bare

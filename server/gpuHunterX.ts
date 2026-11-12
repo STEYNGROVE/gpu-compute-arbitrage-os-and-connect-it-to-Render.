@@ -1,11 +1,10 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
+
 import crypto from 'node:crypto';
 
 type Auth = (req: Request, res: Response, next: NextFunction) => void;
-const db = process.env.DATABASE_URL;
-const host = db ? new URL(db).hostname : '';
-const pool = db ? new Pool({ connectionString: db, ssl: host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host) ? undefined : { rejectUnauthorized: true }, max: 2 }) : null;
+const pool=configuredApplicationDatabase();
 let setup: Promise<unknown> | undefined;
 const clean = (x: unknown, n: number) => typeof x === 'string' ? x.trim().slice(0,n) : '';
 const publicUrl = (value: string) => {
@@ -17,14 +16,7 @@ const publicUrl = (value: string) => {
 };
 async function ready() {
   if (!pool) throw Error('DATABASE_URL_NOT_CONFIGURED');
-  if (!setup) setup = pool.query(`CREATE TABLE IF NOT EXISTS gpu_hunter_opportunities (
-    id uuid PRIMARY KEY, company text NOT NULL, source_url text NOT NULL UNIQUE,
-    evidence text NOT NULL, workload text NOT NULL, contact_channel text NOT NULL,
-    deadline timestamptz, budget_evidence text, score integer NOT NULL,
-    score_reasons jsonb NOT NULL, status text NOT NULL DEFAULT 'DISCOVERED',
-    created_at timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT gpu_hunter_status_check CHECK(status IN ('DISCOVERED','REVIEWING','QUALIFIED','DISQUALIFIED'))
-  )`).catch(e => { setup = undefined; throw e; });
+  if (!setup) setup = pool.query('SELECT id,company,source_url,evidence,workload,contact_channel,deadline,budget_evidence,score,score_reasons,status,created_at FROM gpu_hunter_opportunities LIMIT 0').catch(e => { setup = undefined; throw e; });
   await setup;
 }
 function score(b: { evidence:string; workload:string; deadline:string; budgetEvidence:string; contactChannel:string }) {
@@ -80,7 +72,6 @@ function rankDiscoveredLead(title: string) {
 // GPU_HUNTER_QUALIFICATION_V2
 // Evidence-based preliminary ranking.
 // No customer, contract or revenue verification is implied.
-
 
 // GPU_EVIDENCE_V3
 function qualifyCandidate(
@@ -153,9 +144,6 @@ export function registerGpuHunterX(app:Express, owner:Auth) {
   app.get('/api/owner/gpu-hunter-x/qualified', owner, async (_req, res) => {
     try {
       await ready();
-      await pool!.query(
-        'ALTER TABLE acquisition_leads ADD COLUMN IF NOT EXISTS description text'
-      );
 
       const result = await pool!.query(
         `SELECT id, title, source_url, source_feed, description,
