@@ -8,8 +8,14 @@ const privatePaths = ['/api/owner/config', '/api/acquisition/leads',
   '/api/treasury/profit-withdrawals/status'];
 
 // No credentials accepted, no discovery scans, login attempts, financial writes or redirects.
-export async function smoke({ request = fetch, expectedRevision = BASELINE } = {}) {
-  assert.match(expectedRevision, /^[a-f0-9]{40}$/);
+/**
+ * Run GET-only checks and require an explicit commit identity for readiness verification.
+ * @param {{request?: typeof fetch, expectedRevision?: string}} options
+ */
+export async function smoke({ request = fetch, expectedRevision } = {}) {
+  expectedRevision ??= process.env.EXPECTED_STAGING_REVISION || process.env.GITHUB_SHA;
+  assert.equal(typeof expectedRevision, 'string', 'EXPECTED_STAGING_REVISION or GITHUB_SHA is required');
+  assert.match(expectedRevision, /^[a-f0-9]{40}$/, 'Expected a 40-character lowercase hexadecimal commit SHA');
   const checks = [];
   async function get(path, headers = {}) {
     const response = await request(STAGING + path, { method: 'GET', redirect: 'error',
@@ -38,7 +44,7 @@ export async function smoke({ request = fetch, expectedRevision = BASELINE } = {
     mode: 'GET_ONLY_NO_CREDENTIALS_NO_WRITES', checks, passed: checks.length };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  smoke({ expectedRevision: process.env.EXPECTED_STAGING_REVISION || BASELINE })
+  smoke()
     .then(report => console.log(JSON.stringify(report, null, 2)))
     .catch(error => { console.error('STAGING_SMOKE_FAILED:', error.message); process.exitCode = 1; });
 }

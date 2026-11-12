@@ -67,7 +67,26 @@ const fixtureFetch = async (url: string, init: RequestInit) => {
   const path = new URL(url).pathname;
   return new Response(JSON.stringify(path === '/api/ready' ? { status: 'ready', database: 'connected', revision: BASELINE } : path.includes('healthz') ? { status: 'ok' } : { error: 'OWNER_AUTHENTICATION_REQUIRED' }), { status: path.includes('healthz') || path === '/api/ready' ? 200 : 403, headers: { 'cache-control': 'no-store' } });
 };
-assert.equal((await smoke({ request: fixtureFetch as any })).passed, 13);
+assert.equal((await smoke({ request: fixtureFetch as any, expectedRevision: BASELINE })).passed, 13);
+const currentRevision = 'a'.repeat(40);
+await assert.rejects(smoke({ request: fixtureFetch as any, expectedRevision: currentRevision }), /strictly equal/,
+  'a current expected commit must reject a readiness response reporting the old fixture commit');
+await assert.rejects(smoke({ request: fixtureFetch as any, expectedRevision: '' }), /40-character lowercase hexadecimal/);
+const priorExpectedRevision = process.env.EXPECTED_STAGING_REVISION;
+const priorGithubSha = process.env.GITHUB_SHA;
+try {
+  delete process.env.EXPECTED_STAGING_REVISION;
+  delete process.env.GITHUB_SHA;
+  await assert.rejects(smoke({ request: fixtureFetch as any, expectedRevision: undefined }), /EXPECTED_STAGING_REVISION or GITHUB_SHA is required/);
+  process.env.GITHUB_SHA = currentRevision;
+  await assert.rejects(smoke({ request: fixtureFetch as any }), /strictly equal/,
+    'the workflow SHA fallback must still reject stale readiness');
+} finally {
+  if (priorExpectedRevision === undefined) delete process.env.EXPECTED_STAGING_REVISION;
+  else process.env.EXPECTED_STAGING_REVISION = priorExpectedRevision;
+  if (priorGithubSha === undefined) delete process.env.GITHUB_SHA;
+  else process.env.GITHUB_SHA = priorGithubSha;
+}
 await assert.rejects(smoke({ request: fixtureFetch as any, expectedRevision: '0'.repeat(40) }));
 await assert.rejects(smoke({ request: async () => new Response('{}', { status: 200 }) }));
 

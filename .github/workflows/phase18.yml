@@ -10,8 +10,8 @@ on:
         type: boolean
         default: false
       expected_revision:
-        description: Expected deployed commit (does not deploy it)
-        default: '32321cbece4ccd7c1481466c3f416adf79749e26'
+        description: Expected deployed commit (defaults to this workflow's commit; does not deploy it)
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -45,5 +45,5 @@ jobs:
           node-version: '22'
       - name: Existing service GET-only smoke (no credentials)
         env:
-          EXPECTED_STAGING_REVISION: ${{ inputs.expected_revision }}
+          EXPECTED_STAGING_REVISION: ${{ inputs.expected_revision || github.sha }}
         run: node scripts/staging-smoke.mjs
