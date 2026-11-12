@@ -1,3 +1,4 @@
+import { PrefundedHunterDashboard } from './components/PrefundedHunterDashboard';
 import React, { useEffect, useState } from 'react';
 import { ArbitrageProvider } from './context/ArbitrageContext';
 import { Header } from './components/Header';
@@ -41,6 +42,7 @@ export function AppContent() {
         {activeTab === 'zero_funded' && <ZeroFundedBootstrapPanel />}
         {activeTab === 'price_router' && <LiveGpuPriceRouter />}
         {activeTab === 'gpu_comparison' && <GpuComparisonDashboard />}
+        {activeTab === 'prefunded_hunter' && <PrefundedHunterDashboard />}
         {activeTab === 'treasury' && <TreasuryPanel />}
         {activeTab === 'readiness' && <ReadinessPanel />}
         {activeTab === 'opportunities' && <OpportunityEngine />}
