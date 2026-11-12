@@ -4,7 +4,7 @@ This dossier supersedes historical launch claims only where backed by its new ev
 
 ## Decisions
 
-- **PUBLIC COMMERCIAL LAUNCH — NO-GO.** Code validation cannot substitute for verified deployed revision, runtime authorization, authoritative schema and database continuity. These external infrastructure gates remain unverified.
+- **PUBLIC COMMERCIAL LAUNCH — NO-GO.** Code validation cannot substitute for verified deployed revision, runtime authorization, authoritative schema and database continuity. The running staging revision also exposes its backend bundle and source map; source repairs are not a deployed repair.
 - **VERIFIED ORDER OPERATIONS — NO-GO.** No independent confirmed order/payment, firm eligible supplier quote, fulfillment evidence or owner financial authorization has been established.
 - **AUTOMATED FINANCIAL EXECUTION — NO-GO.** Unconditional execution lockdown remains in place. There is no release activation switch.
 
@@ -27,3 +27,9 @@ Mode A explicitly does not require historical earnings. It permits marketing, en
 13. [Source environment names](environment-names.json), [route declarations](route-inventory.json) and [prepared read-only DB preflight](read-only-preflight.sql).
 
 Public probes are historical observations, not fresh quotes, guaranteed jobs or proof of earnings. Synthetic PostgreSQL drills and signed unit-test fixtures are never actual customer evidence. Original source PR threads remain unresolved on their unchanged branches; verified repairs are submitted as a combined candidate for review rather than falsely marking those original revisions repaired.
+
+## Published candidates and verification
+
+Draft security PR [#57](https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/57) isolates the urgent deployed artifact exposure. Its verified code SHA is `1db947e64d81f56e1b5f82bae30f358c506585e0`; documentation head is `91fa3061175f85653377683d3f02cb3399e05ace`. All eight isolated checks passed. No merge or deployment occurred.
+
+Combined source SHA `0e012e771b78f5911a903f77e4e480d32583f413`: lint, typecheck, security checks, dependency audit, combined suite, purchase boundary, build, migration validation and disposable PostgreSQL migration/concurrency/restore suite passed. The strict financial execution audit **failed (exit 1)** because five required financial certification dependencies remain blocked; its 13 safety controls passed. The full runner correctly exits 1. See tests.json for exact commands/environment/log digests; supplemental-tests.json records 21 additional passed command groups on source SHA `81d3673a46a3e0c6864072b41e5e6b4e88018efb`. Archived earlier failures are retained rather than relabeled. No browser end-to-end run or credentialed production integration is claimed. Later documentation commits do not change tested executable source.

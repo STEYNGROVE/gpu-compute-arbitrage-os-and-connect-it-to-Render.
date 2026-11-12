@@ -1,0 +1,195 @@
+{
+  "recordedAt": "2026-11-12T22:56:39.221995+00:00",
+  "tests": [
+    {
+      "testName": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 29.334,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/lint.txt",
+        "sha256": "453b04c1dfdac3db79189c160bf86d3bb0859f5dae95107a86683cce92c3d2e4",
+        "bytes": 68
+      },
+      "note": ""
+    },
+    {
+      "testName": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 29.851,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/typecheck.txt",
+        "sha256": "d447de5aafa6deac00967d5e82b8148353b2cf128223a0645b91d30608273478",
+        "bytes": 73
+      },
+      "note": ""
+    },
+    {
+      "testName": "security",
+      "command": [
+        "npm",
+        "run",
+        "security:check"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.084,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/security.txt",
+        "sha256": "5e6a3e24e02a0949a6ad69cde090f4a569414245d0bfc0454bbd8513af29687b",
+        "bytes": 138
+      },
+      "note": ""
+    },
+    {
+      "testName": "dependencies",
+      "command": [
+        "npm",
+        "audit",
+        "--audit-level=low"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 3.333,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/dependencies.txt",
+        "sha256": "6d8c5c8f3d7684adb070417bd608d01ae90aa3dc26a65af03ffda4955f38d9a3",
+        "bytes": 24
+      },
+      "note": ""
+    },
+    {
+      "testName": "combined-suite",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 118.467,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/combined-suite.txt",
+        "sha256": "a5d2c53e0e56fb48bf3c7a8f1471d93f499a11415d858d57bbfdf16f1c691b02",
+        "bytes": 92041
+      },
+      "note": ""
+    },
+    {
+      "testName": "purchase-boundary",
+      "command": [
+        "npm",
+        "run",
+        "test:purchase-boundary"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.986,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/purchase-boundary.txt",
+        "sha256": "758c7744d89d0a9e6ebadea6c96e874399f80ab4d6ed72289b0e48cb0daa35ea",
+        "bytes": 180
+      },
+      "note": ""
+    },
+    {
+      "testName": "execution-audit",
+      "command": [
+        "npm",
+        "run",
+        "audit:gpu-execution"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "FAIL",
+      "exitCode": 1,
+      "seconds": 0.984,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/execution-audit.txt",
+        "sha256": "a33c4a62319c6dc121672633a640933547ea5713cf576e966de665da0092b9fe",
+        "bytes": 3372
+      },
+      "note": "Strict financial audit failure is retained; it is not waived by passing public-mode checks."
+    },
+    {
+      "testName": "production-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 16.678,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/production-build.txt",
+        "sha256": "3c17f961e40d074fbef53f6532eec19e343323d64a20a3479e6821cc56ed3b06",
+        "bytes": 941
+      },
+      "note": ""
+    },
+    {
+      "testName": "migration-validation-only",
+      "command": [
+        "npm",
+        "run",
+        "db:migrate"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.895,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/migration-validation-only.txt",
+        "sha256": "22700709496707cce879c0f561957406cd944534890b2b5347df4f4065270603",
+        "bytes": 218
+      },
+      "note": ""
+    },
+    {
+      "testName": "postgres-migration-concurrency-restore",
+      "command": [
+        "npm",
+        "run",
+        "test:launch-recovery-postgres"
+      ],
+      "commitSha": "0e012e771b78f5911a903f77e4e480d32583f413",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 41.674,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/gpu-launch-recovery-checks/postgres-migration-concurrency-restore.txt",
+        "sha256": "128094e790099c965c8a7dd750cf137adf385300adbb2c9f3d2128f084630e03",
+        "bytes": 9687
+      },
+      "note": ""
+    }
+  ],
+  "complete": true
+}

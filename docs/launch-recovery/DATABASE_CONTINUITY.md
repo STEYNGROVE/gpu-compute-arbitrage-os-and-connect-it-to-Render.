@@ -23,3 +23,5 @@ Current official Render documentation states that Free PostgreSQL expires after 
 5. Review exact migration checksums, connected identity and schema diff; then separately authorize a maintenance window and production execution. Test restoration, final row/constraint/history checks and application readiness before changing service configuration.
 
 No production down-migration or destructive rollback script is provided. Recovery uses a separately validated restore to a new approved instance, or a compatible forward fix. Retain the original database until reconciliation, owner approval and recovery acceptance. No continuity GO is issued until these facts and procedures are independently verified.
+
+The later public readiness probe reports database connectivity from the application at revision c9d9033. This is not proof of database identity, expiry, migration history, recovery capability or continuity. Render metadata remains unavailable pending workspace confirmation.

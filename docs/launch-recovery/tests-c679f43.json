@@ -191,5 +191,6 @@
       "note": ""
     }
   ],
-  "complete": true
+  "complete": true,
+  "rawLogRetention": "Original digests and outcomes retained; shared temporary raw log paths were superseded by later runs. Reproduce against the recorded commit or hosted CI."
 }

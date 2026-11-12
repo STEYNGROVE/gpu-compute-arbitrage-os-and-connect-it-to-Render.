@@ -1,0 +1,390 @@
+{
+  "tests": [
+    {
+      "testName": "secureFeedIntegrationSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedIntegrationSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.565,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-0.txt",
+        "sha256": "9cda7bf3e7dc77ee5fac191e32d5423f0640a4262f06c0bb4a316ac7a2eef6cf"
+      }
+    },
+    {
+      "testName": "secureFeedDnsIsolationSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedDnsIsolationSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.59,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-1.txt",
+        "sha256": "109bdac795eac15a13d7319449aca0f94db00aa7c0a018b9b8a5cd21b3f4fe70"
+      }
+    },
+    {
+      "testName": "secureFeedTransportSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedTransportSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.595,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-2.txt",
+        "sha256": "89bb01d9cb211eade79fb6f2a0078de52a7f765addc90cc064440b57afaea5e6"
+      }
+    },
+    {
+      "testName": "secureFeedDnsPinningSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedDnsPinningSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.595,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-3.txt",
+        "sha256": "735b40136257be3326f6123ec78e342bf2ad864879f6d59e386a6cadf31bbb14"
+      }
+    },
+    {
+      "testName": "secureFeedDnsEdgeSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedDnsEdgeSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.593,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-4.txt",
+        "sha256": "3352f86b3a927bc5ca1a642dbad493721d4455f62e38906a10ee1fc2f34874ae"
+      }
+    },
+    {
+      "testName": "secureFeedTlsSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedTlsSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.703,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-5.txt",
+        "sha256": "0f077702d42b48c9933358b4838f3f8a100e6ab681c41aa8bcf1b52e058d62cd"
+      }
+    },
+    {
+      "testName": "secureFeedSocketSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedSocketSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.672,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-6.txt",
+        "sha256": "6dab2acb6237a440b83151e61d291919aeb73ede5dc8ad5d8a43af7789ce207b"
+      }
+    },
+    {
+      "testName": "secureFeedFinalNetworkSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedFinalNetworkSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 9.895,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-7.txt",
+        "sha256": "a3cd9f4ee5d738edd904d523aa9fdfa269cad878847b853386f364236e1a4f1f"
+      }
+    },
+    {
+      "testName": "secureFeedTimeoutSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedTimeoutSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 9.617,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-8.txt",
+        "sha256": "83a534c063cb16159fa828946306571f90d9caed4886cb89b0b4c7c319e6b963"
+      }
+    },
+    {
+      "testName": "secureFeedNode24LookupSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedNode24LookupSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.686,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-9.txt",
+        "sha256": "1f01096ba8aadf43e0ac813ab9bd7e3618758d08b86911a8d56febcba4ca9412"
+      }
+    },
+    {
+      "testName": "secureFeedNode24ProductionSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/secureFeedNode24ProductionSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.587,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-10.txt",
+        "sha256": "db0007825383c41c7f758b697ae77721632f516f20b35ac6ee704620a2656c81"
+      }
+    },
+    {
+      "testName": "gpuPriceComparisonSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/gpuPriceComparisonSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.543,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-11.txt",
+        "sha256": "e0097c403b3bd428cd4e45b870434029938c2403559ffd76a1fe0f8a3982ba21"
+      }
+    },
+    {
+      "testName": "gpuNormalizedPricingSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/gpuNormalizedPricingSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.565,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-12.txt",
+        "sha256": "544a0a3be2a9e91dc1f800359643bc65f7fa34bc01fd1c76f1b2354d4eb34b08"
+      }
+    },
+    {
+      "testName": "gpuNormalizedApiSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/gpuNormalizedApiSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.35,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-13.txt",
+        "sha256": "1a3c3b47bacdf4a94cde01c9a3ad227f0e4b8e9ab625fc67be7f4e1e67004336"
+      }
+    },
+    {
+      "testName": "gpuDemandMatcherSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/gpuDemandMatcherSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.568,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-14.txt",
+        "sha256": "be8080f241862b2ed95242aa52a54c59e4095dbc9ef81ce5f12c246fbbbfd7a4"
+      }
+    },
+    {
+      "testName": "paymentEvidenceReviewSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/paymentEvidenceReviewSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.68,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-15.txt",
+        "sha256": "928130b8eed8dbdfa91de859096467f160bca1ba0fb59e211909f1626d822333"
+      }
+    },
+    {
+      "testName": "paymentEvidenceLedgerSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/paymentEvidenceLedgerSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.612,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-16.txt",
+        "sha256": "03f918a5f20feb77842349d2d59ae33a82b2b6bd7177f113d8b0c0ad04d8e70d"
+      }
+    },
+    {
+      "testName": "databaseOutageIsolationSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/databaseOutageIsolationSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.692,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-17.txt",
+        "sha256": "2ab197b16842c0e1b703a1acc7a103e3adda048aef0cd9b1d0b18406741ffc85"
+      }
+    },
+    {
+      "testName": "readinessRecoverySuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/readinessRecoverySuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.539,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-18.txt",
+        "sha256": "4350093842b355aca6c361f96a4499e56ca81ddaea4282caa943ba044b0cd8db"
+      }
+    },
+    {
+      "testName": "outboxRuntimeSuite.ts",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "test/outboxRuntimeSuite.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "ISOLATED_TEST",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.896,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-19.txt",
+        "sha256": "c8ea2470d72007fd3878a8c17bdc5d5d5ba552e341fa7eaee11e8412863fa639"
+      }
+    },
+    {
+      "testName": "production server evidence/auth and diagnostics",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "server/gpuOfferEvidence.test.ts",
+        "server/gpuEvidenceIntegration.test.ts",
+        "server/gpuEvidenceHttp.test.ts",
+        "server/gpuAuthIsolation.test.ts",
+        "server/gpuOwnerAuthHttp.test.ts",
+        "test/postgresDiagnostics.test.ts"
+      ],
+      "commitSha": "c679f430d0d1aa8326d4685ffc8ffaa9c0ebf904",
+      "environment": "PRODUCTION_AUTH_TEST_WITH_SYNTHETIC_KEYS_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 2.869,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-supplemental-20.txt",
+        "sha256": "d7204306f1bd3fa935db375587821338d5ef24e26b28cca361a9aa635151ce26"
+      }
+    }
+  ],
+  "complete": true,
+  "rawLogRetention": "Original outcomes/digests retained; raw temporary paths were superseded by the 81d3673 rerun."
+}

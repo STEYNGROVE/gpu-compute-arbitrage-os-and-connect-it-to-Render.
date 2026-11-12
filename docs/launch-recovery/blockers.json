@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-11-12T22:18:14.967392+00:00",
+  "observedAt": "2026-11-12T22:57:31.750972+00:00",
   "blockers": [
     {
       "ID": "DB-01",
@@ -13,8 +13,8 @@
         "test:launch-recovery-postgres"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "DB-02",
@@ -28,8 +28,8 @@
         "test/postgresLifecycle.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "DB-03",
@@ -43,8 +43,8 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "HUNT-01",
@@ -58,8 +58,8 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "HUNT-02",
@@ -73,8 +73,8 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "HUNT-03",
@@ -88,8 +88,8 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "UI-01",
@@ -103,8 +103,8 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "UI-02",
@@ -118,8 +118,8 @@
         "src/components/PrefundedHunterDashboard.tsx"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "No deployment or production schema application authorized; final combined verification pending."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "INFRA-01",
@@ -132,7 +132,7 @@
       "verification": [],
       "owner": "owner",
       "status": "BLOCKED_EXTERNAL",
-      "residual_risk": "Actual services and deployment revisions unverified."
+      "residual_risk": "Live revision is application-reported only; actual control-plane configuration/logs/database continuity unverified."
     },
     {
       "ID": "INFRA-02",
@@ -174,8 +174,8 @@
         "combined npm test"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
-      "residual_risk": "Source PRs unchanged; owner merge approval still required."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "VERIFY-01",
@@ -189,8 +189,8 @@
         "test:verification-runners"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_VERIFIED",
-      "residual_risk": "Historical result files are not overwritten or reclassified."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "AKA-01",
@@ -205,8 +205,8 @@
         "compatibility regression"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_VERIFIED",
-      "residual_risk": "No chain freshness, escrow coverage, award or eligibility established."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "SUP-01",
@@ -218,11 +218,11 @@
       "repair": "Quarantine static live-price fallbacks; require published positive prices; use nullable unknown stock/VRAM/charges; mark catalog-only records; reject unverified profitability and caller-boolean preflight.",
       "verification": [
         "test/launchRecovery.test.ts",
-        "combined suite pending final supplier changes"
+        "combined suite passed on 0e012e7"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "Other legacy estimates remain indicative and cannot authorize a binding quote."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "SEC-01",
@@ -236,23 +236,23 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
-      "residual_risk": "Actual deployed configuration remains unverified."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     },
     {
       "ID": "RENDER-01",
       "severity": "high",
       "classification": "External permission",
       "component": "deployed revision/health",
-      "evidence": "public-runtime.json: six bounded GET timeouts; no selected workspace",
-      "root_cause": "Live infrastructure inaccessible without confirmed workspace and working read path",
+      "evidence": "Initial probes timed out; later IPv4-first bounded probe returned ready/database connected and revision c9d903330db55892ed2d4f18a2e54524917a85b4; owner paths reject anonymous requests, backend artifacts exposed.",
+      "root_cause": "Control-plane workspace remains unconfirmed; running revision differs from main/candidate and exposes private artifacts.",
       "repair": "Owner confirms workspace; inspect live deployment/logs/metrics and runtime behavior",
       "verification": [
         "bounded public probes attempted"
       ],
       "owner": "owner/Render",
       "status": "BLOCKED_EXTERNAL",
-      "residual_risk": "Failed historical deploy 1d450b9 cannot yet be diagnosed."
+      "residual_risk": "Actual service config/logs/deploy failure/expiry still unknown. Live critical exposure is tracked separately."
     },
     {
       "ID": "GH-01",
@@ -309,8 +309,40 @@
         "test/launchRecovery.test.ts"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
-      "residual_risk": "Modes B/C still require separate trusted payment/quote/fulfillment collectors and owner authorization."
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
+    },
+    {
+      "ID": "SEC-RUNTIME-01",
+      "severity": "critical",
+      "classification": "Security defect",
+      "component": "deployed static assets",
+      "evidence": "public-runtime.json: /server.cjs and /server.cjs.map returned HTTP 206; /api/ready reports c9d903330db55892ed2d4f18a2e54524917a85b4.",
+      "root_cause": "Running server exposes backend dist files through broad static middleware.",
+      "repair": "Source fix verified in combined candidate and isolated hotfix/close-public-server-artifacts; owner-approved deployment required.",
+      "verification": [
+        "test/productionStaticAssets.test.ts: Range, traversal, encoded and case variants",
+        "public-runtime.json bounded live metadata"
+      ],
+      "owner": "owner/release manager",
+      "status": "SOURCE_REPAIRED_RUNTIME_EXPOSED",
+      "residual_risk": "Mandatory public launch blocker until actual deployed private artifact variants return 404. No backend source content was exported."
+    },
+    {
+      "ID": "SEC-HTML-01",
+      "severity": "medium",
+      "classification": "Security defect",
+      "component": "payment return HTML",
+      "evidence": "Return handlers inserted query intent text into HTML and claimed funding/credit or no charge from URL alone.",
+      "root_cause": "Presentation was based on untrusted query data, not verified settlement.",
+      "repair": "Bounded text escaping and neutral verification-pending return copy; no ledger mutation or activation.",
+      "verification": [
+        "test/launchRecovery.test.ts",
+        "test/phase21Http.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "SOURCE_REPAIRED_VERIFIED",
+      "residual_risk": "Source verified by tests.json and supplemental manifests; no production deployment or schema application authorized. Financial qualification remains separately blocked."
     }
   ]
 }
