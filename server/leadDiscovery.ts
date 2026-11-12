@@ -1,3 +1,4 @@
+import { assessCustomerLeadEvidence } from './customerLeadEvidence.js';
 import { isCommercialComputeLead } from './commercialLeadFilter.js';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
@@ -194,6 +195,26 @@ async function scan() {
   return { mode: 'DISCOVERY_ONLY', outreachEnabled: false, purchasingEnabled: false, results };
 }
 
+function withEvidenceAssessment(
+  leads: AcquisitionLeadRecord[]
+) {
+  return leads.map(lead => ({
+    ...lead,
+    evidenceAssessment: assessCustomerLeadEvidence({
+      title: lead.title,
+      description: ('description' in lead &&
+        typeof lead.description === 'string')
+        ? lead.description
+        : '',
+      sourceUrl: lead.source_url,
+      publishedAt: null,
+      buyerIdentity: null,
+      requirementDetails: null,
+      customerConfirmationReference: null
+    })
+  }));
+}
+
 export function registerLeadDiscovery(app: Express, owner: (req: Request, res: Response, next: NextFunction) => void) {
   app.post('/api/acquisition/discover', owner, async (_req, res) => {
     try {
@@ -208,7 +229,7 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
       if (process.env.NODE_ENV === 'test' &&
           process.env.LEAD_TEST_IN_MEMORY === 'true') {
         return res.json({
-          leads: inMemoryLeadsStore,
+          leads: withEvidenceAssessment(inMemoryLeadsStore),
           verifiedCustomers: 0,
           realizedRevenueUsd: 0
         });
@@ -218,9 +239,9 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
         const r = await db.query(
           'SELECT id,title,source_url,source_feed,description,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
         );
-        return res.json({ leads: r.rows, verifiedCustomers: 0, realizedRevenueUsd: 0 });
+        return res.json({ leads: withEvidenceAssessment(r.rows), verifiedCustomers: 0, realizedRevenueUsd: 0 });
       }
-      return res.json({ leads: inMemoryLeadsStore, verifiedCustomers: 0, realizedRevenueUsd: 0 });
+      return res.json({ leads: withEvidenceAssessment(inMemoryLeadsStore), verifiedCustomers: 0, realizedRevenueUsd: 0 });
     } catch (e: any) {
       res.status(503).json({ error: String(e.message || e) });
     }
