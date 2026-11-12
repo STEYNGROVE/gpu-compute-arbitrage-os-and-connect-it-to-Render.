@@ -1,3 +1,4 @@
+import {registerProductionStatic} from './server/phase21/staticAssets.js';
 import {productionHeaders,runtimePort} from './server/phase21/httpSecurity.js';
 import { registerPhase21Readiness } from './server/phase21/routes.js';
 import { deploymentLifecycle, gracefulShutdown } from './server/phase21/lifecycle.js';
@@ -5180,16 +5181,7 @@ async function start() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.use('/api', (_req, res) => {
-      res.status(404).json({
-        status: 'not_found',
-        error: 'API_ROUTE_NOT_FOUND'
-      });
-    });
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+    registerProductionStatic(app,distPath);
   }
 
   app.use(safeRequestErrorHandler);
