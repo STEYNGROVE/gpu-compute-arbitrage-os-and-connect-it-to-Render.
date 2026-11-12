@@ -1,0 +1,17 @@
+{
+  "json_validation": {
+    "command": "python json.loads over docs/verification/phase22-live/*.json",
+    "validated_evidence_files": 4,
+    "exit_code": 0
+  },
+  "security": {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "log": "security-check.log"
+  },
+  "diff": {
+    "command": "git diff --cached --check",
+    "exit_code": 0
+  },
+  "scope": "documentation only; full test suite not rerun in this read-only step"
+}

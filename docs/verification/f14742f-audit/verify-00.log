@@ -1,0 +1,4 @@
+npm notice run react-example@0.0.0 typecheck
+npm notice run tsc --noEmit
+test/phase21Readiness.test.ts(25,28): error TS2339: Property 'rejectUnauthorized' does not exist on type 'boolean | { ca?: string; rejectUnauthorized: boolean; }'.
+  Property 'rejectUnauthorized' does not exist on type 'false'.

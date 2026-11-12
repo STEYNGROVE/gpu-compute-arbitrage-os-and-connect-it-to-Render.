@@ -1,0 +1,5 @@
+PASS: Special-use addresses rejected
+PASS: Public IPv4 addresses accepted
+PASS: Mixed DNS answers rejected
+PASS: Unsafe DNS never reaches transport
+DNS EDGE SECURITY SUITE: ALL PASSED

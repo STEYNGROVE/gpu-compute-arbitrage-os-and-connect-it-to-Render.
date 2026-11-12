@@ -1,0 +1,18 @@
+{
+  "data": [
+    {
+      "table_name": "commercial_quote_requests"
+    },
+    {
+      "table_name": "customer_intelligence_leads"
+    },
+    {
+      "table_name": "gpu_hunter_opportunities"
+    },
+    {
+      "table_name": "preapproved_workload_evidence"
+    }
+  ],
+  "isError": false,
+  "sql": "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('commercial_quote_requests','customer_intelligence_leads','gpu_hunter_opportunities','preapproved_workload_evidence','usdt_customer_invoices') ORDER BY table_name;"
+}

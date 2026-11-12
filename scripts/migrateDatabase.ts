@@ -1,8 +1,10 @@
-import '../server/bootstrap.js';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import { pgDbService } from '../server/pgDatabase.js';
+import {Client} from 'pg';
+import {secureDatabaseOptions} from '../server/phase21/configuration.js';
+import {classifyPostgresError} from '../server/diagnostics/postgres.js';
+let migrationClient:Client|undefined;
 
 type Migration = {
   version: string;
@@ -11,6 +13,18 @@ type Migration = {
 };
 
 const MIGRATION_LOCK_ID = 9112026;
+
+function migrationErrorCode(error:unknown):string {
+  const message=error instanceof Error?error.message:'';
+  const allowed=['MIGRATION_BLOCKED','MIGRATION_DATABASE_REQUIRED','MIGRATION_IDENTITY_REQUIRED','MIGRATION_TARGET_IDENTITY_MISMATCH','MIGRATION_LOCK_TIMEOUT','MIGRATION_PREFLIGHT_FAILED','MIGRATION_INTEGRITY_FAILURE','PHASE23_BASELINE_REQUIRED','PHASE23_BASELINE_INCOMPATIBLE','PHASE23_COLUMN_POLICY_CONFLICT'];
+  const code=message.split(':')[0];
+  if(allowed.includes(code))return code;
+  const sqlstate=typeof error==='object'&&error!==null&&'code' in error?error.code:undefined;
+  if(sqlstate==='55P03')return 'MIGRATION_LOCK_NOT_AVAILABLE';
+  if(sqlstate==='57014')return 'MIGRATION_STATEMENT_TIMEOUT';
+  return 'MIGRATION_FAILED';
+}
+
 
 function loadMigrations(): Migration[] {
   const dir = path.join(
@@ -104,19 +118,14 @@ async function runVersionedMigrations() {
     );
   }
 
-  const initRes = await pgDbService.initialize({
-    skipSchemaCheck: true
-  });
-
-  if (!pgDbService.isLiveDatabaseConnected()) {
-    throw new Error(
-      `PostgreSQL unavailable: ${
-        initRes.error || 'Disconnected'
-      }`
-    );
-  }
-
-  const client = await pgDbService.getClient();
+  // Dedicated offline client: migrations must not depend on the application schema
+  // they are preparing. No fallback is permitted for an explicitly authorized target.
+  const raw=process.env.DATABASE_URL;
+  if(!raw)throw Error('MIGRATION_DATABASE_REQUIRED');
+  const client=new Client({...secureDatabaseOptions(raw,process.env,p=>fs.readFileSync(p,'utf8')),
+    query_timeout:35000,statement_timeout:30000});
+  migrationClient=client;
+  await client.connect();
   let locked = false;
 
   try {
@@ -151,8 +160,8 @@ async function runVersionedMigrations() {
       `SELECT
          current_database() AS database_name,
          current_setting('port') AS server_port,
-         inet_server_addr()::text AS server_address,
-         inet_client_addr()::text AS client_address`
+         host(inet_server_addr()) AS server_address,
+         host(inet_client_addr()) AS client_address`
     );
 
     const actual = identity.rows[0];
@@ -324,25 +333,26 @@ async function runVersionedMigrations() {
       } catch (error) {
         console.error(
           '[MIGRATE] Advisory unlock failed',
-          error
+          classifyPostgresError(error)
         );
       }
     }
 
-    client.release();
+    await client.end();
+    migrationClient=undefined;
   }
 }
 
 runVersionedMigrations()
   .catch(error => {
-    console.error('[MIGRATE FATAL]', error);
+    console.error('[MIGRATE FATAL]', {code:migrationErrorCode(error),category:classifyPostgresError(error)});
     process.exitCode = 1;
   })
   .finally(async () => {
     try {
-      await pgDbService.close();
+      await migrationClient?.end();
     } catch (error) {
-      console.error('[MIGRATE CLEANUP FAILED]', error);
+      console.error('[MIGRATE CLEANUP FAILED]', 'UNAVAILABLE');
       process.exitCode = 1;
     }
   });

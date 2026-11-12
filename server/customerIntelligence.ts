@@ -1,22 +1,14 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
+
 import crypto from 'node:crypto';
 
 type Auth = (req: Request, res: Response, next: NextFunction) => void;
-const url = process.env.DATABASE_URL;
-const host = url ? new URL(url).hostname : '';
-const pool = url ? new Pool({ connectionString: url, ssl: host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host) ? undefined : { rejectUnauthorized: true }, max: 2 }) : null;
+const pool=configuredApplicationDatabase();
 let initialized: Promise<unknown> | undefined;
 async function ready() {
   if (!pool) throw Error('DATABASE_URL_NOT_CONFIGURED');
-  if (!initialized) initialized = pool.query(`CREATE TABLE IF NOT EXISTS customer_intelligence_leads (
-    id uuid PRIMARY KEY, company text NOT NULL, source_url text NOT NULL,
-    evidence text NOT NULL, workload text NOT NULL, contact_channel text NOT NULL,
-    estimated_gpu_count integer, verified_customer boolean NOT NULL DEFAULT false,
-    status text NOT NULL DEFAULT 'DISCOVERED', created_at timestamptz NOT NULL DEFAULT now(),
-    UNIQUE(source_url,company),
-    CONSTRAINT valid_lead_status CHECK (status IN ('DISCOVERED','REVIEWING','QUALIFIED','DISQUALIFIED'))
-  )`).catch(e => { initialized = undefined; throw e; });
+  if (!initialized) initialized = pool.query('SELECT id,company,source_url,evidence,workload,contact_channel,estimated_gpu_count,verified_customer,status,created_at FROM customer_intelligence_leads LIMIT 0').catch(e => { initialized = undefined; throw e; });
   await initialized;
 }
 const str = (v: unknown, n: number) => typeof v === 'string' ? v.trim().slice(0,n) : '';

@@ -1,17 +1,11 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import { strictPublicationTimestamp } from './publicationTimestamp.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
+
 import crypto from 'node:crypto';
-import fs from 'node:fs';
 
 type Auth = (req: Request, res: Response, next: NextFunction) => void;
-const url = process.env.DATABASE_URL;
-const host = url ? new URL(url).hostname : '';
-const internal = host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host);
-const pool = url ? new Pool({ connectionString: url, ssl: internal ? undefined : {
- rejectUnauthorized: true,
- ...(process.env.DATABASE_SSL_CA ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA,'utf8') } : {})
-}, max: 2 }) : null;
+const pool=configuredApplicationDatabase();
 const uuid = (v: unknown): v is string => typeof v === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v);
 const states = ['UNVERIFIED','CONTACTED','IDENTITY_REVIEWED','REJECTED'];
 const quoteStates = ['DRAFT','ISSUED_RECORDED','ACCEPTANCE_RECORDED','VOID'];

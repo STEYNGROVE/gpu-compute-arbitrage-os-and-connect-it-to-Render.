@@ -1,0 +1,7 @@
+npm notice run react-example@0.0.0 typecheck
+npm notice run tsc --noEmit
+server/leadDiscovery.ts(154,55): error TS2345: Argument of type '{ query: (sql: string, params?: any[]) => Promise<PG.QueryResult<any>>; connect: () => Promise<PoolClient>; }' is not assignable to parameter of type 'Pick<Pool, "query">'.
+  Types of property 'query' are incompatible.
+    Type '(sql: string, params?: any[]) => Promise<PG.QueryResult<any>>' is not assignable to type '{ <T extends Submittable>(queryStream: T): T; <R extends any[] = any[], I = any[]>(queryConfig: QueryArrayConfig<I>, values?: QueryConfigValues<I>): Promise<QueryArrayResult<R>>; <R extends QueryResultRow = any, I = any[]>(queryConfig: QueryConfig<...>): Promise<...>; <R extends QueryResultRow = any, I = any[]>(quer...'.
+      Types of parameters 'sql' and 'queryConfig' are incompatible.
+        Type 'QueryArrayConfig<any>' is not assignable to type 'string'.

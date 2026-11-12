@@ -1,0 +1,120 @@
+npm notice run react-example@0.0.0 audit:gpu-execution
+npm notice run node scripts/audit-gpu-execution.cjs --strict
+{
+  "generatedAt": "2026-11-12T10:46:48.013Z",
+  "mode": "READ_ONLY_NO_PURCHASES",
+  "safeControlsPassed": 13,
+  "safeControlsFailed": 0,
+  "remainingBlockers": 5,
+  "findings": [
+    {
+      "id": "HTTP_423_LOCK",
+      "pass": true,
+      "detail": "Sensitive-route blocker marker must remain",
+      "severity": "critical"
+    },
+    {
+      "id": "PER_JOB_CAP",
+      "pass": true,
+      "detail": "Pilot cap $2 per job",
+      "severity": "critical"
+    },
+    {
+      "id": "DAILY_CAP",
+      "pass": true,
+      "detail": "Pilot cap $5 per day",
+      "severity": "critical"
+    },
+    {
+      "id": "CONCURRENT_LIMIT",
+      "pass": true,
+      "detail": "One paid job at a time",
+      "severity": "critical"
+    },
+    {
+      "id": "AUTO_TOPUP_OFF",
+      "pass": true,
+      "detail": "Require auto top-up disabled",
+      "severity": "critical"
+    },
+    {
+      "id": "PAYMENT_VERIFIED",
+      "pass": true,
+      "detail": "Payment evidence required",
+      "severity": "critical"
+    },
+    {
+      "id": "OWNER_APPROVAL",
+      "pass": true,
+      "detail": "Owner approval required",
+      "severity": "critical"
+    },
+    {
+      "id": "RESERVATION_DEFAULT_DISABLED",
+      "pass": true,
+      "detail": "Reservation must fail closed by default",
+      "severity": "critical"
+    },
+    {
+      "id": "EVIDENCE_DEFAULT_DISABLED",
+      "pass": true,
+      "detail": "Evidence verification must fail closed",
+      "severity": "critical"
+    },
+    {
+      "id": "PUBLIC_RESERVATION_NOT_AUTHORIZED",
+      "pass": true,
+      "detail": "Public reservation entry must reject until evidence integration",
+      "severity": "critical"
+    },
+    {
+      "id": "TRANSACTION_LOCK",
+      "pass": true,
+      "detail": "Database reservations serialize",
+      "severity": "critical"
+    },
+    {
+      "id": "RESERVATION_MIGRATION",
+      "pass": true,
+      "detail": "SQL migration exists",
+      "severity": "critical"
+    },
+    {
+      "id": "SUPPLIER_DIAGNOSTICS",
+      "pass": true,
+      "detail": "Read-only diagnostics exist",
+      "severity": "critical"
+    },
+    {
+      "id": "SINGLE_AUTHORIZED_PURCHASE_GATE",
+      "pass": false,
+      "detail": "Direct purchase implementation still exists in server/providerProvisioner.ts; all purchase paths require audited reservation enforcement",
+      "severity": "blocker"
+    },
+    {
+      "id": "VERIFIED_BALANCE_ADAPTER",
+      "pass": false,
+      "detail": "No trusted, fresh supplier balance evidence adapter is verified end-to-end",
+      "severity": "blocker"
+    },
+    {
+      "id": "PROVIDER_KILL_SWITCH",
+      "pass": false,
+      "detail": "No independently tested cost/time-based instance termination and reconciliation",
+      "severity": "blocker"
+    },
+    {
+      "id": "REAL_DB_CONCURRENCY_TEST",
+      "pass": false,
+      "detail": "Isolated reservation concurrency tests exist; full financial repositories, crash recovery and migration upgrade/replay remain uncertified",
+      "severity": "blocker"
+    },
+    {
+      "id": "PAYMENT_EVIDENCE_ADAPTER",
+      "pass": false,
+      "detail": "No independently verified prepaid customer payment adapter",
+      "severity": "blocker"
+    }
+  ]
+}
+COMMERCIAL_LAUNCH_BLOCKED: unresolved safety or integration gates

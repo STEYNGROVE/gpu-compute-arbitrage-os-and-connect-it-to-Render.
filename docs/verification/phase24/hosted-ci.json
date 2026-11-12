@@ -1,0 +1,242 @@
+[
+  {
+    "runId": 43238444100,
+    "headSha": "9fea3e3167586424c44db39180d2419888340b7d",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444100",
+    "jobs": [
+      {
+        "name": "Lint, Test & Production Build",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444100/job/131252021603",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Checkout repository",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Setup Node.js",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Install dependencies",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Typecheck & Static Analysis",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Execute Automated Regression Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Validate supplier billing safety",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Secure Feed Regression Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "DNS Isolation Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "HTTPS Transport Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "DNS Pinning Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "DNS Edge Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Generate Temporary TLS Test Certificate",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "TLS Certificate Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Socket Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Final Network Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Feed Timeout Security Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Node 24 HTTPS Socket Lookup Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Node 24 Production DNS Lookup Tests",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Phase 6 GPU Evidence and Owner Authentication",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Security check",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "TypeScript validation",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Compile Production Bundle",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Setup Node.js",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Checkout repository",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ],
+    "artifacts": []
+  },
+  {
+    "runId": 43238444104,
+    "headSha": "9fea3e3167586424c44db39180d2419888340b7d",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444104",
+    "jobs": [
+      {
+        "name": "offline",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444104/job/131252021857",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm ci --no-audit --no-fund",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm run typecheck",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm run security:check",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm test",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm run test:purchase-boundary",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Isolated PostgreSQL, Phase 23 migration and recovery",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Run npm run build",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "staging",
+        "status": "completed",
+        "conclusion": "skipped",
+        "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444104/job/131252025006",
+        "steps": []
+      }
+    ],
+    "artifacts": []
+  }
+]

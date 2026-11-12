@@ -18,10 +18,10 @@ export function validateProductionConfiguration(env: Record<string,string|undefi
   }
   if(Object.keys(env).some(k=>k.startsWith('VITE_') && /SECRET|TOKEN|PASSWORD|PRIVATE|API_KEY|DATABASE/i.test(k))) findings.push('FRONTEND_SECRET_FORBIDDEN');
   try {
-    const url=new URL(env.DATABASE_URL || '');
-    if(!['postgres:','postgresql:'].includes(url.protocol) || !url.username || !url.password || !url.hostname || url.hash ||
-       ['disable','allow','prefer','no-verify'].includes(url.searchParams.get('sslmode') || '') ||
-       ['sslkey','sslcert','uselibpqcompat'].some(k=>url.searchParams.has(k))) findings.push('DATABASE_CONFIGURATION_INVALID');
+    secureDatabaseOptions(env.DATABASE_URL || '',env,()=> 'CONFIGURATION_VALIDATION_ONLY');
+    for(const key of ['DIRECT_URL','SUPABASE_DB_URL','POSTGRES_URL']) {
+      if(env[key])secureDatabaseOptions(env[key]!,env,()=> 'CONFIGURATION_VALIDATION_ONLY');
+    }
   } catch {findings.push('DATABASE_CONFIGURATION_INVALID');}
   // Return identifiers only; never values, hashes, URLs or raw validation exceptions.
   return {valid:!findings.length,findings:[...new Set(findings)],deploymentMode:'DISCOVERY_ONLY',financialExecutionAllowed:false};
@@ -31,16 +31,46 @@ export function requireProductionConfiguration(env: Record<string,string|undefin
   if(!result.valid) throw Error('PRODUCTION_CONFIGURATION_REJECTED:'+result.findings.join(','));
   return result;
 }
-/** Normalize pg URL TLS parameters so the driver cannot replace certificate-verifying options. */
+/** Reject driver overrides before pg parses the URL. No exception contains the URL. */
 export function secureDatabaseOptions(raw:string,env:Record<string,string|undefined>,readCa:(path:string)=>string) {
-  const url=new URL(raw);
+  let url:URL;
+  try {
+    url=new URL(raw);
+    decodeURIComponent(url.username);decodeURIComponent(url.password);decodeURI(url.pathname);
+  } catch {throw Error('INVALID_DATABASE_URL');}
   if(!['postgres:','postgresql:'].includes(url.protocol)) throw Error('INVALID_DATABASE_PROTOCOL');
+  if(!url.hostname || !url.username || !url.password || !url.pathname.slice(1) || url.hash ||
+     /[%\\\s]/.test(url.hostname))throw Error('INVALID_DATABASE_URL');
   const production=env.NODE_ENV==='production';
+  const allowed=new Set(['sslmode','ssl','sslrootcert','application_name']);
+  const seen=new Set<string>();
+  for(const [key] of url.searchParams) {
+    if(!allowed.has(key) || seen.has(key))throw Error('DATABASE_PARAMETER_REJECTED');
+    seen.add(key);
+  }
   const mode=url.searchParams.get('sslmode');
-  if(production && (env.DATABASE_SSL_REJECT_UNAUTHORIZED==='false' || ['disable','allow','prefer','no-verify'].includes(mode || '') ||
-    ['sslkey','sslcert','uselibpqcompat'].some(k=>url.searchParams.has(k)))) throw Error('DATABASE_TLS_REQUIRED');
-  const tls=production || env.DATABASE_SSL==='true' || Boolean(env.DATABASE_SSL_CA) || Boolean(mode) || /\.(supabase\.co|supabase\.com|neon\.tech)$/.test(url.hostname);
-  for(const key of ['sslmode','sslcert','sslkey','sslrootcert','uselibpqcompat','ssl'])url.searchParams.delete(key);
-  return {connectionString:url.href,ssl:tls?{rejectUnauthorized:true,...(env.DATABASE_SSL_CA?{ca:readCa(env.DATABASE_SSL_CA)}:{})}:undefined,
+  const ssl=url.searchParams.get('ssl');
+  if(env.NODE_TLS_REJECT_UNAUTHORIZED==='0' || env.DATABASE_SSL_REJECT_UNAUTHORIZED==='false' ||
+     (mode!==null && !['require','verify-ca','verify-full'].includes(mode)) ||
+     (ssl!==null && !['true','1'].includes(ssl)))throw Error('DATABASE_TLS_REQUIRED');
+  const urlCa=url.searchParams.get('sslrootcert');
+  if(urlCa!==null && !urlCa)throw Error('DATABASE_CA_REQUIRED');
+  if(urlCa && env.DATABASE_SSL_CA && urlCa!==env.DATABASE_SSL_CA)throw Error('DATABASE_CA_CONFLICT');
+  const caPath=env.DATABASE_SSL_CA || urlCa;
+  // This is explicit acceptance of Render private-network trust, NOT server authentication.
+  // Host/DNS/environment integrity remain the operator's trust boundary.
+  const renderInternal=production && env.DATABASE_INTERNAL_TRANSPORT==='render-private-network' &&
+    Boolean(env.RENDER_SERVICE_ID) && /^dpg-[a-z0-9-]+-a$/.test(url.hostname) &&
+    env.RENDER_INTERNAL_DB_HOST===url.hostname && (!url.port || url.port==='5432') &&
+    !mode && !ssl && env.DATABASE_SSL!=='true' && !caPath;
+  const localFixture=!production && ['localhost','127.0.0.1','[::1]'].includes(url.hostname);
+  const tls=!renderInternal && (!localFixture || env.DATABASE_SSL==='true' || Boolean(caPath) || Boolean(mode) || Boolean(ssl));
+  let ca:string|undefined;
+  if(caPath) {
+    try {ca=readCa(caPath);if(!ca.trim())throw Error();}
+    catch {throw Error('DATABASE_CA_UNAVAILABLE');}
+  }
+  for(const key of ['sslmode','sslrootcert','ssl'])url.searchParams.delete(key);
+  return {connectionString:url.href,ssl:tls?{rejectUnauthorized:true,...(ca?{ca}:{})}:false,
     connectionTimeoutMillis:5000,query_timeout:5000,statement_timeout:5000};
 }

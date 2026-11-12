@@ -1,0 +1,5 @@
+npm notice run react-example@0.0.0 db:migrate
+npm notice run tsx scripts/migrateDatabase.ts
+=== PHASE 9.12 SAFE MIGRATION RUNNER ===
+[MIGRATE] Validated 9 source files
+[MIGRATE] VALIDATION ONLY — database untouched

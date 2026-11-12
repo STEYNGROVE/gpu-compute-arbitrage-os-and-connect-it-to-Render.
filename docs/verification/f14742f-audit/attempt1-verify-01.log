@@ -1,0 +1,3 @@
+npm notice run react-example@0.0.0 lint
+npm notice run tsc --noEmit
+sh: 1: tsc: not found

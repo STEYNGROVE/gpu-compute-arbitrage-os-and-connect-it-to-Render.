@@ -1,3 +1,4 @@
+import {configuredApplicationDatabase,type ApplicationDatabase} from './applicationDatabase.js';
 import { configuredDiscoverySources } from './phase20/discoverySources.js';
 import { qualifyPublishedLead } from './leadQualification.js';
 import { parseFeedXml, feedEntries } from './boundedFeedXml.js';
@@ -5,10 +6,9 @@ import { assessFeedPublication } from './feedPublicationEvidence.js';
 import { assessCustomerLeadEvidence } from './customerLeadEvidence.js';
 import { isCommercialComputeLead } from './commercialLeadFilter.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
 import crypto from 'crypto';
 import { secureFeedFetch } from './secureFeedFetch.js';
-import fs from 'node:fs';
+
 import { isIP } from 'node:net';
 
 // Evidence-backed discovery: candidate URLs are not customers, contracts or revenue.
@@ -26,33 +26,7 @@ export interface AcquisitionLeadRecord {
 
 export const inMemoryLeadsStore: AcquisitionLeadRecord[] = [];
 
-const db = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: /^(localhost|dpg-[a-z0-9-]+)$/.test(new URL(process.env.DATABASE_URL).hostname)
-        ? undefined
-        : {
-            rejectUnauthorized: true,
-            ...(process.env.DATABASE_SSL_CA
-              ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
-              : {})
-          },
-      connectionTimeoutMillis: 5000,
-      query_timeout: 5000,
-      max: 2
-    })
-  : null;
-
-// Keep unexpected idle PostgreSQL connection failures
-// from terminating the Node.js process.
-db?.on('error', (err: Error) => {
-  const code = (err as NodeJS.ErrnoException).code || 'UNKNOWN';
-  console.error('[LEAD DISCOVERY POOL]', {
-    name: err.name,
-    code
-  });
-});
-
+const db=configuredApplicationDatabase();
 const MAX_FEEDS = 5,
   MAX_ENTRIES = 40;
 
@@ -106,7 +80,7 @@ async function ready() {
 }
 
 export async function persistAcquisitionLead(
-  store: Pick<Pool, 'query'> | null,
+  store: Pick<ApplicationDatabase, 'query'> | null,
   lead: AcquisitionLeadRecord
 ): Promise<boolean> {
   if (store) {

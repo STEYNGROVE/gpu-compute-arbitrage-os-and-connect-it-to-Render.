@@ -1,0 +1,6 @@
+[
+  {"service":"protected","path":"/api/health","http":200,"seconds":1.09,"body":{"status":"ok"}},
+  {"service":"protected","path":"/api/ready","http":200,"seconds":0.38,"body":{"status":"ready","database":"connected","revision":"2482877c3a2221a7eabc5c8da42db67c440268ca"}},
+  {"service":"staging","path":"/api/health","error":"TimeoutError","seconds":12.26},
+  {"service":"staging","path":"/api/ready","http":200,"seconds":10.39,"body":{"status":"ready","database":"connected","revision":"c9d903330db55892ed2d4f18a2e54524917a85b4"}}
+]
