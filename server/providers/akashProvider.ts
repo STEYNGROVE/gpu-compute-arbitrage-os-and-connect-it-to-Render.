@@ -189,7 +189,7 @@ export class AkashProvider extends BaseProvider {
       gpuModel: match.gpuModel,
       region: region || match.region,
       available: true,
-      stockCount: 8,
+      stockCount: null,
       currentPriceHourly: match.hourlyPrice,
       spotAvailable: true,
       spotPriceHourly: match.spotPriceHourly,

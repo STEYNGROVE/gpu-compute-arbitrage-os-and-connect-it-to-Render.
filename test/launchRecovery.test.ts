@@ -440,3 +440,112 @@ test("catalog window also includes a freshly reobserved historical offer ID ahea
     refreshed.id,
   );
 });
+
+test("legacy Lightning never substitutes static examples for failed live supplier data", async () => {
+  const { LightningProvider } =
+    await import("../server/providers/lightningProvider.js");
+  const provider = new LightningProvider();
+  const previous = {
+    LIGHTNING_API_KEY: process.env.LIGHTNING_API_KEY,
+    LIGHTNING_USER_ID: process.env.LIGHTNING_USER_ID,
+  };
+  process.env.LIGHTNING_API_KEY = "synthetic-read-key";
+  process.env.LIGHTNING_USER_ID = "synthetic-user";
+  (provider as any).safeFetch = async () => new Response("{}", { status: 503 });
+  try {
+    assert.deepEqual(await provider.discoverGPUs(), []);
+    assert.deepEqual(await provider.getLivePricing(), []);
+  } finally {
+    for (const [key, value] of Object.entries(previous))
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+  }
+});
+test("missing Hyperstack prices cannot be calculated from GPU count; genuine hourly rows retain unknown costs and stock", async () => {
+  const { HyperstackProvider } =
+    await import("../server/providers/hyperstackProvider.js");
+  const p = new HyperstackProvider(),
+    previous = process.env.HYPERSTACK_API_KEY;
+  process.env.HYPERSTACK_API_KEY = "synthetic-read-key";
+  (p as any).safeFetch = async () =>
+    new Response(
+      JSON.stringify({
+        flavors: [
+          {
+            id: "missing-price",
+            gpu_name: "H100",
+            gpu_memory: 80,
+            gpu_count: 8,
+          },
+          {
+            id: "published-price",
+            gpu_name: "H100",
+            gpu_memory: 80,
+            gpu_count: 1,
+            cost_per_hr: 2,
+          },
+        ],
+      }),
+    );
+  try {
+    const rows = await p.getLivePricing();
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].hourlyPrice, 2);
+    assert.equal(rows[0].startupCost, null);
+    assert.equal(rows[0].cpuPriceHourly, null);
+    assert.equal(rows[0].spotPriceHourly, undefined);
+    assert.equal(rows[0].additionalChargesVerified, false);
+    assert.equal(rows[0].availability, "UNKNOWN");
+  } finally {
+    if (previous === undefined) delete process.env.HYPERSTACK_API_KEY;
+    else process.env.HYPERSTACK_API_KEY = previous;
+  }
+});
+test("manual payment booleans and customer max-price budgets cannot pass financial preflight or trigger supplier calls", async () => {
+  const { providerRegistry } =
+    await import("../server/providers/providerRegistry.js");
+  const result = await providerRegistry.executePreflightChecklist({
+    providerId: "vast_ai",
+    gpuModel: "H100",
+    maxHourlyPriceUsd: 1,
+    expectedRevenueUsd: 10000,
+    jobDurationHours: 1,
+    customerPaymentAuthorized: true,
+    maxCostLimitUsd: 1000,
+    maxLossLimitUsd: 0,
+  });
+  assert.equal(result.pass, false);
+  assert(
+    result.reasons.includes(
+      "INDEPENDENT_PAYMENT_AND_FIRM_ALL_IN_SUPPLIER_QUOTE_REQUIRED",
+    ),
+  );
+});
+
+test("supplier connectivity cannot certify production readiness or turn unknown costs into free charges", async () => {
+  const { ProviderRegistry } =
+    await import("../server/providers/providerRegistry.js");
+  const registry = new ProviderRegistry();
+  (registry as any).providers = new Map([
+    [
+      "vast_ai",
+      {
+        id: "vast_ai",
+        name: "Synthetic fixture",
+        healthCheck: async () => ({
+          providerId: "vast_ai",
+          authenticated: true,
+          status: "LIVE",
+        }),
+      },
+    ],
+  ]);
+  const method = Object.getOwnPropertyNames(ProviderRegistry.prototype).find(
+    (name) => /readiness/i.test(name),
+  );
+  assert(method, "readiness API exists");
+  const report = await (registry as any)[method!]();
+  assert.equal(report.overallProductionReady, false);
+  assert.equal(report.readinessScope, "CONNECTIVITY_ONLY");
+  assert.equal(report.financialExecutionAllowed, false);
+});

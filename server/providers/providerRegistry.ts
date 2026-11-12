@@ -38,6 +38,8 @@ export interface ProviderReadinessReport {
   errorCount: number;
   providers: Record<ProviderId, ProviderHealthResult>;
   overallProductionReady: boolean;
+  readinessScope?: "CONNECTIVITY_ONLY";
+  financialExecutionAllowed?: false;
 }
 
 export interface LiveMatrixRow {
@@ -226,7 +228,9 @@ export class ProviderRegistry {
       configurationRequiredCount: configCount,
       errorCount: errorCount,
       providers: health,
-      overallProductionReady: liveCount >= 1 || authCount >= 1,
+      overallProductionReady: false,
+      readinessScope: "CONNECTIVITY_ONLY",
+      financialExecutionAllowed: false,
     };
   }
 
@@ -440,6 +444,7 @@ export class ProviderRegistry {
     const candidates: any[] = [];
 
     for (const offer of prices) {
+      if (offer.additionalChargesVerified !== true) continue;
       // Hardware parity check
       const offerSpec = normalizeGpu(offer.gpuModel);
       if (!offerSpec) continue;
@@ -527,79 +532,14 @@ export class ProviderRegistry {
     marginPct: number;
     projectedProfitUsd: number;
   }> {
-    const reasons: string[] = [];
-    const provider = this.getProvider(params.providerId);
-
-    // 1. Verify provider credentials
-    if (!provider) {
-      reasons.push("Provider not registered in system");
-      return { pass: false, reasons, marginPct: 0, projectedProfitUsd: 0 };
-    }
-
-    const health = await provider.healthCheck();
-    if (!health.authenticated && health.status !== "LIVE") {
-      reasons.push(
-        `Provider ${provider.name} credentials not authenticated (Status: ${health.status})`,
-      );
-    }
-
-    // 2. Verify GPU availability & price
-    const avail = await provider.getAvailability(params.gpuModel);
-    if (!avail.available && health.status === "LIVE") {
-      reasons.push(
-        `Target GPU ${params.gpuModel} currently out of capacity on ${provider.name}`,
-      );
-    }
-
-    const currentPrice = avail.currentPriceHourly || params.maxHourlyPriceUsd;
-
-    // 3. True Cost & Margin calculation
-    const economics = calculateTrueCostAndMargin({
-      gpuHourlyPrice: currentPrice,
-      gpuCount: 1,
-      durationHours: params.jobDurationHours,
-      storageGb: 50,
-      networkEgressGb: 10,
-      isInterruptible: false,
-      customerGrossRevenue: params.expectedRevenueUsd,
-    });
-
-    // 4. Verify expected revenue & margin
-    if (economics.netProfitUsd < MINIMUM_PROFIT_THRESHOLD_USD) {
-      reasons.push(
-        `Projected net profit ($${economics.netProfitUsd.toFixed(2)}) is below safety floor ($${MINIMUM_PROFIT_THRESHOLD_USD.toFixed(2)})`,
-      );
-    }
-    if (economics.grossMarginPct < MINIMUM_GROSS_MARGIN_PCT) {
-      reasons.push(
-        `Projected margin (${economics.grossMarginPct.toFixed(1)}%) is below minimum threshold (${MINIMUM_GROSS_MARGIN_PCT}%)`,
-      );
-    }
-
-    // 5. Customer payment authorization verification
-    if (!params.customerPaymentAuthorized) {
-      reasons.push(
-        "Customer payment authorization not confirmed by payment provider",
-      );
-    }
-
-    // 6. Cost limits
-    if (economics.totalTrueComputeCostUsd > params.maxCostLimitUsd) {
-      reasons.push(
-        `True compute cost ($${economics.totalTrueComputeCostUsd.toFixed(2)}) exceeds maximum cost limit ($${params.maxCostLimitUsd.toFixed(2)})`,
-      );
-    }
-    if (economics.netProfitUsd < -params.maxLossLimitUsd) {
-      reasons.push(
-        `Projected loss exceeds maximum loss limit ($${params.maxLossLimitUsd.toFixed(2)})`,
-      );
-    }
-
     return {
-      pass: reasons.length === 0,
-      reasons,
-      marginPct: economics.grossMarginPct,
-      projectedProfitUsd: economics.netProfitUsd,
+      pass: false,
+      reasons: [
+        "DISCOVERY_ONLY_FINANCIAL_PREFLIGHT_DISABLED",
+        "INDEPENDENT_PAYMENT_AND_FIRM_ALL_IN_SUPPLIER_QUOTE_REQUIRED",
+      ],
+      marginPct: 0,
+      projectedProfitUsd: 0,
     };
   }
 

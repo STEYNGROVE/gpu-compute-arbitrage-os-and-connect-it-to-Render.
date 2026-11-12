@@ -1,4 +1,4 @@
-import { BaseProvider } from './baseProvider.js';
+import { BaseProvider } from "./baseProvider.js";
 import {
   GpuModelInfo,
   ProviderPriceRecord,
@@ -16,30 +16,30 @@ import {
   WorkloadOutputResult,
   ProviderUsageResult,
   ProviderBillingResult,
-  ProviderHealthResult
-} from './types.js';
+  ProviderHealthResult,
+} from "./types.js";
 
 export class CoreweaveProvider extends BaseProvider {
-  readonly id = 'coreweave';
-  readonly name = 'CoreWeave';
-  readonly website = 'https://coreweave.com';
-  readonly tier = 'ENTERPRISE_HYPERSCALER' as const;
+  readonly id = "coreweave";
+  readonly name = "CoreWeave";
+  readonly website = "https://coreweave.com";
+  readonly tier = "ENTERPRISE_HYPERSCALER" as const;
 
   private get apiKey(): string {
-    return (process.env.COREWEAVE_API_KEY || '').trim();
+    return (process.env.COREWEAVE_API_KEY || "").trim();
   }
 
   async healthCheck(): Promise<ProviderHealthResult> {
     const configured = Boolean(this.apiKey && this.apiKey.length > 5);
     const start = Date.now();
-    const missing = configured ? [] : ['COREWEAVE_API_KEY'];
+    const missing = configured ? [] : ["COREWEAVE_API_KEY"];
 
     if (!configured) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'CONFIGURATION_REQUIRED',
-        healthColor: 'GREY',
+        status: "CONFIGURATION_REQUIRED",
+        healthColor: "GREY",
         authenticated: false,
         latencyMs: 0,
         endpoints: {
@@ -49,21 +49,21 @@ export class CoreweaveProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: 'COREWEAVE_API_KEY is not configured',
+        message: "COREWEAVE_API_KEY is not configured",
         configuredCredentials: [],
-        missingCredentials: missing
+        missingCredentials: missing,
       };
     }
 
     try {
-      const res = await this.safeFetch('https://api.coreweave.com/v1/user', {
+      const res = await this.safeFetch("https://api.coreweave.com/v1/user", {
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${this.apiKey}`,
+          Accept: "application/json",
+        },
       });
       const latency = Date.now() - start;
 
@@ -71,8 +71,8 @@ export class CoreweaveProvider extends BaseProvider {
         return {
           providerId: this.id,
           providerName: this.name,
-          status: 'ERROR',
-          healthColor: 'RED',
+          status: "ERROR",
+          healthColor: "RED",
           authenticated: false,
           latencyMs: latency,
           endpoints: {
@@ -82,20 +82,20 @@ export class CoreweaveProvider extends BaseProvider {
             provisioning: false,
             instanceControl: false,
             telemetry: false,
-            billing: false
+            billing: false,
           },
           lastCheckIso: new Date().toISOString(),
           message: `CoreWeave API returned HTTP ${res.status}`,
-          configuredCredentials: ['COREWEAVE_API_KEY'],
-          missingCredentials: []
+          configuredCredentials: ["COREWEAVE_API_KEY"],
+          missingCredentials: [],
         };
       }
 
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'LIVE',
-        healthColor: 'GREEN',
+        status: "LIVE",
+        healthColor: "GREEN",
         authenticated: true,
         latencyMs: latency,
         endpoints: {
@@ -105,19 +105,19 @@ export class CoreweaveProvider extends BaseProvider {
           provisioning: true,
           instanceControl: true,
           telemetry: true,
-          billing: true
+          billing: true,
         },
         lastCheckIso: new Date().toISOString(),
-        message: 'CoreWeave Kubernetes Cloud API authenticated and operational',
-        configuredCredentials: ['COREWEAVE_API_KEY'],
-        missingCredentials: []
+        message: "CoreWeave Kubernetes Cloud API authenticated and operational",
+        configuredCredentials: ["COREWEAVE_API_KEY"],
+        missingCredentials: [],
       };
     } catch (err: any) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'UNAVAILABLE',
-        healthColor: 'RED',
+        status: "UNAVAILABLE",
+        healthColor: "RED",
         authenticated: false,
         latencyMs: Date.now() - start,
         endpoints: {
@@ -127,12 +127,12 @@ export class CoreweaveProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: err.message || 'Failed to reach CoreWeave API',
-        configuredCredentials: ['COREWEAVE_API_KEY'],
-        missingCredentials: []
+        message: err.message || "Failed to reach CoreWeave API",
+        configuredCredentials: ["COREWEAVE_API_KEY"],
+        missingCredentials: [],
       };
     }
   }
@@ -140,8 +140,11 @@ export class CoreweaveProvider extends BaseProvider {
   async discoverGPUs(): Promise<GpuModelInfo[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://api.coreweave.com/v1/catalog', {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
+      const res = await this.safeFetch("https://api.coreweave.com/v1/catalog", {
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          Accept: "application/json",
+        },
       });
       if (!res.ok) return [];
       const json = await res.json();
@@ -149,10 +152,12 @@ export class CoreweaveProvider extends BaseProvider {
       return items.map((item: any) => ({
         providerId: this.id,
         gpuModel: item.name || item.model,
-        canonicalModel: (item.name || item.model).replace(/^NVIDIA\s+/i, '').trim(),
-        vramGb: item.vram_gb || 80,
-        stockAvailable: item.available_count ?? 1,
-        regions: item.regions || ['US-EAST-CW']
+        canonicalModel: (item.name || item.model)
+          .replace(/^NVIDIA\s+/i, "")
+          .trim(),
+        vramGb: item.vram_gb || null,
+        stockAvailable: item.available_count ?? null,
+        regions: item.regions || ["US-EAST-CW"],
       }));
     } catch {
       return [];
@@ -162,8 +167,11 @@ export class CoreweaveProvider extends BaseProvider {
   async getLivePricing(): Promise<ProviderPriceRecord[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://api.coreweave.com/v1/pricing', {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
+      const res = await this.safeFetch("https://api.coreweave.com/v1/pricing", {
+        headers: {
+          Authorization: `Bearer ${this.apiKey}`,
+          Accept: "application/json",
+        },
       });
       if (!res.ok) return [];
       const json = await res.json();
@@ -177,11 +185,13 @@ export class CoreweaveProvider extends BaseProvider {
             id: `cw-${item.id || item.sku}`,
             providerId: this.id,
             gpuModel: item.gpu_name || item.name,
-            canonicalModel: (item.gpu_name || item.name).replace(/^NVIDIA\s+/i, '').trim(),
-            vramGb: item.vram_gb || 80,
+            canonicalModel: (item.gpu_name || item.name)
+              .replace(/^NVIDIA\s+/i, "")
+              .trim(),
+            vramGb: item.vram_gb || null,
             gpuCount: item.gpu_count || 1,
-            region: item.region || 'US-EAST-CW',
-            availability: 'AVAILABLE',
+            region: item.region || "US-EAST-CW",
+            availability: "AVAILABLE",
             hourlyPrice: hourly,
             minutePrice: Number((hourly / 60).toFixed(6)),
             secondPrice: Number((hourly / 3600).toFixed(8)),
@@ -194,21 +204,26 @@ export class CoreweaveProvider extends BaseProvider {
             isInterruptible: false,
             estimatedInterruptionRiskPct: 0.1,
             timestamp: new Date().toISOString(),
-            source: 'https://api.coreweave.com/v1/pricing',
-            currency: 'USD',
-            status: 'LIVE'
+            source: "https://api.coreweave.com/v1/pricing",
+            currency: "USD",
+            status: "LIVE",
           });
         }
       }
-      return records;
+      return this.catalogOnly(records);
     } catch {
       return [];
     }
   }
 
-  async getAvailability(gpuModel: string, region?: string): Promise<ProviderAvailability> {
+  async getAvailability(
+    gpuModel: string,
+    region?: string,
+  ): Promise<ProviderAvailability> {
     const prices = await this.getLivePricing();
-    const match = prices.find(p => p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()));
+    const match = prices.find((p) =>
+      p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()),
+    );
     if (!match) {
       return {
         providerId: this.id,
@@ -220,7 +235,7 @@ export class CoreweaveProvider extends BaseProvider {
         spotAvailable: false,
         estimatedStartupSeconds: 15,
         timestamp: new Date().toISOString(),
-        source: 'CoreWeave Cloud'
+        source: "CoreWeave Cloud",
       };
     }
     return {
@@ -228,18 +243,18 @@ export class CoreweaveProvider extends BaseProvider {
       gpuModel: match.gpuModel,
       region: region || match.region,
       available: true,
-      stockCount: 8,
+      stockCount: null,
       currentPriceHourly: match.hourlyPrice,
       spotAvailable: false,
       estimatedStartupSeconds: 15,
       timestamp: match.timestamp,
-      source: match.source
+      source: match.source,
     };
   }
 
   async getInstanceTypes(): Promise<InstanceTypeInfo[]> {
     const prices = await this.getLivePricing();
-    return prices.map(p => ({
+    return prices.map((p) => ({
       id: p.id,
       providerId: this.id,
       name: `CoreWeave Pod (${p.gpuModel})`,
@@ -251,32 +266,69 @@ export class CoreweaveProvider extends BaseProvider {
       defaultStorageGb: 100,
       hourlyPrice: p.hourlyPrice,
       isSpot: false,
-      region: p.region
+      region: p.region,
     }));
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
+    throw new Error(
+      "COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified",
+    );
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      status: "REJECTED",
+      actualHourlyPriceUsd: 0,
+      error: "READ_ONLY: GPU provisioning disabled",
+      provisionedAtIso: new Date().toISOString(),
+    };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "START",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "STOP",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "RESTART",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "TERMINATE",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
@@ -284,62 +336,88 @@ export class CoreweaveProvider extends BaseProvider {
       return {
         providerId: this.id,
         instanceId,
-        status: 'UNKNOWN',
+        status: "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
-        lastCheckedIso: new Date().toISOString()
+        lastCheckedIso: new Date().toISOString(),
       };
     }
     try {
-      const res = await this.safeFetch(`https://api.coreweave.com/v1/deployments/${instanceId}`, {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        `https://api.coreweave.com/v1/deployments/${instanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) {
         return {
           providerId: this.id,
           instanceId,
-          status: 'UNKNOWN',
+          status: "UNKNOWN",
           uptimeSeconds: 0,
           currentCostAccruedUsd: 0,
           hourlyRateUsd: 0,
-          lastCheckedIso: new Date().toISOString()
+          lastCheckedIso: new Date().toISOString(),
         };
       }
       const data = await res.json();
       return {
         providerId: this.id,
         instanceId,
-        status: data.status === 'Running' ? 'RUNNING' : data.status === 'Terminated' ? 'TERMINATED' : 'UNKNOWN',
+        status:
+          data.status === "Running"
+            ? "RUNNING"
+            : data.status === "Terminated"
+              ? "TERMINATED"
+              : "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
         lastCheckedIso: new Date().toISOString(),
-        rawStatus: data
+        rawStatus: data,
       };
     } catch {
       return {
         providerId: this.id,
         instanceId,
-        status: 'UNKNOWN',
+        status: "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
-        lastCheckedIso: new Date().toISOString()
+        lastCheckedIso: new Date().toISOString(),
       };
     }
   }
 
   async getTelemetry(instanceId: string): Promise<ProviderTelemetryResult> {
-    return this.createUnknownTelemetry(instanceId, 'CoreWeave exposes Prometheus metrics via cluster exporter');
+    return this.createUnknownTelemetry(
+      instanceId,
+      "CoreWeave exposes Prometheus metrics via cluster exporter",
+    );
   }
 
-  async submitWorkload(instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult> {
-    return this.createUnavailableWorkload(workload.workloadId, 'CoreWeave executes workloads via Kubernetes manifests; direct REST submission is UNAVAILABLE');
+  async submitWorkload(
+    instanceId: string,
+    workload: WorkloadSpec,
+  ): Promise<WorkloadSubmissionResult> {
+    return this.createUnavailableWorkload(
+      workload.workloadId,
+      "CoreWeave executes workloads via Kubernetes manifests; direct REST submission is UNAVAILABLE",
+    );
   }
 
-  async retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
-    return this.createUnavailableOutput(workloadId, 'CoreWeave pod outputs must be retrieved via PVC storage or Kubernetes logs; direct REST output API is UNAVAILABLE');
+  async retrieveOutput(
+    instanceId: string,
+    workloadId: string,
+  ): Promise<WorkloadOutputResult> {
+    return this.createUnavailableOutput(
+      workloadId,
+      "CoreWeave pod outputs must be retrieved via PVC storage or Kubernetes logs; direct REST output API is UNAVAILABLE",
+    );
   }
 
   async getUsage(instanceId: string): Promise<ProviderUsageResult> {
@@ -349,10 +427,10 @@ export class CoreweaveProvider extends BaseProvider {
       runtimeSeconds: 0,
       gpuHours: 0,
       totalCostUsd: 0,
-      currency: 'USD',
+      currency: "USD",
       isFinal: false,
       periodStartIso: new Date().toISOString(),
-      periodEndIso: new Date().toISOString()
+      periodEndIso: new Date().toISOString(),
     };
   }
 
@@ -362,9 +440,9 @@ export class CoreweaveProvider extends BaseProvider {
       accountBalanceUsd: null,
       creditRemainingUsd: null,
       currentUnbilledChargesUsd: null,
-      currency: 'USD',
-      billingMechanism: 'POSTPAID_CARD',
-      invoiceCount: 0
+      currency: "USD",
+      billingMechanism: "POSTPAID_CARD",
+      invoiceCount: 0,
     };
   }
 }

@@ -1,4 +1,4 @@
-import { BaseProvider } from './baseProvider.js';
+import { BaseProvider } from "./baseProvider.js";
 import {
   GpuModelInfo,
   ProviderPriceRecord,
@@ -16,31 +16,31 @@ import {
   WorkloadOutputResult,
   ProviderUsageResult,
   ProviderBillingResult,
-  ProviderHealthResult
-} from './types.js';
+  ProviderHealthResult,
+} from "./types.js";
 
 export class TensordockProvider extends BaseProvider {
-  readonly id = 'tensordock';
-  readonly name = 'TensorDock';
-  readonly website = 'https://tensordock.com';
-  readonly tier = 'MARKETPLACE' as const;
+  readonly id = "tensordock";
+  readonly name = "TensorDock";
+  readonly website = "https://tensordock.com";
+  readonly tier = "MARKETPLACE" as const;
 
   private get apiKey(): string {
-    return (process.env.TENSORDOCK_API_KEY || '').trim();
+    return (process.env.TENSORDOCK_API_KEY || "").trim();
   }
 
   async healthCheck(): Promise<ProviderHealthResult> {
     const configured = Boolean(this.apiKey && this.apiKey.length > 5);
     const start = Date.now();
-    const missing = configured ? [] : ['TENSORDOCK_API_KEY'];
-    const configuredKeys = configured ? ['TENSORDOCK_API_KEY'] : [];
+    const missing = configured ? [] : ["TENSORDOCK_API_KEY"];
+    const configuredKeys = configured ? ["TENSORDOCK_API_KEY"] : [];
 
     if (!configured) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'CONFIGURATION_REQUIRED',
-        healthColor: 'GREY',
+        status: "CONFIGURATION_REQUIRED",
+        healthColor: "GREY",
         authenticated: false,
         latencyMs: 0,
         endpoints: {
@@ -50,32 +50,35 @@ export class TensordockProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: 'TENSORDOCK_API_KEY is not configured',
+        message: "TENSORDOCK_API_KEY is not configured",
         configuredCredentials: configuredKeys,
-        missingCredentials: missing
+        missingCredentials: missing,
       };
     }
 
     try {
       // Use TensorDock API v2 Bearer token authentication
-      const res = await this.safeFetch('https://marketplace.tensordock.com/api/v2/client/balance', {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'api-key': this.apiKey,
-          'Accept': 'application/json'
-        }
-      });
+      const res = await this.safeFetch(
+        "https://marketplace.tensordock.com/api/v2/client/balance",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "api-key": this.apiKey,
+            Accept: "application/json",
+          },
+        },
+      );
       const latency = Date.now() - start;
 
       if (!res.ok) {
         return {
           providerId: this.id,
           providerName: this.name,
-          status: 'ERROR',
-          healthColor: 'RED',
+          status: "ERROR",
+          healthColor: "RED",
           authenticated: false,
           latencyMs: latency,
           endpoints: {
@@ -85,23 +88,24 @@ export class TensordockProvider extends BaseProvider {
             provisioning: false,
             instanceControl: false,
             telemetry: false,
-            billing: false
+            billing: false,
           },
           lastCheckIso: new Date().toISOString(),
           message: `TensorDock API v2 returned HTTP ${res.status}`,
           configuredCredentials: configuredKeys,
-          missingCredentials: []
+          missingCredentials: [],
         };
       }
 
       const body = await res.json();
-      const authenticated = res.ok && (body.balance !== undefined || body.success === true);
+      const authenticated =
+        res.ok && (body.balance !== undefined || body.success === true);
 
       return {
         providerId: this.id,
         providerName: this.name,
-        status: authenticated ? 'LIVE' : 'AUTHENTICATED',
-        healthColor: authenticated ? 'GREEN' : 'YELLOW',
+        status: authenticated ? "LIVE" : "AUTHENTICATED",
+        healthColor: authenticated ? "GREEN" : "YELLOW",
         authenticated,
         latencyMs: latency,
         endpoints: {
@@ -111,19 +115,21 @@ export class TensordockProvider extends BaseProvider {
           provisioning: true,
           instanceControl: true,
           telemetry: false, // TensorDock provides telemetry via guest agent only
-          billing: true
+          billing: true,
         },
         lastCheckIso: new Date().toISOString(),
-        message: authenticated ? 'TensorDock API v2 authenticated and operational' : 'TensorDock response received without balance confirmation',
+        message: authenticated
+          ? "TensorDock API v2 authenticated and operational"
+          : "TensorDock response received without balance confirmation",
         configuredCredentials: configuredKeys,
-        missingCredentials: []
+        missingCredentials: [],
       };
     } catch (err: any) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'UNAVAILABLE',
-        healthColor: 'RED',
+        status: "UNAVAILABLE",
+        healthColor: "RED",
         authenticated: false,
         latencyMs: Date.now() - start,
         endpoints: {
@@ -133,12 +139,12 @@ export class TensordockProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: err.message || 'Failed to reach TensorDock API v2',
+        message: err.message || "Failed to reach TensorDock API v2",
         configuredCredentials: configuredKeys,
-        missingCredentials: []
+        missingCredentials: [],
       };
     }
   }
@@ -146,13 +152,16 @@ export class TensordockProvider extends BaseProvider {
   async discoverGPUs(): Promise<GpuModelInfo[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://marketplace.tensordock.com/api/v2/client/deploy/locations', {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'api-key': this.apiKey,
-          'Accept': 'application/json'
-        }
-      });
+      const res = await this.safeFetch(
+        "https://marketplace.tensordock.com/api/v2/client/deploy/locations",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "api-key": this.apiKey,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) return [];
       const json = await res.json();
       const locations = json.locations || json.data || [];
@@ -164,10 +173,12 @@ export class TensordockProvider extends BaseProvider {
           results.push({
             providerId: this.id,
             gpuModel: g.name || g.model,
-            canonicalModel: (g.name || g.model).replace(/^NVIDIA\s+/i, '').trim(),
-            vramGb: g.vram_gb || 24,
-            stockAvailable: g.available_stock || 1,
-            regions: [loc.location_name || 'US']
+            canonicalModel: (g.name || g.model)
+              .replace(/^NVIDIA\s+/i, "")
+              .trim(),
+            vramGb: g.vram_gb || null,
+            stockAvailable: g.available_stock ?? null,
+            regions: [loc.location_name || "US"],
           });
         }
       }
@@ -180,33 +191,41 @@ export class TensordockProvider extends BaseProvider {
   async getLivePricing(): Promise<ProviderPriceRecord[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://marketplace.tensordock.com/api/v2/client/deploy/locations', {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'api-key': this.apiKey,
-          'Accept': 'application/json'
-        }
-      });
+      const res = await this.safeFetch(
+        "https://marketplace.tensordock.com/api/v2/client/deploy/locations",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "api-key": this.apiKey,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) return [];
       const json = await res.json();
       const locations = json.locations || json.data || [];
       const records: ProviderPriceRecord[] = [];
 
       for (const loc of locations) {
-        for (const g of (loc.gpus || [])) {
+        for (const g of loc.gpus || []) {
           const hourly = Number(g.price_hourly || 0);
           records.push({
             id: `tensordock-${loc.id}-${g.model}`,
             providerId: this.id,
             gpuModel: g.name || g.model,
-            canonicalModel: (g.name || g.model).replace(/^NVIDIA\s+/i, '').trim(),
-            vramGb: g.vram_gb || 24,
+            canonicalModel: (g.name || g.model)
+              .replace(/^NVIDIA\s+/i, "")
+              .trim(),
+            vramGb: g.vram_gb || null,
             gpuCount: 1,
-            region: loc.location_name || 'US',
-            availability: (g.available_stock || 0) > 0 ? 'AVAILABLE' : 'OUT_OF_STOCK',
+            region: loc.location_name || "US",
+            availability:
+              (g.available_stock || 0) > 0 ? "AVAILABLE" : "OUT_OF_STOCK",
             hourlyPrice: hourly,
-            minutePrice: hourly > 0 ? Number((hourly / 60).toFixed(6)) : undefined,
-            secondPrice: hourly > 0 ? Number((hourly / 3600).toFixed(8)) : undefined,
+            minutePrice:
+              hourly > 0 ? Number((hourly / 60).toFixed(6)) : undefined,
+            secondPrice:
+              hourly > 0 ? Number((hourly / 3600).toFixed(8)) : undefined,
             cpuPriceHourly: 0.04,
             ramPricePerGbHourly: 0.002,
             storagePricePerGbHourly: 0.00015,
@@ -216,21 +235,27 @@ export class TensordockProvider extends BaseProvider {
             isInterruptible: false,
             estimatedInterruptionRiskPct: 2.0,
             timestamp: new Date().toISOString(),
-            source: 'https://marketplace.tensordock.com/api/v2/client/deploy/locations',
-            currency: 'USD',
-            status: 'LIVE'
+            source:
+              "https://marketplace.tensordock.com/api/v2/client/deploy/locations",
+            currency: "USD",
+            status: "LIVE",
           });
         }
       }
-      return records;
+      return this.catalogOnly(records);
     } catch {
       return [];
     }
   }
 
-  async getAvailability(gpuModel: string, region?: string): Promise<ProviderAvailability> {
+  async getAvailability(
+    gpuModel: string,
+    region?: string,
+  ): Promise<ProviderAvailability> {
     const prices = await this.getLivePricing();
-    const match = prices.find(p => p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()));
+    const match = prices.find((p) =>
+      p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()),
+    );
     if (!match) {
       return {
         providerId: this.id,
@@ -242,7 +267,7 @@ export class TensordockProvider extends BaseProvider {
         spotAvailable: false,
         estimatedStartupSeconds: 30,
         timestamp: new Date().toISOString(),
-        source: 'TensorDock API v2'
+        source: "TensorDock API v2",
       };
     }
     return {
@@ -250,18 +275,18 @@ export class TensordockProvider extends BaseProvider {
       gpuModel: match.gpuModel,
       region: region || match.region,
       available: true,
-      stockCount: 2,
+      stockCount: null,
       currentPriceHourly: match.hourlyPrice,
       spotAvailable: false,
       estimatedStartupSeconds: 30,
       timestamp: match.timestamp,
-      source: match.source
+      source: match.source,
     };
   }
 
   async getInstanceTypes(): Promise<InstanceTypeInfo[]> {
     const prices = await this.getLivePricing();
-    return prices.slice(0, 20).map(p => ({
+    return prices.slice(0, 20).map((p) => ({
       id: p.id,
       providerId: this.id,
       name: `TensorDock ${p.gpuModel}`,
@@ -273,86 +298,150 @@ export class TensordockProvider extends BaseProvider {
       defaultStorageGb: 100,
       hourlyPrice: p.hourlyPrice,
       isSpot: false,
-      region: p.region
+      region: p.region,
     }));
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
+    throw new Error(
+      "COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified",
+    );
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      status: "REJECTED",
+      actualHourlyPriceUsd: 0,
+      error: "READ_ONLY: GPU provisioning disabled",
+      provisionedAtIso: new Date().toISOString(),
+    };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "START",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "STOP",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "RESTART",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "TERMINATE",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
-    if (!this.apiKey) throw new Error('TENSORDOCK_API_KEY not configured');
+    if (!this.apiKey) throw new Error("TENSORDOCK_API_KEY not configured");
     try {
-      const res = await this.safeFetch(`https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}`, {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        `https://marketplace.tensordock.com/api/v2/client/virtualmachines/${instanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "api-key": this.apiKey,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) {
         return {
           providerId: this.id,
           instanceId,
-          status: 'UNKNOWN',
+          status: "UNKNOWN",
           uptimeSeconds: 0,
           currentCostAccruedUsd: 0,
           hourlyRateUsd: 0,
-          lastCheckedIso: new Date().toISOString()
+          lastCheckedIso: new Date().toISOString(),
         };
       }
       const data = await res.json();
       return {
         providerId: this.id,
         instanceId,
-        status: data.status === 'running' ? 'RUNNING' : data.status === 'stopped' ? 'STOPPED' : 'UNKNOWN',
+        status:
+          data.status === "running"
+            ? "RUNNING"
+            : data.status === "stopped"
+              ? "STOPPED"
+              : "UNKNOWN",
         ipAddress: data.ip_address,
         uptimeSeconds: Math.round(Number(data.uptime_seconds || 0)),
         currentCostAccruedUsd: Number(data.cost_accrued || 0),
         hourlyRateUsd: Number(data.price_hourly || 0),
         lastCheckedIso: new Date().toISOString(),
-        rawStatus: data
+        rawStatus: data,
       };
     } catch {
       return {
         providerId: this.id,
         instanceId,
-        status: 'UNKNOWN',
+        status: "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
-        lastCheckedIso: new Date().toISOString()
+        lastCheckedIso: new Date().toISOString(),
       };
     }
   }
 
   async getTelemetry(instanceId: string): Promise<ProviderTelemetryResult> {
-    return this.createUnknownTelemetry(instanceId, 'TensorDock API does not expose native hardware telemetry');
+    return this.createUnknownTelemetry(
+      instanceId,
+      "TensorDock API does not expose native hardware telemetry",
+    );
   }
 
-  async submitWorkload(instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult> {
-    return this.createUnavailableWorkload(workload.workloadId, 'TensorDock deploys virtual machines via cloud-init; direct REST job submission is UNAVAILABLE');
+  async submitWorkload(
+    instanceId: string,
+    workload: WorkloadSpec,
+  ): Promise<WorkloadSubmissionResult> {
+    return this.createUnavailableWorkload(
+      workload.workloadId,
+      "TensorDock deploys virtual machines via cloud-init; direct REST job submission is UNAVAILABLE",
+    );
   }
 
-  async retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
-    return this.createUnavailableOutput(workloadId, 'TensorDock VM outputs must be retrieved via SSH or mounted storage; direct REST output API is UNAVAILABLE');
+  async retrieveOutput(
+    instanceId: string,
+    workloadId: string,
+  ): Promise<WorkloadOutputResult> {
+    return this.createUnavailableOutput(
+      workloadId,
+      "TensorDock VM outputs must be retrieved via SSH or mounted storage; direct REST output API is UNAVAILABLE",
+    );
   }
 
   async getUsage(instanceId: string): Promise<ProviderUsageResult> {
@@ -363,10 +452,12 @@ export class TensordockProvider extends BaseProvider {
       runtimeSeconds: status.uptimeSeconds,
       gpuHours: Number((status.uptimeSeconds / 3600).toFixed(4)),
       totalCostUsd: status.currentCostAccruedUsd,
-      currency: 'USD',
-      isFinal: status.status === 'TERMINATED',
-      periodStartIso: new Date(Date.now() - status.uptimeSeconds * 1000).toISOString(),
-      periodEndIso: new Date().toISOString()
+      currency: "USD",
+      isFinal: status.status === "TERMINATED",
+      periodStartIso: new Date(
+        Date.now() - status.uptimeSeconds * 1000,
+      ).toISOString(),
+      periodEndIso: new Date().toISOString(),
     };
   }
 
@@ -377,24 +468,31 @@ export class TensordockProvider extends BaseProvider {
         accountBalanceUsd: null,
         creditRemainingUsd: null,
         currentUnbilledChargesUsd: null,
-        currency: 'USD',
-        billingMechanism: 'PREPAID_CREDIT',
-        invoiceCount: 0
+        currency: "USD",
+        billingMechanism: "PREPAID_CREDIT",
+        invoiceCount: 0,
       };
     }
     try {
-      const res = await this.safeFetch('https://marketplace.tensordock.com/api/v2/client/balance', {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'api-key': this.apiKey, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        "https://marketplace.tensordock.com/api/v2/client/balance",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            "api-key": this.apiKey,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) {
         return {
           providerId: this.id,
           accountBalanceUsd: null,
           creditRemainingUsd: null,
           currentUnbilledChargesUsd: null,
-          currency: 'USD',
-          billingMechanism: 'PREPAID_CREDIT',
-          invoiceCount: 0
+          currency: "USD",
+          billingMechanism: "PREPAID_CREDIT",
+          invoiceCount: 0,
         };
       }
       const data = await res.json();
@@ -404,10 +502,10 @@ export class TensordockProvider extends BaseProvider {
         accountBalanceUsd: bal,
         creditRemainingUsd: bal,
         currentUnbilledChargesUsd: null,
-        currency: 'USD',
-        billingMechanism: 'PREPAID_CREDIT',
+        currency: "USD",
+        billingMechanism: "PREPAID_CREDIT",
         invoiceCount: 1,
-        rawBillingInfo: data
+        rawBillingInfo: data,
       };
     } catch {
       return {
@@ -415,9 +513,9 @@ export class TensordockProvider extends BaseProvider {
         accountBalanceUsd: null,
         creditRemainingUsd: null,
         currentUnbilledChargesUsd: null,
-        currency: 'USD',
-        billingMechanism: 'PREPAID_CREDIT',
-        invoiceCount: 0
+        currency: "USD",
+        billingMechanism: "PREPAID_CREDIT",
+        invoiceCount: 0,
       };
     }
   }

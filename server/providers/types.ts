@@ -149,7 +149,7 @@ export interface GpuModelInfo {
   providerId: ProviderId;
   gpuModel: string;
   canonicalModel: string;
-  vramGb: number;
+  vramGb: number | null;
   architecture?: string;
   cudaCapability?: string;
   memoryBandwidthGbps?: number;
@@ -158,7 +158,7 @@ export interface GpuModelInfo {
   fp32Tflops?: number;
   tensorTflops?: number;
   interconnect?: string; // PCIe, SXM4, SXM5, NVLink
-  stockAvailable: number;
+  stockAvailable: number | null;
   regions: string[];
 }
 
@@ -166,24 +166,24 @@ export interface ProviderPriceRecord {
   evidenceLevel?: "CATALOG_ONLY";
   bindingQuote?: false;
   availabilityVerified?: false;
-  additionalChargesVerified?: false;
+  additionalChargesVerified?: boolean;
   providerEligibilityVerified?: false;
   id: string;
   providerId: ProviderId;
   gpuModel: string;
   canonicalModel: string;
-  vramGb: number;
+  vramGb: number | null;
   gpuCount: number;
   region: string;
   availability: "AVAILABLE" | "LOW_STOCK" | "OUT_OF_STOCK" | "UNKNOWN";
   hourlyPrice: number;
   minutePrice?: number;
   secondPrice?: number;
-  cpuPriceHourly: number;
-  ramPricePerGbHourly: number;
-  storagePricePerGbHourly: number;
-  networkEgressPricePerGb: number;
-  startupCost: number;
+  cpuPriceHourly: number | null;
+  ramPricePerGbHourly: number | null;
+  storagePricePerGbHourly: number | null;
+  networkEgressPricePerGb: number | null;
+  startupCost: number | null;
   spotPriceHourly?: number;
   isInterruptible: boolean;
   estimatedInterruptionRiskPct: number;
@@ -199,7 +199,7 @@ export interface ProviderAvailability {
   gpuModel: string;
   region?: string;
   available: boolean;
-  stockCount: number;
+  stockCount: number | null;
   currentPriceHourly: number;
   spotAvailable: boolean;
   spotPriceHourly?: number;
@@ -214,7 +214,7 @@ export interface InstanceTypeInfo {
   name: string;
   gpuModel: string;
   gpuCount: number;
-  vramGb: number;
+  vramGb: number | null;
   vcpu: number;
   ramGb: number;
   defaultStorageGb: number;

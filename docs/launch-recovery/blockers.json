@@ -214,13 +214,14 @@
       "classification": "Code defect",
       "component": "legacy supplier estimates",
       "evidence": "Legacy Akash adapter supplied assumed stock/VRAM/fees/spot prices",
-      "root_cause": "Unverified metadata presented as live wholesale records",
-      "repair": "Quarantine unsupported Akash quotes; preserve official order discovery; mark aggregate rows catalog-only",
+      "root_cause": "Legacy Akash and Lightning static/assumed wholesale data, guessed Hyperstack prices and stock/VRAM defaults.",
+      "repair": "Quarantine static live-price fallbacks; require published positive prices; use nullable unknown stock/VRAM/charges; mark catalog-only records; reject unverified profitability and caller-boolean preflight.",
       "verification": [
-        "test/launchRecovery.test.ts"
+        "test/launchRecovery.test.ts",
+        "combined suite pending final supplier changes"
       ],
       "owner": "engineering",
-      "status": "REPAIRED_PENDING_FULL_VERIFICATION",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
       "residual_risk": "Other legacy estimates remain indicative and cannot authorize a binding quote."
     },
     {
@@ -295,6 +296,21 @@
       "owner": "owner",
       "status": "DEFERRED_OPTIONAL",
       "residual_risk": "Manual release discipline retained; no merge by this task."
+    },
+    {
+      "ID": "FIN-02",
+      "severity": "high",
+      "classification": "Code defect",
+      "component": "legacy preflight",
+      "evidence": "executePreflightChecklist used customer max price as supplier fallback and accepted a caller payment boolean.",
+      "root_cause": "Forecast inputs were not independent commercial evidence.",
+      "repair": "Preflight fails closed before supplier calls; authentication/connectivity never certifies production readiness.",
+      "verification": [
+        "test/launchRecovery.test.ts"
+      ],
+      "owner": "engineering",
+      "status": "REPAIRED_FOCUSED_VERIFIED_FULL_SUITE_PENDING",
+      "residual_risk": "Modes B/C still require separate trusted payment/quote/fulfillment collectors and owner authorization."
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { BaseProvider } from './baseProvider.js';
+import { BaseProvider } from "./baseProvider.js";
 import {
   GpuModelInfo,
   ProviderPriceRecord,
@@ -16,30 +16,30 @@ import {
   WorkloadOutputResult,
   ProviderUsageResult,
   ProviderBillingResult,
-  ProviderHealthResult
-} from './types.js';
+  ProviderHealthResult,
+} from "./types.js";
 
 export class LambdaProvider extends BaseProvider {
-  readonly id = 'lambda';
-  readonly name = 'Lambda Cloud';
-  readonly website = 'https://lambdalabs.com';
-  readonly tier = 'NEOCLOUD' as const;
+  readonly id = "lambda";
+  readonly name = "Lambda Cloud";
+  readonly website = "https://lambdalabs.com";
+  readonly tier = "NEOCLOUD" as const;
 
   private get apiKey(): string {
-    return (process.env.LAMBDA_API_KEY || '').trim();
+    return (process.env.LAMBDA_API_KEY || "").trim();
   }
 
   async healthCheck(): Promise<ProviderHealthResult> {
     const configured = Boolean(this.apiKey && this.apiKey.length > 5);
     const start = Date.now();
-    const missing = configured ? [] : ['LAMBDA_API_KEY'];
+    const missing = configured ? [] : ["LAMBDA_API_KEY"];
 
     if (!configured) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'CONFIGURATION_REQUIRED',
-        healthColor: 'GREY',
+        status: "CONFIGURATION_REQUIRED",
+        healthColor: "GREY",
         authenticated: false,
         latencyMs: 0,
         endpoints: {
@@ -49,30 +49,33 @@ export class LambdaProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: 'LAMBDA_API_KEY is not configured',
+        message: "LAMBDA_API_KEY is not configured",
         configuredCredentials: [],
-        missingCredentials: missing
+        missingCredentials: missing,
       };
     }
 
     try {
-      const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-types', {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Accept': 'application/json'
-        }
-      });
+      const res = await this.safeFetch(
+        "https://cloud.lambdalabs.com/api/v1/instance-types",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: "application/json",
+          },
+        },
+      );
       const latency = Date.now() - start;
 
       if (!res.ok) {
         return {
           providerId: this.id,
           providerName: this.name,
-          status: 'ERROR',
-          healthColor: 'RED',
+          status: "ERROR",
+          healthColor: "RED",
           authenticated: false,
           latencyMs: latency,
           endpoints: {
@@ -82,20 +85,20 @@ export class LambdaProvider extends BaseProvider {
             provisioning: false,
             instanceControl: false,
             telemetry: false,
-            billing: false
+            billing: false,
           },
           lastCheckIso: new Date().toISOString(),
           message: `Lambda Cloud API returned HTTP ${res.status}`,
-          configuredCredentials: ['LAMBDA_API_KEY'],
-          missingCredentials: []
+          configuredCredentials: ["LAMBDA_API_KEY"],
+          missingCredentials: [],
         };
       }
 
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'LIVE',
-        healthColor: 'GREEN',
+        status: "LIVE",
+        healthColor: "GREEN",
         authenticated: true,
         latencyMs: latency,
         endpoints: {
@@ -105,19 +108,19 @@ export class LambdaProvider extends BaseProvider {
           provisioning: true,
           instanceControl: true,
           telemetry: true,
-          billing: true
+          billing: true,
         },
         lastCheckIso: new Date().toISOString(),
-        message: 'Lambda Cloud API authenticated and operational',
-        configuredCredentials: ['LAMBDA_API_KEY'],
-        missingCredentials: []
+        message: "Lambda Cloud API authenticated and operational",
+        configuredCredentials: ["LAMBDA_API_KEY"],
+        missingCredentials: [],
       };
     } catch (err: any) {
       return {
         providerId: this.id,
         providerName: this.name,
-        status: 'UNAVAILABLE',
-        healthColor: 'RED',
+        status: "UNAVAILABLE",
+        healthColor: "RED",
         authenticated: false,
         latencyMs: Date.now() - start,
         endpoints: {
@@ -127,12 +130,12 @@ export class LambdaProvider extends BaseProvider {
           provisioning: false,
           instanceControl: false,
           telemetry: false,
-          billing: false
+          billing: false,
         },
         lastCheckIso: new Date().toISOString(),
-        message: err.message || 'Failed to reach Lambda Cloud API',
-        configuredCredentials: ['LAMBDA_API_KEY'],
-        missingCredentials: []
+        message: err.message || "Failed to reach Lambda Cloud API",
+        configuredCredentials: ["LAMBDA_API_KEY"],
+        missingCredentials: [],
       };
     }
   }
@@ -140,9 +143,15 @@ export class LambdaProvider extends BaseProvider {
   async discoverGPUs(): Promise<GpuModelInfo[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-types', {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        "https://cloud.lambdalabs.com/api/v1/instance-types",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) return [];
       const json = await res.json();
       const types = json.data || {};
@@ -154,10 +163,14 @@ export class LambdaProvider extends BaseProvider {
           results.push({
             providerId: this.id,
             gpuModel: item.description || item.name,
-            canonicalModel: (item.description || item.name).replace(/^NVIDIA\s+/i, '').trim(),
-            vramGb: item.specs?.vram_gb || 24,
-            stockAvailable: types[key].regions_with_capacity_available?.length > 0 ? 5 : 0,
-            regions: (types[key].regions_with_capacity_available || []).map((r: any) => r.name)
+            canonicalModel: (item.description || item.name)
+              .replace(/^NVIDIA\s+/i, "")
+              .trim(),
+            vramGb: item.specs?.vram_gb || null,
+            stockAvailable: null,
+            regions: (types[key].regions_with_capacity_available || []).map(
+              (r: any) => r.name,
+            ),
           });
         }
       }
@@ -170,9 +183,15 @@ export class LambdaProvider extends BaseProvider {
   async getLivePricing(): Promise<ProviderPriceRecord[]> {
     if (!this.apiKey) return [];
     try {
-      const res = await this.safeFetch('https://cloud.lambdalabs.com/api/v1/instance-types', {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        "https://cloud.lambdalabs.com/api/v1/instance-types",
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) return [];
       const json = await res.json();
       const types = json.data || {};
@@ -180,7 +199,8 @@ export class LambdaProvider extends BaseProvider {
 
       for (const key of Object.keys(types)) {
         const item = types[key]?.instance_type;
-        const available = (types[key].regions_with_capacity_available || []).length > 0;
+        const available =
+          (types[key].regions_with_capacity_available || []).length > 0;
         const hourly = Number(item?.price_cents_per_hour || 0) / 100;
 
         if (item && hourly > 0) {
@@ -188,38 +208,49 @@ export class LambdaProvider extends BaseProvider {
             id: `lambda-${item.name}`,
             providerId: this.id,
             gpuModel: item.description || item.name,
-            canonicalModel: (item.description || item.name).replace(/^NVIDIA\s+/i, '').trim(),
-            vramGb: item.specs?.vram_gb || 24,
+            canonicalModel: (item.description || item.name)
+              .replace(/^NVIDIA\s+/i, "")
+              .trim(),
+            vramGb: item.specs?.vram_gb || null,
             gpuCount: item.specs?.gpus || 1,
-            region: types[key].regions_with_capacity_available?.[0]?.name || 'us-west-1',
-            availability: available ? 'AVAILABLE' : 'OUT_OF_STOCK',
+            region:
+              types[key].regions_with_capacity_available?.[0]?.name ||
+              "us-west-1",
+            availability: available ? "AVAILABLE" : "OUT_OF_STOCK",
             hourlyPrice: hourly,
-            minutePrice: hourly > 0 ? Number((hourly / 60).toFixed(6)) : undefined,
-            secondPrice: hourly > 0 ? Number((hourly / 3600).toFixed(8)) : undefined,
+            minutePrice:
+              hourly > 0 ? Number((hourly / 60).toFixed(6)) : undefined,
+            secondPrice:
+              hourly > 0 ? Number((hourly / 3600).toFixed(8)) : undefined,
             cpuPriceHourly: 0.05,
             ramPricePerGbHourly: 0.002,
             storagePricePerGbHourly: 0.0001,
-            networkEgressPricePerGb: 0.00, // Lambda has free egress
+            networkEgressPricePerGb: 0.0, // Lambda has free egress
             startupCost: 0.02,
             spotPriceHourly: undefined,
             isInterruptible: false,
             estimatedInterruptionRiskPct: 0.5,
             timestamp: new Date().toISOString(),
-            source: 'https://cloud.lambdalabs.com/api/v1/instance-types',
-            currency: 'USD',
-            status: 'LIVE'
+            source: "https://cloud.lambdalabs.com/api/v1/instance-types",
+            currency: "USD",
+            status: "LIVE",
           });
         }
       }
-      return records;
+      return this.catalogOnly(records);
     } catch {
       return [];
     }
   }
 
-  async getAvailability(gpuModel: string, region?: string): Promise<ProviderAvailability> {
+  async getAvailability(
+    gpuModel: string,
+    region?: string,
+  ): Promise<ProviderAvailability> {
     const prices = await this.getLivePricing();
-    const match = prices.find(p => p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()));
+    const match = prices.find((p) =>
+      p.gpuModel.toLowerCase().includes(gpuModel.toLowerCase()),
+    );
     if (!match) {
       return {
         providerId: this.id,
@@ -231,26 +262,26 @@ export class LambdaProvider extends BaseProvider {
         spotAvailable: false,
         estimatedStartupSeconds: 30,
         timestamp: new Date().toISOString(),
-        source: 'Lambda Cloud API'
+        source: "Lambda Cloud API",
       };
     }
     return {
       providerId: this.id,
       gpuModel: match.gpuModel,
       region: region || match.region,
-      available: match.availability === 'AVAILABLE',
-      stockCount: match.availability === 'AVAILABLE' ? 2 : 0,
+      available: match.availability === "AVAILABLE",
+      stockCount: match.availability === "AVAILABLE" ? 2 : 0,
       currentPriceHourly: match.hourlyPrice,
       spotAvailable: false,
       estimatedStartupSeconds: 30,
       timestamp: match.timestamp,
-      source: match.source
+      source: match.source,
     };
   }
 
   async getInstanceTypes(): Promise<InstanceTypeInfo[]> {
     const prices = await this.getLivePricing();
-    return prices.map(p => ({
+    return prices.map((p) => ({
       id: p.id,
       providerId: this.id,
       name: `Lambda ${p.gpuModel}`,
@@ -262,32 +293,69 @@ export class LambdaProvider extends BaseProvider {
       defaultStorageGb: 100,
       hourlyPrice: p.hourlyPrice,
       isSpot: false,
-      region: p.region
+      region: p.region,
     }));
   }
 
   async estimateCost(req: CostEstimateRequest): Promise<CostEstimateResult> {
-    throw new Error('COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified');
+    throw new Error(
+      "COST_UNVERIFIED: full provider fees, storage, network, and payment costs are not independently verified",
+    );
   }
 
   async provision(req: ProvisionRequest): Promise<ProvisionResult> {
-    return { success: false, providerId: this.id, status: 'REJECTED', actualHourlyPriceUsd: 0, error: 'READ_ONLY: GPU provisioning disabled', provisionedAtIso: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      status: "REJECTED",
+      actualHourlyPriceUsd: 0,
+      error: "READ_ONLY: GPU provisioning disabled",
+      provisionedAtIso: new Date().toISOString(),
+    };
   }
 
   async start(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'START', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "START",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async stop(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'STOP', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "STOP",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async restart(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'RESTART', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "RESTART",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async terminate(instanceId: string): Promise<InstanceActionResult> {
-    return { success: false, providerId: this.id, instanceId, action: 'TERMINATE', resultingStatus: 'FAILED', timestamp: new Date().toISOString() };
+    return {
+      success: false,
+      providerId: this.id,
+      instanceId,
+      action: "TERMINATE",
+      resultingStatus: "FAILED",
+      timestamp: new Date().toISOString(),
+    };
   }
 
   async getInstanceStatus(instanceId: string): Promise<InstanceStatusResult> {
@@ -295,69 +363,93 @@ export class LambdaProvider extends BaseProvider {
       return {
         providerId: this.id,
         instanceId,
-        status: 'UNKNOWN',
+        status: "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
-        lastCheckedIso: new Date().toISOString()
+        lastCheckedIso: new Date().toISOString(),
       };
     }
     try {
-      const res = await this.safeFetch(`https://cloud.lambdalabs.com/api/v1/instances/${instanceId}`, {
-        headers: { 'Authorization': `Bearer ${this.apiKey}`, 'Accept': 'application/json' }
-      });
+      const res = await this.safeFetch(
+        `https://cloud.lambdalabs.com/api/v1/instances/${instanceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.apiKey}`,
+            Accept: "application/json",
+          },
+        },
+      );
       if (!res.ok) {
         return {
           providerId: this.id,
           instanceId,
-          status: 'UNKNOWN',
+          status: "UNKNOWN",
           uptimeSeconds: 0,
           currentCostAccruedUsd: 0,
           hourlyRateUsd: 0,
-          lastCheckedIso: new Date().toISOString()
+          lastCheckedIso: new Date().toISOString(),
         };
       }
       const json = await res.json();
       const inst = json.data || {};
-      const statusMap: Record<string, 'PROVISIONING' | 'RUNNING' | 'TERMINATED' | 'UNKNOWN'> = {
-        'active': 'RUNNING',
-        'booting': 'PROVISIONING',
-        'terminated': 'TERMINATED'
+      const statusMap: Record<
+        string,
+        "PROVISIONING" | "RUNNING" | "TERMINATED" | "UNKNOWN"
+      > = {
+        active: "RUNNING",
+        booting: "PROVISIONING",
+        terminated: "TERMINATED",
       };
       return {
         providerId: this.id,
         instanceId,
-        status: statusMap[inst.status] || 'UNKNOWN',
+        status: statusMap[inst.status] || "UNKNOWN",
         ipAddress: inst.ip,
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
         lastCheckedIso: new Date().toISOString(),
-        rawStatus: inst
+        rawStatus: inst,
       };
     } catch {
       return {
         providerId: this.id,
         instanceId,
-        status: 'UNKNOWN',
+        status: "UNKNOWN",
         uptimeSeconds: 0,
         currentCostAccruedUsd: 0,
         hourlyRateUsd: 0,
-        lastCheckedIso: new Date().toISOString()
+        lastCheckedIso: new Date().toISOString(),
       };
     }
   }
 
   async getTelemetry(instanceId: string): Promise<ProviderTelemetryResult> {
-    return this.createUnknownTelemetry(instanceId, 'Lambda telemetry accessible via SSH/API probe');
+    return this.createUnknownTelemetry(
+      instanceId,
+      "Lambda telemetry accessible via SSH/API probe",
+    );
   }
 
-  async submitWorkload(instanceId: string, workload: WorkloadSpec): Promise<WorkloadSubmissionResult> {
-    return this.createUnavailableWorkload(workload.workloadId, 'Lambda Labs provisions cloud instances; direct REST workload submission is UNAVAILABLE');
+  async submitWorkload(
+    instanceId: string,
+    workload: WorkloadSpec,
+  ): Promise<WorkloadSubmissionResult> {
+    return this.createUnavailableWorkload(
+      workload.workloadId,
+      "Lambda Labs provisions cloud instances; direct REST workload submission is UNAVAILABLE",
+    );
   }
 
-  async retrieveOutput(instanceId: string, workloadId: string): Promise<WorkloadOutputResult> {
-    return this.createUnavailableOutput(workloadId, 'Lambda Labs instance outputs must be retrieved via SSH; direct REST output API is UNAVAILABLE');
+  async retrieveOutput(
+    instanceId: string,
+    workloadId: string,
+  ): Promise<WorkloadOutputResult> {
+    return this.createUnavailableOutput(
+      workloadId,
+      "Lambda Labs instance outputs must be retrieved via SSH; direct REST output API is UNAVAILABLE",
+    );
   }
 
   async getUsage(instanceId: string): Promise<ProviderUsageResult> {
@@ -367,10 +459,10 @@ export class LambdaProvider extends BaseProvider {
       runtimeSeconds: 0,
       gpuHours: 0,
       totalCostUsd: 0,
-      currency: 'USD',
+      currency: "USD",
       isFinal: false,
       periodStartIso: new Date().toISOString(),
-      periodEndIso: new Date().toISOString()
+      periodEndIso: new Date().toISOString(),
     };
   }
 
@@ -380,9 +472,9 @@ export class LambdaProvider extends BaseProvider {
       accountBalanceUsd: null,
       creditRemainingUsd: null,
       currentUnbilledChargesUsd: null,
-      currency: 'USD',
-      billingMechanism: 'POSTPAID_CARD',
-      invoiceCount: 0
+      currency: "USD",
+      billingMechanism: "POSTPAID_CARD",
+      invoiceCount: 0,
     };
   }
 }

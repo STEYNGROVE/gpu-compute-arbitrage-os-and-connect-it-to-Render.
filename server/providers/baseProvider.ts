@@ -1,3 +1,4 @@
+import type { ProviderPriceRecord } from "./types.js";
 import {
   GPUProvider,
   ProviderId,
@@ -66,6 +67,25 @@ export abstract class BaseProvider implements GPUProvider {
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  /** Catalog reads do not establish all-in costs or eligibility. Unknown charges never become free charges. */
+  protected catalogOnly(records: ProviderPriceRecord[]): ProviderPriceRecord[] {
+    return records
+      .filter((row) => Number.isFinite(row.hourlyPrice) && row.hourlyPrice > 0)
+      .map((row) => ({
+        ...row,
+        evidenceLevel: "CATALOG_ONLY",
+        bindingQuote: false,
+        availabilityVerified: false,
+        additionalChargesVerified: false,
+        providerEligibilityVerified: false,
+        cpuPriceHourly: null,
+        ramPricePerGbHourly: null,
+        storagePricePerGbHourly: null,
+        networkEgressPricePerGb: null,
+        startupCost: null,
+      }));
   }
 
   /**
