@@ -537,6 +537,7 @@ export class ProviderRegistry {
       reasons: [
         "DISCOVERY_ONLY_FINANCIAL_PREFLIGHT_DISABLED",
         "INDEPENDENT_PAYMENT_AND_FIRM_ALL_IN_SUPPLIER_QUOTE_REQUIRED",
+        "Independent payment authorization and a firm all-in supplier quote are required; caller flags are not evidence.",
       ],
       marginPct: 0,
       projectedProfitUsd: 0,
