@@ -1,0 +1,12 @@
+npm notice run react-example@0.0.0 test:static-assets
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/productionStaticAssets.test.ts
+✔ production serves frontend assets and SPA routes but never backend artifacts (380.291384ms)
+✔ baseline broad static middleware exposes a co-located backend artifact (54.355692ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1857.064847

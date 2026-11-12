@@ -1,0 +1,16 @@
+{
+  "render_tools_available_now": true,
+  "render_workspace_state": "NO_WORKSPACE_SELECTED",
+  "available_workspace_count": 1,
+  "resource_reads": "PENDING_REQUIRED_USER_WORKSPACE_CONFIRMATION",
+  "resource_mutations": "NOT_PERFORMED",
+  "drive_searches": [
+    {"scope":"project keywords, document metadata only","result":"unrelated older spreadsheet excluded; no project evidence established"},
+    {"scope":"exact name filter for GPU, Arbitrage, Render","result_count":0},
+    {"scope":"supplier and project full-text terms, metadata only","result":"unrelated older spreadsheet excluded; no supplier evidence established"}
+  ],
+  "discovery_error_history":"One malformed Drive filter returned 400; corrected to valid name-contains syntax before recording the zero-result search.",
+  "commercial_evidence":"NOT_VERIFIED; bounded search results do not prove evidence does not exist elsewhere",
+  "credentials_read_or_rotated":false,
+  "paid_provisioning_or_financial_execution":false
+}

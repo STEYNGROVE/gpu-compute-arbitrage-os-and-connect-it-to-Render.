@@ -1,0 +1,79 @@
+{
+  "tables": [
+    "schema_migrations",
+    "customers",
+    "customer_api_keys",
+    "customer_sessions",
+    "demand_orders",
+    "webhook_events",
+    "treasury_accounts",
+    "treasury_ledger",
+    "treasury_transactions",
+    "treasury_snapshots",
+    "treasury_reconciliations",
+    "quotes",
+    "capital_reservations",
+    "provider_operations",
+    "provider_instances",
+    "compute_jobs",
+    "settlements",
+    "outbox_events",
+    "audit_events",
+    "idempotency_keys",
+    "reconciliation_runs",
+    "kill_switch_state",
+    "payment_intents",
+    "provider_transactions",
+    "worker_heartbeats",
+    "circuit_breaker_state",
+    "profit_withdrawals_audit",
+    "verified_profit_records",
+    "withdrawal_allowlist",
+    "provider_funding_events",
+    "autonomous_profit_allocations",
+    "hot_wallet_transactions",
+    "hot_wallet_idempotency",
+    "hot_wallet_nonce_state",
+    "hot_wallet_emergency_state",
+    "market_opportunities"
+  ],
+  "migrationChecksums": [
+    {
+      "version": "20260926000000_gpu_arbitrage_os_schema",
+      "checksum": "e13211b870fecd3784902562a1da857eb3e75cf72599fbca726fb9ceeba6e1a2"
+    },
+    {
+      "version": "20261001000000_production_financial_authority",
+      "checksum": "735750c498843fdb054cd328e4469e68945a74eb933d1bd1aeae25797f17c14f"
+    },
+    {
+      "version": "20261001000001_restore_financial_integrity_constraints",
+      "checksum": "6084069c19186d27d24f9c51765ead5c5d8d45c671753c229a1b4efa73aab683"
+    },
+    {
+      "version": "20261001000002_complete_versioned_financial_migrations",
+      "checksum": "35f32613a0631641a91042db86cef552c5480dcd4f07dcac6d084cbd2635c3f6"
+    },
+    {
+      "version": "20261003000000_autonomous_provider_funding_and_profit_rules",
+      "checksum": "dbe711b360031dbf81bff71c4a8ed8a5ee400c1aaae4a13e4e898a3f9f7a5ba5"
+    },
+    {
+      "version": "20261108000000_gpu_buyer_evidence_review",
+      "checksum": "72a78e835ec93de89647ff9552ed76542277ac3c62a766d059b7e338ac12e976"
+    },
+    {
+      "version": "20261109000000_payment_evidence_observations",
+      "checksum": "ead2f3fa1233d88cf403200e8db6fb862509c4d1d3e2c8d8d0ce195ccacc3c91"
+    },
+    {
+      "version": "20261109000001_payment_evidence_replay",
+      "checksum": "ec9baa2f890e160818eaecce524db06a44750af78b845fa07828441b593a7823"
+    },
+    {
+      "version": "20261110_v5_commercial_evidence",
+      "checksum": "d8d1ca8e829115f3055f1daa844055cc8569cd4fb4923bdbe5fbd98799f4a9e9"
+    }
+  ],
+  "scope": "LOCAL_EXPECTATIONS_NOT_PRODUCTION_VERIFICATION"
+}

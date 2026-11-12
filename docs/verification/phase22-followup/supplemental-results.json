@@ -1,0 +1,7 @@
+[
+  {
+    "command": "npm run security:check (after staging follow-up dossier)",
+    "exit_code": 0,
+    "log": "final-tracked-security.log"
+  }
+]
