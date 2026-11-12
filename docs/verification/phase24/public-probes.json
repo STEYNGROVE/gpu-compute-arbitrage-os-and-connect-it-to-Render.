@@ -1,0 +1,37 @@
+[
+  {
+    "path": "/api/health",
+    "result": "UNAVAILABLE",
+    "category": "TimeoutError",
+    "status": null,
+    "seconds": 15.21
+  },
+  {
+    "path": "/api/ready",
+    "status": 200,
+    "method": "GET",
+    "contentType": "application/json; charset=utf-8",
+    "jsonKeys": [
+      "status",
+      "database",
+      "revision"
+    ],
+    "sha": "2482877c3a2221a7eabc5c8da42db67c440268ca",
+    "statusField": "ready",
+    "seconds": 7.64
+  },
+  {
+    "path": "/server.cjs",
+    "status": 200,
+    "method": "HEAD",
+    "contentType": "application/octet-stream",
+    "seconds": 0.39
+  },
+  {
+    "path": "/server.cjs.map",
+    "status": 200,
+    "method": "HEAD",
+    "contentType": "application/json; charset=UTF-8",
+    "seconds": 0.41
+  }
+]

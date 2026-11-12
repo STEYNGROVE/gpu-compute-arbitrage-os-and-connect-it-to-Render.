@@ -1,0 +1,6 @@
+npm notice run react-example@0.0.0 npx
+npm notice run 'tsx' test/secureFeedNode24LookupSuite.ts
+PASS: Node.js 24 lookup all:true
+PASS: Real HTTPS socket connected
+PASS: TLS certificate authorized
+NODE24 LOOKUP SUITE: ALL PASSED

@@ -1,0 +1,15 @@
+npm notice run react-example@0.0.0 test:phase23
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/phase23DatabaseBoundaries.test.ts
+✔ legacy adapters share authoritative query and fail closed without schema DDL (206.534154ms)
+✔ invoice mutation entry points cannot run under release lockdown (4.598077ms)
+✔ shared adapter rejects work when authoritative database is unavailable (1.116385ms)
+✔ runtime source has one pool construction boundary and no runtime DDL (29.194384ms)
+✔ internal-looking external DNS and direct fallback parameters cannot bypass TLS (10.949539ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2778.432616

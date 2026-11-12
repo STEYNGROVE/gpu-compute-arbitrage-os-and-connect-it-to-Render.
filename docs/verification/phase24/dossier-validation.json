@@ -1,0 +1,20 @@
+[
+  {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "seconds": 0.95,
+    "log": "dossier-0.log"
+  },
+  {
+    "command": "git diff HEAD --check",
+    "exit_code": 0,
+    "seconds": 0.04,
+    "log": "dossier-1.log"
+  },
+  {
+    "command": "git diff --cached --check",
+    "exit_code": 0,
+    "seconds": 0.03,
+    "log": "dossier-2.log"
+  }
+]
