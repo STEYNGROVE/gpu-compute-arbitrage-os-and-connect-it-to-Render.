@@ -1,3 +1,4 @@
+import { boundedSupplierJson } from './boundedSupplierJson.js';
 import { planCommercialQuotes } from './commercialQuotePlanner.js';
 import { assessGpuOffer } from './gpuOfferEvidence.js';
 import { matchGpuDemand } from './gpuDemandMatcher.js';
@@ -28,8 +29,8 @@ async function requestJson(url: string, key: string, method: 'GET'|'POST', body?
       headers: { Authorization: `Bearer ${key}`, Accept: 'application/json', ...(method === 'POST' ? {'Content-Type':'application/json'} : {}) },
       ...(body ? { body } : {})
     });
-    if (!response.ok) return { status: response.status, data: null };
-    const data = await response.json();
+    if (!response.ok) { await response.body?.cancel(); return { status: response.status, data: null }; }
+    const data = await boundedSupplierJson(response);
     return { status: response.status, data };
   } finally { clearTimeout(timeout); }
 }
@@ -45,18 +46,21 @@ export async function probeSupplier(supplier: Supplier): Promise<Probe> {
     const identity=await requestJson(ep.identity,key,isVast?'GET':'POST',isVast?undefined:identityQuery);
     result.identityHttpStatus=identity.status;
     if (identity.status !== 200) { result.errorCode='IDENTITY_HTTP_'+identity.status; return result; }
-    if (!isVast && Array.isArray(identity.data?.errors) && identity.data.errors.length) { result.errorCode='IDENTITY_GRAPHQL_ERROR'; return result; }
-    result.authenticated=isVast ? Boolean(identity.data && (identity.data.id || identity.data.username || identity.data.email)) : Boolean(identity.data?.data?.myself?.id);
+    if (!isVast && identity.data?.errors != null && (!Array.isArray(identity.data.errors) || identity.data.errors.length)) { result.errorCode='IDENTITY_GRAPHQL_ERROR'; return result; }
+    const identityId = isVast ? identity.data?.id : identity.data?.data?.myself?.id;
+    result.authenticated = typeof identityId === 'string'
+      ? identityId.trim().length > 0 && identityId.length <= 256
+      : isVast && Number.isSafeInteger(identityId) && identityId > 0;
     if (!result.authenticated) { result.errorCode='IDENTITY_UNVERIFIED'; return result; }
     const inventory=await requestJson(ep.inventory,key,isVast?'GET':'POST',isVast?undefined:inventoryQuery);
     result.inventoryHttpStatus=inventory.status;
     if (inventory.status !== 200) { result.errorCode='INVENTORY_HTTP_'+inventory.status; return result; }
-    if (!isVast && Array.isArray(inventory.data?.errors) && inventory.data.errors.length) { result.errorCode='INVENTORY_GRAPHQL_ERROR'; return result; }
+    if (!isVast && inventory.data?.errors != null && (!Array.isArray(inventory.data.errors) || inventory.data.errors.length)) { result.errorCode='INVENTORY_GRAPHQL_ERROR'; return result; }
     const rows=isVast?inventory.data?.offers:inventory.data?.data?.gpuTypes;
     if (!Array.isArray(rows)) { result.errorCode='INVENTORY_SCHEMA_UNVERIFIED'; return result; }
     result.inventoryRecords=rows.length;
     result.pricedRecords=rows.filter((r:any)=>{
-      const price=isVast ? Number(r.dph_total ?? r.dph_base) : Number(r.lowestPrice?.uninterruptablePrice ?? r.securePrice);
+      const price=isVast ? Number(r.dph_total) : Number(r.lowestPrice?.uninterruptablePrice ?? r.securePrice);
       return Number.isFinite(price) && price>0;
     }).length;
     return result;
@@ -95,7 +99,7 @@ async function fetchComparisonOffers(): Promise<GpuOffer[]> {
           );
 
           const price = Number(
-            row.dph_total ?? row.dph_base
+            row.dph_total
           );
 
           const gpuCount = Number(row.num_gpus ?? 1);
@@ -437,6 +441,10 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
         });
       }
 
+      if ((b.platformFeePct !== undefined && !validNumber(b.platformFeePct, 0, 99)) ||
+          (b.utilizationPct !== undefined && !validNumber(b.utilizationPct, 0.01, 100))) {
+        return res.status(400).json({error: 'INVALID_COMMERCIAL_QUOTE_INPUT', purchasingAllowed: false});
+      }
       try {
         const offers = await fetchComparisonOffers();
 
@@ -457,7 +465,9 @@ export function registerSupplierDiagnostics(app: Express, requireOwnerAuth: Requ
           catalog,
           additionalCostUsd: b.additionalCostUsd,
           contingencyPct: b.contingencyPct,
-          minimumMarginPct: b.minimumMarginPct
+          minimumMarginPct: b.minimumMarginPct,
+          platformFeePct: b.platformFeePct,
+          utilizationPct: b.utilizationPct
         });
 
         return res.json({

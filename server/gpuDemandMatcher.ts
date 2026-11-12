@@ -52,7 +52,9 @@ export function matchGpuDemand(
         offer.model.toLowerCase().includes(
           requirement.gpuModel.trim().toLowerCase()
         ) &&
-        offer.gpuCount >= requirement.gpuCount &&
+        Number.isInteger(offer.gpuCount) && offer.gpuCount >= requirement.gpuCount &&
+        Number.isFinite(offer.supplierHourlyUsd) && offer.supplierHourlyUsd > 0 &&
+        Math.abs(offer.supplierHourlyUsd / offer.gpuCount - offer.supplierPerGpuHourUsd) <= 0.000001 &&
         Number.isFinite(offer.supplierPerGpuHourUsd) &&
         offer.supplierPerGpuHourUsd > 0 &&
         offer.supplierPerGpuHourUsd <=
@@ -87,7 +89,7 @@ export function matchGpuDemand(
         purchasingAllowed: false as const
       };
     })
-    .filter(match => match.estimatedGrossSpreadUsd > 0)
+    .filter(match => Number.isFinite(match.estimatedGrossSpreadUsd) && Number.isFinite(match.quotedRevenueUsd) && match.estimatedGrossSpreadUsd > 0)
     .sort(
       (a, b) =>
         b.estimatedGrossSpreadUsd -

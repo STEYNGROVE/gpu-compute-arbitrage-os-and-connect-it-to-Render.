@@ -1,3 +1,4 @@
+import { verifyAcquisitionPublicationSchema } from './phase19AcquisitionPostgresChecks.js';
 import { verifyCommercialEvidenceSchema } from './commercialEvidencePostgresChecks.js';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
@@ -84,6 +85,7 @@ try {
   await isolated.query("UPDATE gpu_prepaid_reservations SET created_at = date_trunc('day', now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' - interval '1 second' WHERE status='SETTLED'");
   assert.equal((await reserveVerifiedCredit(isolated, dailyJob, 1000, 300)).reserved, true, 'Prior UTC day is excluded');
   await verifyCommercialEvidenceSchema(isolated);
+  await verifyAcquisitionPublicationSchema(isolated);
   console.log('PASS: isolated PostgreSQL reservation serialization across providers, duplicates, rollback/recovery, per-job/daily caps, UTC accounting and insufficient balance');
 } finally {
   if(oldPurchase===undefined) delete process.env.GPU_PURCHASING_ENABLED; else process.env.GPU_PURCHASING_ENABLED=oldPurchase;

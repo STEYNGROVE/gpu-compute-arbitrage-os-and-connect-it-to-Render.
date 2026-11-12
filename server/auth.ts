@@ -442,12 +442,17 @@ export function revokeBrowserSession(sessionId: string): boolean {
   return false;
 }
 
+export function studioAuthFallbackAllowed(): boolean {
+  return process.env.NODE_ENV === 'development' && process.env.ENABLE_STUDIO_AUTH_FALLBACK === 'true' && process.env.STRICT_AUTH_ENFORCEMENT !== 'true';
+}
+
 export function extractSessionIdFromRequest(req: express.Request): string | null {
   const cookieHeader = req.headers.cookie;
   if (cookieHeader) {
     const match = cookieHeader.match(/(?:^|;\s*)gpu_arb_session=([^;]+)/);
     if (match && match[1]) {
-      return decodeURIComponent(match[1]);
+      try { return decodeURIComponent(match[1]); }
+      catch { return null; }
     }
   }
 
@@ -461,14 +466,10 @@ export function extractSessionIdFromRequest(req: express.Request): string | null
     return customHeader;
   }
 
-  const querySession = (req.query.sessionId || req.query.session_id) as string;
-  if (typeof querySession === 'string' && querySession.startsWith('sess_')) {
-    return querySession;
-  }
-
+  // Session credentials belong in secure cookies or headers, never URL/log/referrer data.
   // Development & studio preview iframe fallback:
   // STRICT PRODUCTION RULE (Requirement 3): Never allow session bypass in production or when STRICT_AUTH_ENFORCEMENT=true.
-  if (process.env.NODE_ENV !== 'production' && process.env.STRICT_AUTH_ENFORCEMENT !== 'true') {
+  if (studioAuthFallbackAllowed()) {
     const activeOwnerSession = Array.from(activeSessions.values())
       .reverse()
       .find(s => s.role === 'OWNER' && Date.now() < s.expiresAt && !s.revokedAt);

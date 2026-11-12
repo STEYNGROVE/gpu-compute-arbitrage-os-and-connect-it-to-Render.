@@ -61,3 +61,22 @@ const invalidUrl = assessCustomerLeadEvidence({
 assert.equal(invalidUrl.status, 'INSUFFICIENT_EVIDENCE');
 
 console.log('PASS: 6 customer evidence assessment cases');
+for (const publishedAt of ['2026-02-30T12:00:00Z', '2026-11-10T12:00:00', '2026-11-10', '2026-13-01T00:00:00Z']) {
+  const result = assessCustomerLeadEvidence({...base, publishedAt}, now);
+  assert.equal(result.status, 'CANDIDATE');
+  assert(result.reasons.includes('MISSING_OR_INVALID_PUBLICATION_DATE'));
+}
+for (const title of ['', '   ']) {
+  const result = assessCustomerLeadEvidence({...base, title, customerConfirmationReference: 'reference'}, now);
+  assert.equal(result.status, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(result.paymentVerified, false);
+  assert.equal(result.realizedRevenueUsd, 0);
+}
+for (const timezone of ['UTC', 'Pacific/Honolulu', 'Asia/Tokyo']) {
+  const previous = process.env.TZ;
+  try {
+    process.env.TZ = timezone;
+    assert.equal(assessCustomerLeadEvidence({...base, publishedAt: '2026-11-10T12:00:00'}, now).status, 'CANDIDATE');
+    assert.equal(assessCustomerLeadEvidence(base, now).status, 'REVIEW_REQUIRED');
+  } finally { if (previous === undefined) delete process.env.TZ; else process.env.TZ = previous; }
+}

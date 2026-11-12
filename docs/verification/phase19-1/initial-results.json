@@ -1,0 +1,80 @@
+[
+  {
+    "command": "npm run typecheck",
+    "exitStatus": 127,
+    "seconds": 0.6,
+    "log": "check-00.log"
+  },
+  {
+    "command": "npm run lint",
+    "exitStatus": 127,
+    "seconds": 0.6,
+    "log": "check-01.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exitStatus": 0,
+    "seconds": 0.96,
+    "log": "check-02.log"
+  },
+  {
+    "command": "npm run test:consolidation",
+    "exitStatus": 127,
+    "seconds": 0.61,
+    "log": "check-03.log"
+  },
+  {
+    "command": "npm run test:provider-billing",
+    "exitStatus": 127,
+    "seconds": 0.6,
+    "log": "check-04.log"
+  },
+  {
+    "command": "npm run test:purchase-boundary",
+    "exitStatus": 0,
+    "seconds": 0.86,
+    "log": "check-05.log"
+  },
+  {
+    "command": "npm run test:simulation-safety",
+    "exitStatus": 127,
+    "seconds": 1.48,
+    "log": "check-06.log"
+  },
+  {
+    "command": "npm run test:phase19",
+    "exitStatus": 127,
+    "seconds": 0.61,
+    "log": "check-07.log"
+  },
+  {
+    "command": "npm test",
+    "exitStatus": 127,
+    "seconds": 0.62,
+    "log": "check-08.log"
+  },
+  {
+    "command": "npm run build",
+    "exitStatus": 127,
+    "seconds": 0.6,
+    "log": "check-09.log"
+  },
+  {
+    "command": "npm run audit:gpu-execution",
+    "exitStatus": 1,
+    "seconds": 0.85,
+    "log": "check-10.log"
+  },
+  {
+    "command": "npm audit --audit-level=moderate",
+    "exitStatus": 0,
+    "seconds": 2.83,
+    "log": "check-11.log"
+  },
+  {
+    "command": "npm audit --omit=dev --audit-level=moderate",
+    "exitStatus": 0,
+    "seconds": 2.25,
+    "log": "check-12.log"
+  }
+]

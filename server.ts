@@ -48,6 +48,7 @@ import {
   revokeBrowserSession,
   authenticateAndCreateSession,
   extractSessionIdFromRequest,
+  studioAuthFallbackAllowed,
   createCustomerApiKey,
   getCustomerList
 } from './server/auth.js';
@@ -3319,7 +3320,7 @@ app.get('/api/auth/session-token', (req, res) => {
     });
   }
 
-  const allowAutoSession = !isProd && (process.env.ALLOW_PREVIEW_SESSION === 'true' || !process.env.OWNER_AUTH_STRICT);
+  const allowAutoSession = studioAuthFallbackAllowed();
   if (allowAutoSession && req.query.dev_auto === 'true') {
     const session = createBrowserSession('OWNER');
     res.cookie('gpu_arb_session', session.sessionId, {

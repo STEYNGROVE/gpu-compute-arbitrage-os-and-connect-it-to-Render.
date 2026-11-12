@@ -1,0 +1,38 @@
+{
+  "baseCommit": "00826fb291a84ec4b7da9a00e8e71bad774b2241",
+  "branch": "fix/phase19-1-review-findings",
+  "recordedAtUtc": "2026-11-12T04:32:26.325249+00:00",
+  "files": {
+    "package.json": "fb49ff22498c1a89563bdca3236b7104e0fc7c5c903ad40fea98eb43521e6d0c",
+    "server.ts": "8e3c37f0804592f8dcdc48d6cf0cbc62ce464049f41b9e8a479e11863fba3fc9",
+    "server/auth.ts": "60d2f1286ce86b03331c3e2df20d182f1b6463a100ecd6fa6319e93315df7430",
+    "server/boundedFeedXml.ts": "28a64b77c4477d22d66a0000c430fa9588ce155924b136cd3101863ad9133483",
+    "server/boundedSupplierJson.ts": "8a3c71ae982f30d4e7231b71a67336104c130d812311763ed00dbc083b0839c9",
+    "server/commercialLeadFilter.ts": "285638ba844a059b878749fe1e2c093539b40421b4b20c14dd62a3fb6ce31022",
+    "server/commercialQuotePlanner.ts": "2697aca029b8b42c5361e74a43b8acfdd05169bb1168bab86b0591b4f39befd7",
+    "server/customerLeadEvidence.ts": "e9b699c4ee1339b6cfdccef501060e957634d7823a8c0f483f758061042bac3f",
+    "server/feedPublicationEvidence.ts": "d04794c7b97f713ad55f81f3bdc0424f5f36df1b35bd8f64688b8f3e50fc3e2a",
+    "server/gpuDemandMatcher.ts": "bafbbf985356c28523d94194e0ea46f82db404016214a8fe9e1e4cd15fb5dd36",
+    "server/leadDiscovery.ts": "66ee065a1d1f686fdfc200d8326c0d17b41b1e616a5ae7b6a7da466a1e599aec",
+    "server/leadQualification.ts": "bf48891e75da87ff5e5395a526da25e7862427d2eace5809bce0d0aaadc254fb",
+    "server/publicationTimestamp.ts": "6c86276d34e42a6506ad3afdbb232fdc35f30a074bfe2d5535f440fd52490613",
+    "server/supplierReadOnlyDiagnostics.ts": "efcabb05cacbdb209b266681a6535a87601bea3b7f2a7bdf7d14b5774c076a8c",
+    "test/commercialLeadFilterSuite.ts": "9353975a96335dc90dc3d13a0a21b2404682fcb29230b66886079fb4a36ca992",
+    "test/commercialQuotePlannerSuite.ts": "352d1d5b8e6162ecf106458d59df174cd7af76123138f43ca1d42e18c97802dd",
+    "test/customerLeadEvidenceSuite.ts": "30217313995fc390bf5833ba2448f690dc270241657ef7e48ed46b9ecccc648e",
+    "test/feedPublicationEvidenceSuite.ts": "01d6dafa3da0e90e99f1d711248bbac802e8a12c3c8f645045bd999384d6e191",
+    "test/phase18AuthSuite.ts": "fadd37844da6461c7f5ae6ce65d7a5e54b5c6dec0627e08b1a7816bfd92b1393",
+    "test/phase19AcquisitionPostgresChecks.ts": "7aff4ac6b159b077b65d702b24172ade723759ad5755f06e5287b0db6fd8e0c0",
+    "test/phase19ScannerIntegrationSuite.ts": "49e159244e83a2647cc0dc37dacb96583b6c035ba7e360d86400d96493919642",
+    "test/phase19SecuritySuite.ts": "1a6ca5f0bc86c39b6332a8db1e28b2c91c81149aba9e2c25d8238f19d2d96b42",
+    "test/phase8SupplierEndpointSuite.ts": "09df9048b4b3b2f0475ec2dcdf960444f19ddc45ca7e385f1576462ca52ca7e6",
+    "test/phase8SupplierHealthSuite.ts": "4ee13219f31eb3f09c5ba6aa4d2899e256c24839e622dec67537382db5e0cfad",
+    "test/prepaidPostgresIntegrationSuite.ts": "b211365b24b919b423fac26721eaed1fe2ac7e606cf6ca63f5953178799a4a56",
+    "test/supplierReadOnlyDiagnosticsSuite.ts": "3be3808c8bd1b6035aa9c5a281eeb0204b69c1435b99dd8b7a967f0bca86fc08"
+  },
+  "backup": {
+    "path": "server/commercialLeadFilter.ts.phase19.bak",
+    "remainsUntracked": true,
+    "sha256": "393059da158e1555dcef72157a682db285439c1eaac1549c6d76724a62bcb7c8"
+  }
+}

@@ -1,3 +1,4 @@
+import { strictPublicationTimestamp } from './publicationTimestamp.js';
 export interface CustomerLeadEvidenceInput {
   title: string;
   description: string;
@@ -26,6 +27,7 @@ export function assessCustomerLeadEvidence(
   input: CustomerLeadEvidenceInput,
   now: Date = new Date()
 ): CustomerLeadEvidenceResult {
+  if (!Number.isFinite(now.getTime())) throw new Error('INVALID_REFERENCE_DATE');
   const reasons: string[] = [];
 
   let validSource = false;
@@ -43,7 +45,7 @@ export function assessCustomerLeadEvidence(
   if (!validSource) reasons.push('INVALID_SOURCE_URL');
 
   const published = input.publishedAt
-    ? new Date(input.publishedAt)
+    ? new Date(strictPublicationTimestamp(input.publishedAt))
     : null;
 
   const validDate =
@@ -88,6 +90,7 @@ export function assessCustomerLeadEvidence(
   if (
     validSource &&
     validDate &&
+    input.title?.trim() &&
     !reasons.includes('STALE_OR_FUTURE_PUBLICATION') &&
     input.buyerIdentity?.trim() &&
     input.requirementDetails?.trim() &&

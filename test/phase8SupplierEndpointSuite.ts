@@ -46,15 +46,12 @@ try {
       ? target.includes('users/current')
       : String(init?.body).includes('myself');
 
-    return {
-      ok: true,
-      status: 200,
-      json: async () => isVast
+    return new Response(JSON.stringify(isVast
         ? identity ? { id: 42 } : { offers: [{ dph_total: 0.9 }] }
         : identity
           ? { data: { myself: { id: 'test' } } }
           : { data: { gpuTypes: [{ id: 'A100', securePrice: 1.5 }] } }
-    } as Response;
+    ), {status:200});
   }) as typeof fetch;
 
   const unauthorized = await fetch(url);

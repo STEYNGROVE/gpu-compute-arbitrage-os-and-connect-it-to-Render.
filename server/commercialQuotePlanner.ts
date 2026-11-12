@@ -13,6 +13,8 @@ export interface CommercialQuoteInput {
   additionalCostUsd: number;
   contingencyPct: number;
   minimumMarginPct: number;
+  platformFeePct?: number;
+  utilizationPct?: number;
 }
 
 export interface CommercialQuoteCandidate {
@@ -29,6 +31,13 @@ export interface CommercialQuoteCandidate {
   customerRevenueUsd: number;
   estimatedGrossProfitUsd: number;
   estimatedMarginPct: number;
+  currency: 'USD';
+  fxStatus: 'NOT_REQUIRED_USD_ONLY';
+  platformFeeUsd: number;
+  utilizationPct: number;
+  validUntil: string;
+  contractRequired: true;
+  realizedRevenueUsd: 0;
   status: 'DRAFT_REQUIRES_VERIFICATION';
   availabilityVerified: false;
   paymentVerified: false;
@@ -43,10 +52,14 @@ export function planCommercialQuotes(
     catalog,
     additionalCostUsd,
     contingencyPct,
-    minimumMarginPct
+    minimumMarginPct,
+    platformFeePct = 0,
+    utilizationPct = 100
   } = input;
 
   if (
+    !Number.isFinite(platformFeePct) || platformFeePct < 0 || platformFeePct >= 100 ||
+    !Number.isFinite(utilizationPct) || utilizationPct <= 0 || utilizationPct > 100 ||
     !Number.isFinite(additionalCostUsd) ||
     additionalCostUsd < 0 ||
     !Number.isFinite(contingencyPct) ||
@@ -73,13 +86,14 @@ export function planCommercialQuotes(
       const contingencyUsd =
         supplierCostUsd * contingencyPct / 100;
 
+      const platformFeeUsd = match.quotedRevenueUsd * utilizationPct / 100 * platformFeePct / 100;
       const totalEstimatedCostUsd =
         supplierCostUsd +
-        additionalCostUsd +
+        additionalCostUsd + platformFeeUsd +
         contingencyUsd;
 
       const customerRevenueUsd =
-        match.quotedRevenueUsd;
+        match.quotedRevenueUsd * utilizationPct / 100;
 
       const estimatedGrossProfitUsd =
         customerRevenueUsd -
@@ -92,6 +106,13 @@ export function planCommercialQuotes(
           : -100;
 
       return {
+        currency: 'USD' as const,
+        fxStatus: 'NOT_REQUIRED_USD_ONLY' as const,
+        platformFeeUsd,
+        utilizationPct,
+        validUntil: new Date(Date.parse(match.checkedAt) + 15 * 60000).toISOString(),
+        contractRequired: true as const,
+        realizedRevenueUsd: 0 as const,
         provider: match.provider,
         offerId: match.offerId,
         model: match.model,
@@ -112,6 +133,9 @@ export function planCommercialQuotes(
       };
     })
     .filter(candidate =>
+      Number.isFinite(candidate.totalEstimatedCostUsd) &&
+      Number.isFinite(candidate.customerRevenueUsd) &&
+      Number.isFinite(candidate.estimatedGrossProfitUsd) &&
       candidate.estimatedGrossProfitUsd > 0 &&
       candidate.estimatedMarginPct >= minimumMarginPct
     )

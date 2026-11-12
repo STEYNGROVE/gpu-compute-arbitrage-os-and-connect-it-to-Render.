@@ -53,3 +53,12 @@ for (const [title,description,feed,expected] of cases) {
  assert.equal(qualifies(title,description,feed),expected, title);
 }
 console.log(`PASS: ${cases.length} commercial lead filtering cases`);
+for (const [title, description, expected] of [
+  ['How to transcribe audio: what you need to know', 'Transcription tutorial', false],
+  ['Need transcription', 'Considering possible approaches', false],
+  ['Video rendering contractor wanted', 'We provide input files and need a contractor for video rendering', true],
+  ['Need transcription service', 'Seeking a provider to transcribe 5000 audio files', true],
+  ['GPU supply', 'We provide GPU compute capacity. Requesting compute quotes is easy.', false],
+  ['Batch processing', 'General discussion of provider selection', false],
+  ['Video rendering contractor wanted', 'We provide compute requirements and input files; seeking a contractor for video rendering', true]
+] as const) assert.equal(qualifies(title, description, 'https://example.org/feed'), expected, title);

@@ -5,11 +5,10 @@ const buying = /\b(looking to (rent|buy|purchase|hire)|seeking (a )?(gpu|compute
 const hiring = /who is hiring|whoishiring|we are hiring|job opening|recruiting|vacancy|full.time position|careers? page|apply for (this )?(job|role)/i;
 
 // Phase 19: finished-job demand, not proof of a customer.
-const finishedJob = /\b(transcri(?:be|ption)|speech.to.text|batch (?:processing|inference)|image (?:processing|generation)|video (?:processing|rendering)|llm inference|model (?:fine.tuning|fine.tune|deployment)|fine.tun(?:e|ing)|ai inference)\b/i;
+const finishedJob = /\b(transcri(?:be|bed|ption)|speech.to.text|batch (?:processing|inference)|image (?:processing|generation)|video (?:processing|rendering)|llm inference|model (?:fine.tuning|fine.tune|deployment)|fine.tun(?:e|ing)|ai inference)\b/i;
 
-const serviceBuying = /\b(need|seeking|looking for|request(?:ing)?|rfq|rfp|tender|procurement|contractor wanted|provider wanted|outsource|paid project|hire a (?:provider|contractor|service))\b/i;
-
-const supplyAdvertising = /\b(we offer|we provide|available for rent|rent our|our gpu servers|gpu hosting available|gpu rental service|selling gpu capacity)\b/i;
+const serviceBuying = /\b(seeking|looking for|requesting|need)\b.{0,100}\b(provider|contractor|service|quotes?|contract)\b|\b(rfq|rfp|tender|procurement|contractor wanted|provider wanted|outsource|paid project|hire a (?:provider|contractor|service))\b/i;
+const supplyAdvertising = /\b(?:we offer|we provide|rent our|selling)\s+(?:(?:managed|dedicated|cheap|h100|h200|a100)\s+)*(?:gpu(?:\s+hardware)?\s+(?:compute|capacity|hosting|rentals?|servers?|services?)|compute\s+(?:capacity|services?|hosting)|inference hosting)\b|\b(?:gpu servers? available for rent|our gpu servers|gpu hosting available|gpu rental service|gpu capacity for sale)\b/i;
 
 export function isCommercialComputeLead(title: string, description: string, feed: string): boolean {
   const body = `${title} ${description}`;
