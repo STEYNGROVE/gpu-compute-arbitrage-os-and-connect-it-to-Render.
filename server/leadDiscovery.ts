@@ -1,3 +1,4 @@
+import { assessFeedPublication } from './feedPublicationEvidence.js';
 import { assessCustomerLeadEvidence } from './customerLeadEvidence.js';
 import { isCommercialComputeLead } from './commercialLeadFilter.js';
 import type { Express, Request, Response, NextFunction } from 'express';
@@ -145,6 +146,14 @@ async function scan() {
       const entries = Array.from(xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)).slice(0, MAX_ENTRIES);
       for (const m of entries) {
         const entry = m[2];
+
+        // Phase 19: ingestion time is not publication evidence.
+        // Only recently published entries enter candidate discovery.
+        const publication = assessFeedPublication(entry);
+
+        if (!publication.eligibleForFreshReview) {
+          continue;
+        }
         const title = xmlDecode(field(entry, 'title'))
           .replace(/<[^>]+>/g, '')
           .slice(0, 240);
