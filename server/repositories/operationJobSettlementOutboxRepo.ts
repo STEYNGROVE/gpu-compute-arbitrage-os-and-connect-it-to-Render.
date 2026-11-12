@@ -322,6 +322,7 @@ export class SettlementRepository extends BasePostgresRepository {
     providerCostPaid: number;
     idempotencyKey?: string | null;
   }): Promise<SettlementRecord> {
+    assertLiveOperationsAllowed();
     const res = await this.query(
       `INSERT INTO settlements 
         (settlement_id, job_id, customer_id, gross_revenue, total_cost, net_profit,

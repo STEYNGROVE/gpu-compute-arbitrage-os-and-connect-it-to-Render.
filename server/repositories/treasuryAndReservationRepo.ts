@@ -1,3 +1,4 @@
+import { assertLiveOperationsAllowed } from '../simulationSafety.js';
 import crypto from 'crypto';
 import type pg from 'pg';
 import { BasePostgresRepository } from './baseRepo.js';
@@ -151,6 +152,7 @@ export class TreasuryRepository extends BasePostgresRepository {
       operationId?: string | null;
     };
   }): Promise<{ debitEntry: TreasuryLedgerEntry; creditEntry: TreasuryLedgerEntry }> {
+    assertLiveOperationsAllowed();
     // 0. Double-entry mathematical balance enforcement
     if (params.debit.quantity <= 0 || params.credit.quantity <= 0) {
       throw new Error('INVALID_QUANTITY: Double-entry transactions require positive quantities.');
@@ -269,6 +271,7 @@ export class ReservationRepository extends BasePostgresRepository {
     amount: number;
     durationMinutes?: number;
   }): Promise<CapitalReservation> {
+    assertLiveOperationsAllowed();
     return this.withTransaction(async (client) => {
       // Advisory xact lock on the treasury account to prevent race condition over-reservation
       await client.query(`SELECT pg_advisory_xact_lock(hashtext('reservation_account_mutex_' || $1))`, [reservation.accountId]);
@@ -333,6 +336,7 @@ export class ReservationRepository extends BasePostgresRepository {
   }
 
   public async consumeReservation(reservationId: string): Promise<void> {
+    assertLiveOperationsAllowed();
     await this.query(
       `UPDATE capital_reservations
        SET status = 'CONSUMED', updated_at = NOW()
@@ -342,6 +346,7 @@ export class ReservationRepository extends BasePostgresRepository {
   }
 
   public async releaseReservation(reservationId: string): Promise<void> {
+    assertLiveOperationsAllowed();
     await this.query(
       `UPDATE capital_reservations
        SET status = 'RELEASED', updated_at = NOW()

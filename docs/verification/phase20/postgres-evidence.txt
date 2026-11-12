@@ -1,0 +1,23 @@
+PASS: disposable PostgreSQL rejects incorrect TCP password
+PASS: real PostgreSQL exposure query includes active and terminal matches without unrelated terminal jobs
+PASS: isolated commercial evidence migration/replay, unverified defaults, state/cost/unique/FK constraints and rollback
+PASS: acquisition proposal upgrade/reapply, legacy NULL dates, production insert concurrency/idempotency, evidence parity, rollback
+PHASE20_PG_PASS transactional migration rollback and reapply
+PHASE20_PG_PASS same-key concurrency produces one durable reservation
+PHASE20_PG_PASS payload mismatch cannot reuse idempotency key
+PHASE20_PG_PASS restart reconstructs reservation and original evidence digest
+PHASE20_PG_PASS duplicate transition is idempotent and audit-linked
+PHASE20_PG_PASS database blocks authorization, request mutation and audit rewrites
+PHASE20_PG_PASS independent processes serialize active reservations
+PHASE20_PG_PASS process death before COMMIT rolls back reservation and audit atomically
+PHASE20_PG_PASS lost COMMIT acknowledgement returns uncertainty and reload prevents duplication
+PHASE20_PG_PASS failed audit insert rolls back state and reservation
+PHASE20_PG_PASS deferred constraint rejects state without matching audit event
+PHASE20_PG_PASS restart persists stop intent, retry backoff and unresolved billing exposure
+PHASE20_PG_PASS expired reservation cannot start after restart
+PHASE20_PG_PASS daily budget retains reconciled exposure without reusing real balances
+PHASE20_POSTGRES_COUNTS {"passed":14,"failed":0,"skipped":0}
+PASS: isolated PostgreSQL reservation serialization across providers, duplicates, rollback/recovery, per-job/daily caps, UTC accounting and insufficient balance
+PASS: disposable local reservation certification; broader financial-system certification remains blocked
+server stopped
+Local test artifacts retained at /data/data/com.termux/files/usr/tmp/phase16-pg-dNiw8x

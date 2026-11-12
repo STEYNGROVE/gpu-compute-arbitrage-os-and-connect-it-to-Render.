@@ -10,3 +10,5 @@ assert.equal(validateQuote({...valid,providerRateUsdPerGpuHour:-1}),false);
 assert.equal(validateQuote({...valid,additionalCostUsd:Infinity}),false);
 assert.equal(validateQuote({...valid,validUntil:new Date(Date.now()-86400000).toISOString()}),false);
 console.log('PASS: V5 commercial evidence validation tests');
+
+for (const validUntil of ['2027-02-30T12:00:00Z',new Date(Date.now()+86400000).toISOString().replace('Z','')]) assert.equal(validateQuote({...valid,validUntil}),false);

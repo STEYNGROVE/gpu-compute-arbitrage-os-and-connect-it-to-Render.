@@ -1,3 +1,4 @@
+import { strictPublicationTimestamp } from './publicationTimestamp.js';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
 import crypto from 'node:crypto';
@@ -25,8 +26,8 @@ export function validateQuote(b: any): boolean {
  return !!b && rate(b.customerRateUsdPerGpuHour) && rate(b.providerRateUsdPerGpuHour) &&
  rate(b.additionalCostUsd) && b.additionalCostUsd <= 100000000 &&
  typeof b.validUntil === 'string' && /^\d{4}-\d\d-\d\dT/.test(b.validUntil) &&
- Number.isFinite(Date.parse(b.validUntil)) && Date.parse(b.validUntil)>Date.now() &&
- Date.parse(b.validUntil)<Date.now()+366*86400000;
+ Number.isFinite(strictPublicationTimestamp(b.validUntil)) && strictPublicationTimestamp(b.validUntil)>Date.now() &&
+ strictPublicationTimestamp(b.validUntil)<Date.now()+366*86400000;
 }
 export function registerCommercialEvidence(app: Express, auth: Auth) {
  app.get('/api/owner/commercial-evidence/:id',auth,async(req,res)=>{

@@ -38,6 +38,7 @@ export async function reserveVerifiedCredit(
   pool: Pool, req: ReservationRequest, verifiedBalanceCents: number,
   verifiedCustomerPaymentCents: number
 ): Promise<ReservationDecision> {
+  if (process.env.NODE_ENV !== 'test' || process.env.DISABLE_JSON_PERSISTENCE !== 'true') return {reserved:false,reason:'SIMULATION_LOCKDOWN_INTERNAL_RESERVATION_DISABLED'};
   if (process.env.GPU_PURCHASING_ENABLED !== 'true') return {reserved:false,reason:'PURCHASING_DISABLED'};
   if (process.env.GPU_EVIDENCE_VERIFIER_READY !== 'true') return {reserved:false,reason:'EVIDENCE_VERIFIER_NOT_READY'};
   if (!/^[a-zA-Z0-9_-]{8,100}$/.test(req.jobId || '')) return {reserved:false,reason:'INVALID_JOB_ID'};

@@ -1,3 +1,4 @@
+import { registerPhase20Readiness } from './server/phase20/routes.js';
 import { commandCenterJobSummary } from './server/commandCenterJobSummary.js';
 import { verifiedOwnerRateIdentity } from './server/ownerRateIdentity.js';
 import { registerSpaceStationOne } from './server/spaceStationOne.js';
@@ -186,6 +187,7 @@ registerGpuArbitrageDiscovery(app, requireOwnerAuth);
 registerH100FleetController(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
+registerPhase20Readiness(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
 registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
