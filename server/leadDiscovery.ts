@@ -120,7 +120,9 @@ async function ready() {
   throw Error('DATABASE_URL_NOT_CONFIGURED');
 }
 
-async function scan() {
+async function scan(
+  fetchFeed: (url: string) => Promise<string> = secureFeedFetch
+) {
   await ready();
   const results = [] as Array<{ feed: string; inserted: number; error?: string }>;
   const feedList = feeds();
@@ -142,7 +144,7 @@ async function scan() {
     }
     let inserted = 0;
     try {
-      const xml = await secureFeedFetch(feed);
+      const xml = await fetchFeed(feed);
       const entries = Array.from(xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)).slice(0, MAX_ENTRIES);
       for (const m of entries) {
         const entry = m[2];
@@ -224,10 +226,14 @@ function withEvidenceAssessment(
   }));
 }
 
-export function registerLeadDiscovery(app: Express, owner: (req: Request, res: Response, next: NextFunction) => void) {
+export function registerLeadDiscovery(
+  app: Express,
+  owner: (req: Request, res: Response, next: NextFunction) => void,
+  fetchFeed: (url: string) => Promise<string> = secureFeedFetch
+) {
   app.post('/api/acquisition/discover', owner, async (_req, res) => {
     try {
-      res.json(await scan());
+      res.json(await scan(fetchFeed));
     } catch (e: any) {
       res.status(503).json({ error: String(e.message || e) });
     }
