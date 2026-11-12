@@ -1,0 +1,31 @@
+{
+  "observedAt": "2026-11-12T07:22:15.747799+00:00",
+  "method": "GET_ONLY_NO_CREDENTIALS",
+  "mutationPerformed": false,
+  "observations": [
+    {
+      "path": "/api/ready",
+      "curlExit": 28
+    },
+    {
+      "path": "/api/health",
+      "httpStatus": 200,
+      "response": {
+        "status": "ok",
+        "check": "liveness"
+      }
+    },
+    {
+      "path": "/api/ready",
+      "attempt": 2,
+      "observedAt": "2026-11-12T07:22:55.383457+00:00",
+      "curlExit": 0,
+      "httpStatus": 200,
+      "response": {
+        "status": "ready",
+        "database": "connected",
+        "revision": "c9d903330db55892ed2d4f18a2e54524917a85b4"
+      }
+    }
+  ]
+}

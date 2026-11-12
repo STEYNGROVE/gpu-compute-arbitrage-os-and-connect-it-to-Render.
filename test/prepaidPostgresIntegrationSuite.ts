@@ -1,3 +1,5 @@
+import {verifyPhase21Controls} from './phase21ControlsPostgres.js';
+import { verifyPhase21Postgres } from './phase21PostgresChecks.js';
 import { verifyPhase20Postgres } from './phase20PostgresChecks.js';
 import { verifyAcquisitionPublicationSchema } from './phase19AcquisitionPostgresChecks.js';
 import { verifyCommercialEvidenceSchema } from './commercialEvidencePostgresChecks.js';
@@ -88,6 +90,8 @@ try {
   await verifyCommercialEvidenceSchema(isolated);
   await verifyAcquisitionPublicationSchema(isolated);
   await verifyPhase20Postgres(isolated);
+  await verifyPhase21Postgres(isolated);
+  await verifyPhase21Controls(isolated);
   console.log('PASS: isolated PostgreSQL reservation serialization across providers, duplicates, rollback/recovery, per-job/daily caps, UTC accounting and insufficient balance');
 } finally {
   if(oldPurchase===undefined) delete process.env.GPU_PURCHASING_ENABLED; else process.env.GPU_PURCHASING_ENABLED=oldPurchase;

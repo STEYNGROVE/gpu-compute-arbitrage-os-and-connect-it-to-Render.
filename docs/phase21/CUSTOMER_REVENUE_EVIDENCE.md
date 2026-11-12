@@ -1,0 +1,13 @@
+# Customer, contract and revenue evidence
+
+No independently verified customer, signed contract, payment or realized revenue was established. No outreach, bids, contracts, invoices, payment collection or revenue posting were executed. Test fixtures explicitly remain simulation; signed test receipts never become production evidence.
+
+Existing secure RSS/Atom pipeline retains buyer intent and publication/deadline/source/digest evidence, deduplicates URLs and excludes supplier advertisements/tutorials/stale listings. Phase 19.1 and Phase 20 filtering/publication regression tests remain. Configured source registry review is administrative provenance, not buyer identity or lawful contact permission. No real source/opportunity is fabricated to fill an empty pipeline.
+
+Workflow: discovered opportunity → independent buyer identity → requirements/procurement authority → draft quote/proposal → human-approved contract/approval evidence → final payment and delivery obligations → accepted delivery/final supplier invoice → accountant review of earned revenue. Each step needs exact customer/account/order/workload/currency/amount binding. Owner approval is mandatory for outreach, binding offer, contract, refund or any financial execution.
+
+Implemented: complete-cost draft quote rules and cumulative evidence transitions from Phase 20; fixed-role advisory preparation, stricter receipt trust governance/retention/event conflict quarantine and payment-order review in Phase 21. Payment boundary has no HTTP webhook, payment credentials, collection call or ledger posting. A valid signed statement is still subject to durable deduplication and commercial review; expired/reversed/conflicting statements cannot authorize recognition.
+
+Simulation workflow can prepare quotes and evaluate/reject missing or simulated commercial evidence, then archive signed test evidence in disposable PostgreSQL. It cannot honestly demonstrate successful real revenue recognition. Production webhook raw-body signature validation for a named payment provider, partial refunds, chargeback state transitions, settlement matching and verified real customer chain remain unimplemented/unverified. No payment provider was invented or activated.
+
+Owner dependencies: actual buyer identity and authority records; approved privacy/access basis; enforceable contract and SLA; payment-processor agreement and authenticated sandbox event specification; accountant-approved recognition/refund/tax policies; independently retained delivery and supplier-cost evidence. Authorize these individually before connecting collection or recognition.

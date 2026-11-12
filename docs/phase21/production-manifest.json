@@ -1,0 +1,34 @@
+{
+  "status": "PREPARATION_ONLY_NOT_DEPLOYABLE_WITHOUT_REVIEW",
+  "serviceType": "web",
+  "runtime": "node",
+  "operatingMode": "DISCOVERY_ONLY",
+  "proposedBranch": "OWNER_TO_APPROVE_NO_EXISTING_BRANCH_CHANGE",
+  "buildCommand": "npm ci --no-audit --no-fund && npm run typecheck && npm run security:check && npm run build",
+  "startCommand": "npm start",
+  "healthCheckPath": "/api/ready",
+  "preDeployCommand": null,
+  "autoDeploy": "OFF_REQUIRES_OWNER_CONFIGURATION",
+  "paidResourcesAuthorized": false,
+  "productionMigrationAuthorized": false,
+  "financialExecutionAuthorized": false,
+  "runtimeRequiredNames": [
+    "NODE_ENV",
+    "APP_OPERATING_MODE",
+    "STRICT_AUTH_ENFORCEMENT",
+    "RENDER_GIT_COMMIT",
+    "DATABASE_URL",
+    "OWNER_API_KEY",
+    "CUSTOMER_API_KEY",
+    "ESCROW_SIGNING_SECRET",
+    "QUOTE_LOCK_SECRET",
+    "AUDIT_CHAIN_SECRET"
+  ],
+  "forbiddenCredentials": [
+    "GPU_MUTATION",
+    "PAYMENT_COLLECTION",
+    "TRADING",
+    "WITHDRAWAL"
+  ],
+  "shutdownDeadlineSeconds": 10
+}

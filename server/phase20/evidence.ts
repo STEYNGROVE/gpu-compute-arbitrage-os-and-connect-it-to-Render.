@@ -1,4 +1,4 @@
-import { createHash, verify } from 'node:crypto';
+import { createHash, createPublicKey, verify } from 'node:crypto';
 import { strictPublicationTimestamp } from '../publicationTimestamp.js';
 
 export type EvidenceStatus = 'VERIFIED' | 'PARTIALLY_VERIFIED' | 'UNVERIFIED' | 'EXPIRED' | 'REJECTED';
@@ -44,15 +44,16 @@ export function safePublicReference(value: string): boolean {
       !/^(localhost|\[|\d)/i.test(url.hostname) && !/\.(local|internal)$/i.test(url.hostname);
   } catch { return false; }
 }
+export interface TrustedIssuer {publicKeyPem:string;kinds:readonly EvidenceKind[];revokedAtMs?:number;notBeforeMs?:number;notAfterMs?:number}
 export interface ReceiptAssessment { status: EvidenceStatus; reasons: string[]; digest: string | null; signatureVerified: boolean; executionAuthorized: false }
 /** Public-key trust roots are installed by reviewed server code, never supplied by an HTTP caller.
  * OFFLINE_TEST cannot establish VERIFIED, even with a mathematically valid signature.
  * A signature authenticates a collector statement, not the truth of an unreviewed collector.
  */
 export class EvidenceAuthority {
-  private readonly issuers: ReadonlyMap<string, { publicKeyPem: string; kinds: readonly EvidenceKind[] }>;
-  constructor(issuers: ReadonlyMap<string, {publicKeyPem: string; kinds: readonly EvidenceKind[]} > = new Map(), private readonly mode: 'INDEPENDENT' | 'OFFLINE_TEST' = 'OFFLINE_TEST') {
-    this.issuers = new Map([...issuers].map(([id,value]) => [id, {publicKeyPem:value.publicKeyPem,kinds:[...value.kinds]}]));
+  private readonly issuers: ReadonlyMap<string, TrustedIssuer>;
+  constructor(issuers: ReadonlyMap<string, TrustedIssuer> = new Map(), private readonly mode: 'INDEPENDENT' | 'OFFLINE_TEST' = 'OFFLINE_TEST') {
+    this.issuers = new Map([...issuers].map(([id,value]) => [id, {...value,kinds:[...value.kinds]}]));
   }
   assess(receipt: EvidenceReceipt, kind: EvidenceKind, subject: string, account: string, now = Date.now(), maxAgeMs = 300000): ReceiptAssessment {
     const result = (status: EvidenceStatus, reason: string, digest: string | null = null, signatureVerified = false): ReceiptAssessment =>
@@ -69,6 +70,9 @@ export class EvidenceAuthority {
       if (p.origin === 'SIMULATION' || p.origin === 'MANUAL') return result('UNVERIFIED','NON_INDEPENDENT_ORIGIN',digest);
       const trusted = this.issuers.get(receipt.issuer);
       if (!trusted || !trusted.kinds.includes(kind)) return result('UNVERIFIED','TRUSTED_COLLECTOR_REQUIRED',digest);
+      if(trusted.revokedAtMs!==undefined || trusted.notBeforeMs!==undefined && (!integer(trusted.notBeforeMs)||observed<trusted.notBeforeMs) ||
+         trusted.notAfterMs!==undefined && (!integer(trusted.notAfterMs)||now>=trusted.notAfterMs) || trusted.publicKeyPem.length>16384 ||
+         trusted.publicKeyPem.includes('PRIVATE KEY') || createPublicKey(trusted.publicKeyPem).asymmetricKeyType!=='ed25519') return result('REJECTED','COLLECTOR_KEY_REVOKED_OR_INVALID',digest);
       if (typeof receipt.signature !== 'string' || !/^[A-Za-z0-9+/]{86}==$/.test(receipt.signature) ||
           !verify(null,Buffer.from(bytes),trusted.publicKeyPem,Buffer.from(receipt.signature,'base64'))) return result('REJECTED','SIGNATURE_INVALID',digest);
       return result(this.mode === 'INDEPENDENT' ? 'VERIFIED' : 'PARTIALLY_VERIFIED', this.mode === 'INDEPENDENT' ? 'TRUSTED_COLLECTOR_ATTESTATION' : 'OFFLINE_SIGNATURE_ONLY',digest,true);

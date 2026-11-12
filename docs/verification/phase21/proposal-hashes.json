@@ -1,0 +1,18 @@
+[
+  {
+    "path": "docs/migration-proposals/20261112_phase19_1_acquisition_publication.sql",
+    "sha256": "a456111589fc8a298aad2859d479908a28dec60176a554cc8968df7fc26c4e4a"
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase20_simulation_journal.sql",
+    "sha256": "f20a7d7db8bdf42f6a9b5dc2f215929897f6d153a87bfe0798fe96edc933a99c"
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase21_control_lab.sql",
+    "sha256": "21cbefb426598e75e743971087730c0c40a34a51d7b2e72ce3606263baecf338"
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase21_evidence_archive.sql",
+    "sha256": "4a6ab55fa7871ef1783abd8246322381c152bbe71d2aa406a1a51b6bac0135ab"
+  }
+]

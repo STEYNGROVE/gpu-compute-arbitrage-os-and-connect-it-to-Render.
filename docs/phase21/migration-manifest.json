@@ -1,0 +1,114 @@
+[
+  {
+    "path": "supabase/migrations/20260926000000_gpu_arbitrage_os_schema.sql",
+    "sha256": "59e70aabf0ce0d60c1894136cddb6083930ab813d16c68c5f6c2a5e31c1632af",
+    "trimmedSha256": "e13211b870fecd3784902562a1da857eb3e75cf72599fbca726fb9ceeba6e1a2",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261001000000_production_financial_authority.sql",
+    "sha256": "5b3879c095b988178afb49ac226a4594aa68425ce1232e1b78a3a020f4403f7d",
+    "trimmedSha256": "735750c498843fdb054cd328e4469e68945a74eb933d1bd1aeae25797f17c14f",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261001000001_restore_financial_integrity_constraints.sql",
+    "sha256": "2c4639bf3cfdee0c072a7475e8e3f4f65e2e189dc42a8313d28e73864bc8abab",
+    "trimmedSha256": "6084069c19186d27d24f9c51765ead5c5d8d45c671753c229a1b4efa73aab683",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261001000002_complete_versioned_financial_migrations.sql",
+    "sha256": "dc762ca82858d5765fb7b3d29d8c9a8072c6da35f4f53c5a8ece857a349b7de0",
+    "trimmedSha256": "35f32613a0631641a91042db86cef552c5480dcd4f07dcac6d084cbd2635c3f6",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261003000000_autonomous_provider_funding_and_profit_rules.sql",
+    "sha256": "7ba5abda8fa1f2834ed0fbda3834872d48c677d7f5068d25e5dfd8bdd165543a",
+    "trimmedSha256": "dbe711b360031dbf81bff71c4a8ed8a5ee400c1aaae4a13e4e898a3f9f7a5ba5",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261108000000_gpu_buyer_evidence_review.sql",
+    "sha256": "0042893320d857260eb2fdd0abfa859e53b5b2f22a95a52415f73a954aba4fda",
+    "trimmedSha256": "72a78e835ec93de89647ff9552ed76542277ac3c62a766d059b7e338ac12e976",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261109000000_payment_evidence_observations.sql",
+    "sha256": "03022ca60aa0f6e145af1a7513cf5c5e0e40b71ca5f7bbaf90527f8552ba2b20",
+    "trimmedSha256": "ead2f3fa1233d88cf403200e8db6fb862509c4d1d3e2c8d8d0ce195ccacc3c91",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261109000001_payment_evidence_replay.sql",
+    "sha256": "845f21847a2066deca93fd4bb94e3c8530999ee4babd41bfbba8cf1a9fbeb588",
+    "trimmedSha256": "ec9baa2f890e160818eaecce524db06a44750af78b845fa07828441b593a7823",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "supabase/migrations/20261110_v5_commercial_evidence.sql",
+    "sha256": "635e362c31eebad08d7a9e5452650616c5959b61a433e50d182626663138d8ab",
+    "trimmedSha256": "d8d1ca8e829115f3055f1daa844055cc8569cd4fb4923bdbe5fbd98799f4a9e9",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "migrations/20261109_payment_evidence_observations.sql",
+    "sha256": "03022ca60aa0f6e145af1a7513cf5c5e0e40b71ca5f7bbaf90527f8552ba2b20",
+    "trimmedSha256": "ead2f3fa1233d88cf403200e8db6fb862509c4d1d3e2c8d8d0ce195ccacc3c91",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "migrations/20261109_payment_evidence_replay.sql",
+    "sha256": "d0446a1ce77f8660ba2b06bc6c61ab83201ddc6964ab11d97380765d9f89ae45",
+    "trimmedSha256": "b8dbb43ba35cb036850b174b1772290dc6f64a7390c9172d4c9c435292aca174",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "scripts/sql/20261108_prepaid_reservations.sql",
+    "sha256": "4a6c017bbcfd730cf2dc456af99cbc587c107645331c860c667fc90b546c92fb",
+    "trimmedSha256": "138fdc6e45e84a18193dfd1b90b19954b00729e28b4dc519a95c18ba3bf54206",
+    "productionAppliedByPhase21": false,
+    "proposal": false
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase19_1_acquisition_publication.sql",
+    "sha256": "a456111589fc8a298aad2859d479908a28dec60176a554cc8968df7fc26c4e4a",
+    "trimmedSha256": "92622cc308b9531d2d0059b48c36e40d68bcc2bb7818458afb99ca97370e641e",
+    "productionAppliedByPhase21": false,
+    "proposal": true
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase20_simulation_journal.sql",
+    "sha256": "f20a7d7db8bdf42f6a9b5dc2f215929897f6d153a87bfe0798fe96edc933a99c",
+    "trimmedSha256": "8970eb742e4c3b2c698d55bd00a0ef7f7cb8c65b8ef29785db3771c5e583a984",
+    "productionAppliedByPhase21": false,
+    "proposal": true
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase21_control_lab.sql",
+    "sha256": "21cbefb426598e75e743971087730c0c40a34a51d7b2e72ce3606263baecf338",
+    "trimmedSha256": "bb5d6e3726e8fc1731c343d420f792f6dfa7bb4f7aa29d32aeed4919e10dc7bb",
+    "productionAppliedByPhase21": false,
+    "proposal": true
+  },
+  {
+    "path": "docs/migration-proposals/20261112_phase21_evidence_archive.sql",
+    "sha256": "4a6ab55fa7871ef1783abd8246322381c152bbe71d2aa406a1a51b6bac0135ab",
+    "trimmedSha256": "b241d8661e86430d2075fe1f318d3a13396b09666cd7bed2ebb2d94a0ec5f9c8",
+    "productionAppliedByPhase21": false,
+    "proposal": true
+  }
+]

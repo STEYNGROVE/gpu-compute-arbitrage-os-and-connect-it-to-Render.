@@ -1,12 +1,15 @@
+import { startDiscoveryServices } from './phase21/startup.js';
+import { requireProductionConfiguration } from './phase21/configuration.js';
+import { liveOperationsAllowed } from './simulationSafety.js';
 import dotenv from 'dotenv';
 import fs from 'fs';
 
 // 1. LOAD ENVIRONMENT FIRST BEFORE ANY MODULE READS SECRETS
 const initialEnv = { ...process.env };
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV === 'development') {
   dotenv.config();
 } else {
-  console.log('[BOOTSTRAP] Test mode: local .env loading disabled');
+  console.log('[BOOTSTRAP] Local .env loading disabled outside explicit development');
 }
 
 // Normalize AWS Secrets Manager JSON-wrapped secrets if injected directly into process.env
@@ -104,6 +107,10 @@ export interface BootstrapResult {
 }
 
 export async function bootstrapApplication(): Promise<BootstrapResult> {
+  if(process.env.NODE_ENV==='production')requireProductionConfiguration(process.env);
+  if(!liveOperationsAllowed())return startDiscoveryServices({
+    initializeDatabase:()=>pgDbService.initialize(),initializeDirectory:()=>initCustomerDirectory()
+  });
   const errors: string[] = [];
 
   // Step 0: Validate All Required Production Secrets at Startup
