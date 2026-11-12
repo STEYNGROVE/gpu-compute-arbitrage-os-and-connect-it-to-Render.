@@ -18,6 +18,18 @@ export interface Candidate {
   evidenceDigest: string;
   title: string;
   funding: Funding;
+  leadContext?: {
+    organization: string | null;
+    workloadRequirements: string | null;
+    gpuRequirements: string | null;
+    budgetMinor: number | null;
+    currency: string | null;
+    deadline: string | null;
+    geographicRestrictions: string | null;
+    eligibilityRequirements: string | null;
+    contactRoute: string;
+    qualificationStatus: "UNVERIFIED";
+  };
   discoveredRequirements?: {
     gpuUnits: number;
     replicas: number;

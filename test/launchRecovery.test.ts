@@ -390,3 +390,29 @@ test("shared supplier transport never propagates raw upstream credentials in err
     globalThis.fetch = original;
   }
 });
+
+test("enterprise lead context preserves published organization and deadline while refusing invented budget, requirements or eligibility", async () => {
+  const b = await new EnterpriseRfqAdapter(async () => ({
+    sourceUrl: "https://api.sam.gov/opportunities/v2/search",
+    retrievedAt: new Date().toISOString(),
+    data: {
+      opportunitiesData: [
+        {
+          noticeId: "real-source-fixture",
+          active: "Yes",
+          title: "GPU RFQ",
+          fullParentPathName: "Published fixture agency",
+          responseDeadLine: new Date(Date.now() + 3600000).toISOString(),
+          typeOfSetAsideDescription: "Published fixture category",
+        },
+      ],
+    },
+  })).discover("synthetic", "11/01/2026", "11/12/2026");
+  const context = b.candidates[0].leadContext!;
+  assert.equal(context.organization, "Published fixture agency");
+  assert.equal(context.budgetMinor, null);
+  assert.equal(context.gpuRequirements, null);
+  assert.equal(context.qualificationStatus, "UNVERIFIED");
+  assert.equal(context.contactRoute, b.candidates[0].sourceUrl);
+  assert.equal(b.candidates[0].funding, "UNVERIFIED");
+});

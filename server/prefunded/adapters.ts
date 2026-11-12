@@ -193,6 +193,19 @@ export class EnterpriseRfqAdapter extends Adapter {
         ).toISOString(),
         evidenceDigest: batch.evidence.responseDigest,
         title: text(record.title),
+        leadContext: {
+          organization: text(record.fullParentPathName) || null,
+          workloadRequirements: null,
+          gpuRequirements: null,
+          budgetMinor: null,
+          currency: null,
+          deadline: new Date(deadline).toISOString(),
+          geographicRestrictions: null,
+          eligibilityRequirements:
+            text(record.typeOfSetAsideDescription) || null,
+          contactRoute: link,
+          qualificationStatus: "UNVERIFIED",
+        },
         funding: "UNVERIFIED",
       });
     }
