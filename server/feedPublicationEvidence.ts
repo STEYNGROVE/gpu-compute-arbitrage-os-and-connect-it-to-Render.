@@ -1,3 +1,5 @@
+import { parseFeedXml, type FeedXmlNode } from './boundedFeedXml.js';
+import { strictPublicationTimestamp } from './publicationTimestamp.js';
 export type PublicationDecision =
   | 'RECENT'
   | 'MISSING_DATE'
@@ -16,42 +18,32 @@ export interface PublicationEvidence {
 const DAY_MS = 86400000;
 const MAX_AGE_DAYS = 30;
 
-function extractDateFields(entry: string): string[] {
-  const values: string[] = [];
-
-  for (const name of ['pubDate', 'published']) {
-    const regex = new RegExp(
-      '<' + name +
-      '(?:\\s[^>]*)?>([\\s\\S]*?)</' +
-      name + '>',
-      'gi'
-    );
-
-    for (const match of entry.matchAll(regex)) {
-      values.push(match[1].trim());
-    }
-  }
-
-  return values;
-}
-
 export function assessFeedPublication(
-  entry: string,
+  entry: string | FeedXmlNode,
   now: Date = new Date()
 ): PublicationEvidence {
-  const dates = extractDateFields(entry);
+  if (!Number.isFinite(now.getTime())) throw new Error('INVALID_REFERENCE_DATE');
+  let fields: FeedXmlNode[];
+  try {
+    const root = typeof entry === 'string' ? parseFeedXml(entry) : entry;
+    const wrapped = typeof entry === 'string' && root.children.length === 1 && ['item', 'entry'].includes(root.children[0].name) ? root.children[0] : root;
+    fields = wrapped.children;
+  } catch {
+    return { publishedAt: null, decision: 'INVALID_DATE', eligibleForFreshReview: false };
+  }
+  const dates = fields.filter(n => n.name === 'pubDate' || n.name === 'published');
 
   if (dates.length === 0) {
     return {
       publishedAt: null,
-      decision: /<updated(?:\\s[^>]*)?>/i.test(entry)
+      decision: fields.some(n => n.name === 'updated')
         ? 'UPDATED_ONLY'
         : 'MISSING_DATE',
       eligibleForFreshReview: false
     };
   }
 
-  const timestamps = dates.map(value => new Date(value).getTime());
+  const timestamps = dates.map(node => node.children.length ? NaN : strictPublicationTimestamp(node.text, node.name === 'published'));
 
   if (
     timestamps.some(value => !Number.isFinite(value))
@@ -72,10 +64,6 @@ export function assessFeedPublication(
   }
 
   const parsed = new Date(timestamps[0]);
-
-  if (!Number.isFinite(now.getTime())) {
-    throw new Error('INVALID_REFERENCE_DATE');
-  }
 
   const age = now.getTime() - parsed.getTime();
 

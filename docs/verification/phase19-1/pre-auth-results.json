@@ -1,0 +1,164 @@
+[
+  {
+    "command": "npm run test:provider-billing",
+    "exitStatus": 0,
+    "seconds": 1.73,
+    "log": "check-04.log"
+  },
+  {
+    "command": "npm run test:purchase-boundary",
+    "exitStatus": 0,
+    "seconds": 0.87,
+    "log": "check-05.log"
+  },
+  {
+    "command": "npm run test:simulation-safety",
+    "exitStatus": 0,
+    "seconds": 6.68,
+    "log": "check-06.log"
+  },
+  {
+    "command": "npm run audit:gpu-execution",
+    "exitStatus": 1,
+    "seconds": 0.9,
+    "log": "check-10.log"
+  },
+  {
+    "command": "npm audit --audit-level=moderate",
+    "exitStatus": 0,
+    "seconds": 2.23,
+    "log": "check-11.log"
+  },
+  {
+    "command": "npm audit --omit=dev --audit-level=moderate",
+    "exitStatus": 0,
+    "seconds": 2.06,
+    "log": "check-12.log"
+  },
+  {
+    "command": "npm run test:phase16-postgres",
+    "exitStatus": 0,
+    "seconds": 5.64,
+    "log": "check-13.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedIntegrationSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.26,
+    "log": "check-14.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedDnsIsolationSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.24,
+    "log": "check-15.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedTransportSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.27,
+    "log": "check-16.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedDnsPinningSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.23,
+    "log": "check-17.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedDnsEdgeSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.27,
+    "log": "check-18.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedTlsSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.35,
+    "log": "check-19.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedSocketSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.33,
+    "log": "check-20.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedFinalNetworkSuite.ts",
+    "exitStatus": 0,
+    "seconds": 10.55,
+    "log": "check-21.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedTimeoutSuite.ts",
+    "exitStatus": 0,
+    "seconds": 10.26,
+    "log": "check-22.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedNode24LookupSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.34,
+    "log": "check-23.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedNode24ProductionSuite.ts",
+    "exitStatus": 0,
+    "seconds": 1.3,
+    "log": "check-24.log"
+  },
+  {
+    "command": "NODE_ENV=production STRICT_AUTH_ENFORCEMENT=true tsx --test server/gpuOfferEvidence.test.ts server/gpuEvidenceIntegration.test.ts server/gpuEvidenceHttp.test.ts server/gpuAuthIsolation.test.ts server/gpuOwnerAuthHttp.test.ts",
+    "exitStatus": 0,
+    "seconds": 3.47,
+    "log": "check-25.log"
+  },
+  {
+    "command": "npm run typecheck",
+    "exitStatus": 0,
+    "seconds": 21.12,
+    "log": "check-00.log"
+  },
+  {
+    "command": "npm run lint",
+    "exitStatus": 0,
+    "seconds": 27.86,
+    "log": "check-01.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exitStatus": 0,
+    "seconds": 1.2,
+    "log": "check-02.log"
+  },
+  {
+    "command": "npm run test:consolidation",
+    "exitStatus": 0,
+    "seconds": 11.96,
+    "log": "check-03.log"
+  },
+  {
+    "command": "npm run test:phase19",
+    "exitStatus": 0,
+    "seconds": 7.17,
+    "log": "check-07.log"
+  },
+  {
+    "command": "npm test",
+    "exitStatus": 0,
+    "seconds": 65.23,
+    "log": "check-08.log"
+  },
+  {
+    "command": "npm run build",
+    "exitStatus": 0,
+    "seconds": 14.6,
+    "log": "check-09.log"
+  },
+  {
+    "command": "git diff --check",
+    "exitStatus": 0,
+    "seconds": 0.05,
+    "log": "check-26.log"
+  }
+]

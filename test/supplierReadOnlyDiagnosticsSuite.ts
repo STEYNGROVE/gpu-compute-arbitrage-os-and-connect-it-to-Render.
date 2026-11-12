@@ -13,15 +13,25 @@ try {
     const url=String(input);calls.push({url,method:init.method});
     assert.equal(init.redirect,'error');assert.equal(init.method,url.includes('runpod')?'POST':'GET');
     const data=url.includes('vast.ai') ? (url.includes('users/current')?{id:42}:{offers:[{dph_total:0.9},{dph_total:0}]}) : (String(init.body).includes('myself')?{data:{myself:{id:'user'}}}:{data:{gpuTypes:[{id:'gpu',securePrice:1.5}]}});
-    return {ok:true,status:200,json:async()=>data} as Response;
+    return new Response(JSON.stringify(data), {status:200});
   }) as typeof fetch;
   const results=await Promise.all([probeSupplier('vast_ai'),probeSupplier('runpod')]);
   assert(results.every(x=>x.authenticated && x.inventoryRecords!==null && x.pricedRecords===1 && x.readOnly && x.procurementBlocked));
   assert.equal(calls.length,4);
   assert(calls.every(x=>x.method==='GET'||x.method==='POST'));
   assert(!JSON.stringify(results).includes('synthetic-'));
-  globalThis.fetch=(async()=>({ok:true,status:200,json:async()=>({errors:[{message:'secret'}]})} as Response)) as typeof fetch;
+  globalThis.fetch=(async()=>new Response(JSON.stringify({errors:[{message:'secret'}]}), {status:200})) as typeof fetch;
   const error=await probeSupplier('runpod');assert.equal(error.errorCode,'IDENTITY_GRAPHQL_ERROR');assert(!JSON.stringify(error).includes('secret'));
+  for (const data of [{data:{myself:{id:'   '}}}, {data:{myself:{id:{fake:true}}}}, {data:{myself:{id:'valid'}},errors:{message:'malformed'}}]) {
+    globalThis.fetch = (async () => new Response(JSON.stringify(data), {status:200})) as typeof fetch;
+    const rejected = await probeSupplier('runpod');
+    assert.equal(rejected.authenticated, false);
+    assert(rejected.errorCode === 'IDENTITY_UNVERIFIED' || rejected.errorCode === 'IDENTITY_GRAPHQL_ERROR');
+  }
+  globalThis.fetch = (async (input: any) => new Response(JSON.stringify(String(input).includes('users/current') ? {id:42} : {offers:[{dph_base:0.1}]}), {status:200})) as typeof fetch;
+  assert.equal((await probeSupplier('vast_ai')).pricedRecords, 0, 'Base-only price cannot establish complete supplier cost');
+  globalThis.fetch = (async () => new Response('x'.repeat(1024 * 1024 + 1), {status:200})) as typeof fetch;
+  assert.equal((await probeSupplier('vast_ai')).errorCode, 'NETWORK_OR_PARSE_FAILURE');
   console.log('PASS: missing keys, identity, inventory, sanitization, read-only requests, GraphQL errors');
 } finally {
   globalThis.fetch=originalFetch;

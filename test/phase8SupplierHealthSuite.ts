@@ -58,11 +58,7 @@ try {
         ? { data: { myself: { id: 'test' } } }
         : { data: { gpuTypes: [{ id: 'A100', securePrice: 1.5 }] } };
 
-    return {
-      ok: true,
-      status: 200,
-      json: async () => data
-    } as Response;
+    return new Response(JSON.stringify(data), {status:200});
   }) as typeof fetch;
 
   for (const supplier of ['vast_ai', 'runpod'] as const) {

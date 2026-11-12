@@ -96,3 +96,16 @@ console.log(
 console.log(
   'PASS: Financial execution blocked'
 );
+assert.equal(planCommercialQuotes({...base, platformFeePct: 5, utilizationPct: 95}).length, 0, 'Fees and utilization must enforce the existing 10% margin floor');
+const withFees = planCommercialQuotes({...base, minimumMarginPct: 5, platformFeePct: 5, utilizationPct: 95});
+assert.equal(withFees.length, 1);
+assert.equal(withFees[0].customerRevenueUsd, 798);
+assert.equal(withFees[0].platformFeeUsd, 39.9);
+assert.equal(withFees[0].currency, 'USD');
+assert.equal(withFees[0].realizedRevenueUsd, 0);
+assert.equal(withFees[0].contractRequired, true);
+assert.equal(withFees[0].validUntil, new Date(Date.parse(offer.checkedAt) + 15 * 60000).toISOString());
+for (const bad of [NaN, Infinity, -1, 100]) assert.throws(() => planCommercialQuotes({...base, platformFeePct: bad}));
+for (const bad of [NaN, Infinity, -1, 0, 101]) assert.throws(() => planCommercialQuotes({...base, utilizationPct: bad}));
+for (const price of [-1, NaN, Infinity]) assert.equal(planCommercialQuotes({...base, catalog: [{...offer, supplierHourlyUsd: price}]}).length, 0);
+assert.equal(planCommercialQuotes({...base, catalog: [{...offer, supplierHourlyUsd: 1}]}).length, 0);

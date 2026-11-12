@@ -52,12 +52,14 @@ const feedXml = `<rss><channel>
 </channel></rss>`;
 
 let fetchCount = 0;
+let transportFailure = false;
 
 const mockFetch = async (url: string): Promise<string> => {
   assert.equal(
     url,
     'https://example.org/phase19-test.xml'
   );
+  if (transportFailure) throw Error('sensitive-provider-error-do-not-expose');
   fetchCount++;
   return feedXml;
 };
@@ -116,6 +118,7 @@ async function main() {
     assert.equal(firstBody.purchasingEnabled, false);
     assert.equal(firstBody.results[0].inserted, 1);
     assert.equal(inMemoryLeadsStore.length, 1);
+    assert.equal(inMemoryLeadsStore[0].source_url, 'https://example.org/jobs/101');
 
     const second = await fetch(
       `${base}/api/acquisition/discover`,
@@ -148,14 +151,39 @@ async function main() {
 
     const leadsBody = await leads.json() as any;
 
+    assert.equal(leadsBody.commercialReadiness.status, 'NOT_COMMERCIALLY_OPERATIONAL');
+    assert.equal(leadsBody.commercialReadiness.purchasingEnabled, false);
+    assert.equal(leadsBody.commercialReadiness.supplierCapacity, 'NOT_VERIFIED');
     assert.equal(leadsBody.verifiedCustomers, 0);
     assert.equal(leadsBody.realizedRevenueUsd, 0);
     assert.equal(leadsBody.leads.length, 1);
+    const retained = leadsBody.leads[0];
+    assert.equal(retained.source_url, 'https://example.org/jobs/101');
+    assert.equal(retained.description, 'Need GPU capacity for production inference.');
+    assert.equal(retained.published_at, new Date(date(1)).toISOString());
+    assert(!retained.evidenceAssessment.reasons.includes('MISSING_OR_INVALID_PUBLICATION_DATE'));
+    assert.equal(retained.evidenceAssessment.paymentVerified, false);
+    assert.equal(retained.evidenceAssessment.realizedRevenueUsd, 0);
+    for (const [path, method] of [['/api/acquisition/leads', 'GET'], ['/api/acquisition/leads/test', 'PATCH']] as const) {
+      const denied = await fetch(base + path, {method});
+      assert.equal(denied.status, 401);
+    }
     assert.equal(
       leadsBody.leads[0].evidenceAssessment.verifiedCustomer,
       false
     );
 
+    transportFailure = true;
+    const failed = await fetch(`${base}/api/acquisition/discover`, {method:'POST', headers:{Authorization:'Bearer test-owner'}});
+    const failedBody = await failed.json() as any;
+    assert.equal(failedBody.results[0].error, 'FEED_SCAN_FAILED');
+    assert(!JSON.stringify(failedBody).includes('sensitive-provider-error'));
+    process.env.LEAD_RSS_FEEDS = 'https://test-user:test-password@example.org/feed?token=private';
+    const unsafe = await fetch(`${base}/api/acquisition/discover`, {method:'POST', headers:{Authorization:'Bearer test-owner'}});
+    const unsafeBody = await unsafe.json() as any;
+    assert.equal(unsafeBody.results[0].error, 'UNSAFE_FEED_URL');
+    assert(!JSON.stringify(unsafeBody).includes('test-password'));
+    assert(!JSON.stringify(unsafeBody).includes('private'));
     console.log(
       'PASS: scanner HTTP authentication, freshness, ' +
       'supplier filtering, deduplication and financial safety'

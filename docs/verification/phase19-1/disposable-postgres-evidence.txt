@@ -1,0 +1,9 @@
+server started
+PASS: disposable PostgreSQL rejects incorrect TCP password
+PASS: real PostgreSQL exposure query includes active and terminal matches without unrelated terminal jobs
+PASS: isolated commercial evidence migration/replay, unverified defaults, state/cost/unique/FK constraints and rollback
+PASS: acquisition proposal upgrade/reapply, legacy NULL dates, production insert concurrency/idempotency, evidence parity, rollback
+PASS: isolated PostgreSQL reservation serialization across providers, duplicates, rollback/recovery, per-job/daily caps, UTC accounting and insufficient balance
+PASS: disposable local reservation certification; broader financial-system certification remains blocked
+server stopped
+Local test artifacts retained at /data/data/com.termux/files/usr/tmp/phase16-pg-q0elLB
