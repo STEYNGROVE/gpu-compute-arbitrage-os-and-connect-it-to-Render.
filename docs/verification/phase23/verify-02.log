@@ -1,0 +1,4 @@
+npm notice run react-example@0.0.0 security:check
+npm notice run node scripts/security-check.cjs
+FAIL: Possible hardcoded credential: test/phase23DatabaseRemediation.ts
+Security check failed: 1
