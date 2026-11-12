@@ -1,0 +1,15 @@
+# Phase 21 system baseline
+
+Baseline: `c9d903330db55892ed2d4f18a2e54524917a85b4`, merged Phase 20 PR #46. All remote heads fetched explicitly because the existing fetch refspec covered only a historical security branch. Dedicated branch: `feature/phase21-production-commercial-certification`. Worktree: `gpu-phase21-certification`. Existing staged Phase 21 work and untracked `server/commercialLeadFilter.ts.phase19.bak` are preserved in `gpu-phase911-ci-fix`; no reset or stash was used.
+
+Read-only Render inspection on 2026-11-12: intended Steyn's workspace confirmed by the user's directive. Staging `srv-dbmbgrc9v7es739dl3ng`, main branch, auto deploy on commit, free plan, Ohio. Live deploy `dep-dbqlo3nf3r2c73fb1h00` reports the baseline commit. Public GET `/api/ready`: HTTP 200, ready/database connected/exact same revision; `/api/health`: HTTP 200, liveness ok. Build runs npm install, typecheck, security check and build; start npm start; health path /api/ready. Protected service remains on security/phase18-staging-verification and was not altered. No deployment or migration issued.
+
+Read Phase 19.1 remediation and Phase 20 implementation/security/commercial/dependency/test reports. Historical results: Phase 20 dedicated tests 57 passes; 14 disposable PostgreSQL scenarios; strict launch audit exit 1, five blockers. These are historical evidence, not Phase 21 passes. No independent supplier/customer/payment/revenue evidence exists in those reports. PostgreSQL and gh executables are available locally.
+
+Architecture: Express monolith with owner auth and fixed simulation lockdown; PostgreSQL financial repositories and JSON legacy stores; secure feed discovery; read-only balance/catalog integrations; disabled provisioner/provider/outbox/settlement paths; injected Phase 20 simulation SQL gateway with no production construction. Critical paths, all tracked source/config/migration/workflow hashes and source environment-variable names appear in baseline-inventory.json. This static inventory is not a claim of exhaustive semantic audit. Financial role/schema restoration and legacy floating-point code remain uncertified.
+
+Actual provider environment-variable names cannot yet be inventoried from Render: list-services exposes configuration but no names-only environment endpoint has been established. Do not retrieve secret values to fill this gap. Source-name inventory is explicitly separate from deployed configuration.
+
+Known gaps before edits: no certified mutation adapters, leases/fences, durable normalized evidence archive, production trust-root governance, full certified financial ledger, trusted real payment events or independent customer contracts. Startup bootstrap still reaches legacy initialization despite live lockdown; readiness checks DB liveness without bootstrap completion; database TLS configuration permits certificate verification opt-out. Existing staged work will be reviewed and selectively reused after this baseline.
+
+No paid GPU, cancellation, payment, outreach, production schema change or production deployment has been performed. All five blockers start PARTIAL and launch remains denied.

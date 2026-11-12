@@ -1,3 +1,7 @@
+import {productionHeaders,runtimePort} from './server/phase21/httpSecurity.js';
+import { registerPhase21Readiness } from './server/phase21/routes.js';
+import { deploymentLifecycle, gracefulShutdown } from './server/phase21/lifecycle.js';
+import { operationalEvent, safeRequestErrorHandler } from './server/phase21/observability.js';
 import { registerPhase20Readiness } from './server/phase20/routes.js';
 import { commandCenterJobSummary } from './server/commandCenterJobSummary.js';
 import { verifiedOwnerRateIdentity } from './server/ownerRateIdentity.js';
@@ -98,10 +102,12 @@ import {
 } from './server/opportunityEngine.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = runtimePort(process.env.PORT);
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.disable('x-powered-by');
+app.use(productionHeaders);
+app.use(express.json({limit:'100kb'}));
+app.use(express.urlencoded({ extended: true,limit:'100kb',parameterLimit:100 }));
 
 // Persistent File-backed Storage Directory
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -188,6 +194,7 @@ registerH100FleetController(app, requireOwnerAuth);
 registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerPhase20Readiness(app, requireOwnerAuth);
+registerPhase21Readiness(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
 registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
@@ -5185,19 +5192,28 @@ async function start() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  app.use(safeRequestErrorHandler);
+  const httpServer=app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Compute Arbitrage Core] Production-grade backend active on http://0.0.0.0:${PORT}`);
-    // Non-blocking application bootstrap: DB migrations, RBAC, Multi-Wallet Treasury, Crash Recovery & Readiness
-    // Workers (outboxWorker & crashRecoveryService) are started once inside bootstrapApplication()
+    // Read-only discovery bootstrap; no runtime migrations, treasury initialization or financial workers.
     bootstrapApplication()
-      .then(async () => {
-        // Pre-warm Pipeline A opportunity discovery cache on startup
-        executeOpportunityDiscoveryPipeline().catch((e) => console.warn('[DISCOVERY WARMUP]', e.message));
+      .then(async result => {
+        deploymentLifecycle.complete(result.success);
+        console.log(operationalEvent(result.success?'BOOTSTRAP_READY':'BOOTSTRAP_FAILED',{revision:process.env.RENDER_GIT_COMMIT}));
+        if(result.success && process.env.APP_DISCOVERY_WARMUP==='true')executeOpportunityDiscoveryPipeline().catch(()=>console.warn('DISCOVERY_WARMUP_FAILED'));
       })
       .catch((err) => {
-        console.error('[BOOTSTRAP ERROR]', err);
+        deploymentLifecycle.complete(false);
+        console.error(operationalEvent('BOOTSTRAP_FAILED',{errorCode:'BOOTSTRAP_REJECTED'}));
       });
   });
+  const stop=gracefulShutdown(deploymentLifecycle,()=>{
+    outboxWorker.stop();crashRecoveryService.stopWorker();
+  },async()=>{
+    await new Promise<void>((resolve,reject)=>httpServer.close(error=>error?reject(error):resolve()));
+    await pgDbService.close();
+  },code=>process.exit(code));
+  process.once('SIGTERM',()=>void stop());process.once('SIGINT',()=>void stop());
 }
 
 start();

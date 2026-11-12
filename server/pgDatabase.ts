@@ -1,3 +1,4 @@
+import { secureDatabaseOptions } from './phase21/configuration.js';
 import { liveOperationsAllowed } from './simulationSafety.js';
 import pg from 'pg';
 import fs from 'fs';
@@ -45,44 +46,19 @@ export class PostgresDatabaseService {
 
     if (rawConnStr && (rawConnStr.startsWith('postgres://') || rawConnStr.startsWith('postgresql://'))) {
       try {
-        const isCloudTlsHost =
-          rawConnStr.includes('.supabase.co') ||
-          rawConnStr.includes('.supabase.com') ||
-          rawConnStr.includes('.neon.tech') ||
-          rawConnStr.includes('sslmode=');
-
-        // Normalize sslmode=require to include uselibpqcompat=true so pg-connection-string v2/v3 does not emit deprecation warnings
-        let normalizedConnStr = rawConnStr;
-        if (
-          normalizedConnStr.includes('sslmode=require') &&
-          !normalizedConnStr.includes('uselibpqcompat=')
-        ) {
-          normalizedConnStr = normalizedConnStr.replace('sslmode=require', 'uselibpqcompat=true&sslmode=require');
-        }
-
-        // Strict TLS configuration: verify certificates unless explicitly overridden
-        const sslConfig = process.env.DATABASE_SSL_CA
-          ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA).toString(), rejectUnauthorized: true }
-          : process.env.DATABASE_SSL === 'true' || isCloudTlsHost
-          ? { rejectUnauthorized: process.env.DATABASE_SSL_REJECT_UNAUTHORIZED !== 'false' }
-          : undefined;
-
         this.pool = new Pool({
-          connectionString: normalizedConnStr,
-          max: 15,
-          idleTimeoutMillis: 30000,
-          connectionTimeoutMillis: 8000,
-          ssl: sslConfig
+          ...secureDatabaseOptions(rawConnStr,process.env,p=>fs.readFileSync(p,'utf8')),
+          max:15,idleTimeoutMillis:30000
         });
 
         this.pool.on('error', (err) => {
-          console.error('[POSTGRES POOL ERROR]', err.message);
+          console.error('[POSTGRES POOL ERROR]', {code:(err as {code?:string}).code || 'UNKNOWN'});
           this.isConnected = false;
-          this.connectionError = err.message;
+          this.connectionError = 'POSTGRES_UNAVAILABLE';
         });
       } catch (err: any) {
-        console.warn('[POSTGRES INIT ERROR]', err.message);
-        this.connectionError = err.message;
+        console.warn('[POSTGRES INIT ERROR]', 'CONFIGURATION_REJECTED');
+        this.connectionError = 'POSTGRES_UNAVAILABLE';
       }
     }
   }
@@ -96,6 +72,17 @@ export class PostgresDatabaseService {
     if (pool) {
       await pool.end();
     }
+  }
+
+  /** Read-only reconnect probe. No schema initialization, directory seeding or financial workers. */
+  public async probeReadiness():Promise<boolean> {
+    if(!this.pool)return false;
+    let client:pg.PoolClient|undefined;
+    try {
+      client=await this.pool.connect();await client.query('SELECT 1');await this.verifySchemaReadiness(client);
+      this.isConnected=true;this.connectionError=null;return true;
+    } catch {this.isConnected=false;this.connectionError='POSTGRES_UNAVAILABLE';return false;}
+    finally{client?.release();}
   }
 
   public async initialize(options?: { skipSchemaCheck?: boolean }): Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }> {
@@ -120,7 +107,7 @@ export class PostgresDatabaseService {
           client.release();
         }
       } catch (err: any) {
-        console.warn('[POSTGRES CONNECTION FAILED] Primary database connection error:', err.message);
+        console.warn('[POSTGRES CONNECTION FAILED]', 'UNAVAILABLE');
         // Attempt failover to DIRECT_URL if distinct from DATABASE_URL
         const directUrl = process.env.DIRECT_URL?.trim();
         const primaryUrl = process.env.DATABASE_URL?.trim();
@@ -143,11 +130,11 @@ export class PostgresDatabaseService {
               }
             }
           } catch (fallbackErr: any) {
-            console.warn('[POSTGRES DIRECT_URL FAILOVER FAILED]:', fallbackErr.message);
+            console.warn('[POSTGRES DIRECT_URL FAILOVER FAILED]', 'UNAVAILABLE');
           }
         }
         this.isConnected = false;
-        this.connectionError = err.message;
+        this.connectionError = 'POSTGRES_UNAVAILABLE';
       }
     }
 
@@ -219,6 +206,7 @@ export class PostgresDatabaseService {
     }
 
     await this.verifyMigrationChecksums(client);
+    if(process.env.NODE_ENV==='production')await client.query('SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0');
   }
 
   /**

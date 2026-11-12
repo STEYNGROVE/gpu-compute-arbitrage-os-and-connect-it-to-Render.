@@ -1,0 +1,9736 @@
+{
+  "base": "c9d903330db55892ed2d4f18a2e54524917a85b4",
+  "sources": [
+    {
+      "path": ".env.example",
+      "sha256": "9fbaa0ee87b757212dc737e1260bdff8a68fa52201a4c42d41acb8555592ad13",
+      "lines": 125
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "dee8cddee9ace32a525bc4f3eca5509dd45171ccaeedaefcaf75ef192c9fdce0",
+      "lines": 97
+    },
+    {
+      "path": ".github/workflows/phase18.yml",
+      "sha256": "1880c9ec5d2a0c75a59524c300317a573cc4da3dd1c0f65bdef1e713fb470e08",
+      "lines": 49
+    },
+    {
+      "path": "agents/registry.json",
+      "sha256": "db40a380e7bdff90399771fe4b850b1b345edb0209ac5ab4aac87b2b16928773",
+      "lines": 98
+    },
+    {
+      "path": "agents/runtime.mts",
+      "sha256": "0aea3a41acf7aac8df7e42ca2fc72d088c0859373ffeaa00f22e6e3d1dcd1001",
+      "lines": 51
+    },
+    {
+      "path": "data/authoritative_ledger.json",
+      "sha256": "33f31d71a9bb1dc3e5980dd69c20686a1bb668a499c4b6ee319a1bc9ddcc387f",
+      "lines": 4
+    },
+    {
+      "path": "data/capital_state.json",
+      "sha256": "5009d00ed62362624cba3c45cfd07db01afcb44e9206fb66f8ba0807fe34972f",
+      "lines": 10
+    },
+    {
+      "path": "data/demand_store.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "lines": 1
+    },
+    {
+      "path": "data/owner_config.json",
+      "sha256": "17657fb398258fdc938b4611c403b75a6bdcaf7592d56ff6a115e46054f73f14",
+      "lines": 53
+    },
+    {
+      "path": "data/primary_database.json",
+      "sha256": "9b209c9fbdc43cbee7140d2d1e23e7d21016ffff29046120e22e1faaf43412fa",
+      "lines": 7453
+    },
+    {
+      "path": "docs/PHASE18_REMOTE_BRANCH_AUDIT_20261111.json",
+      "sha256": "ba4b72f42df4489449d341a86eba53b22f341041fab2564e20e8658a4f5af5d2",
+      "lines": 2024
+    },
+    {
+      "path": "docs/migration-proposals/20261112_phase19_1_acquisition_publication.sql",
+      "sha256": "a456111589fc8a298aad2859d479908a28dec60176a554cc8968df7fc26c4e4a",
+      "lines": 14
+    },
+    {
+      "path": "docs/migration-proposals/20261112_phase20_simulation_journal.sql",
+      "sha256": "f20a7d7db8bdf42f6a9b5dc2f215929897f6d153a87bfe0798fe96edc933a99c",
+      "lines": 71
+    },
+    {
+      "path": "docs/verification/phase19-1/commands.json",
+      "sha256": "964c5d51c42254963c476951f801c4fb48630907b86abc5ebe582e94d9350d8a",
+      "lines": 29
+    },
+    {
+      "path": "docs/verification/phase19-1/first-pass-results.json",
+      "sha256": "283b76355e77f4a76c1a535c522aab94991074fa67f6c37ff954243ed3ebc70b",
+      "lines": 164
+    },
+    {
+      "path": "docs/verification/phase19-1/initial-results.json",
+      "sha256": "537da3cd5cb721ec3ac2a0b013c8a528074cf3e0f38147c95ad01b6a1b2c79a3",
+      "lines": 80
+    },
+    {
+      "path": "docs/verification/phase19-1/launch-audit.json",
+      "sha256": "f7e09e00c719659a75ea9cce93fbbd6a610915900120752af1c30178bb34619f",
+      "lines": 117
+    },
+    {
+      "path": "docs/verification/phase19-1/pre-auth-results.json",
+      "sha256": "a1855e5087aed3b19d8cd05767df50b667f71545fe46ee888194e34c7a036ec3",
+      "lines": 164
+    },
+    {
+      "path": "docs/verification/phase19-1/results.json",
+      "sha256": "a16f8bab6b3bff807da10b58fe94b95194103dfc42f293ac82acaaff35a6b801",
+      "lines": 164
+    },
+    {
+      "path": "docs/verification/phase19-1/source-manifest.json",
+      "sha256": "6fc58f37752d166a6270b9ac5589cf58cb76c2152c942891fac4a3b4a82e7aad",
+      "lines": 38
+    },
+    {
+      "path": "docs/verification/phase20/attempts.json",
+      "sha256": "3f69a97590ba6e1eb413cd4d1b4f44ae9dd1d717b6b3b53695a46c2b7d43a358",
+      "lines": 332
+    },
+    {
+      "path": "docs/verification/phase20/commands.json",
+      "sha256": "67242d44aa910ae10a111a5986841f008a9a4deaa3965f0764560ade8d725dd3",
+      "lines": 30
+    },
+    {
+      "path": "docs/verification/phase20/counts.json",
+      "sha256": "7751c45b82fe2ad944a70b540d52575b7021e7f59650d0f6b91efa83adddfd3c",
+      "lines": 26
+    },
+    {
+      "path": "docs/verification/phase20/launch-audit.json",
+      "sha256": "bf1556122d9ad0d3b2c0f4828b7eb5327b95e81fdcf9bda655b3bce1e88c49c0",
+      "lines": 117
+    },
+    {
+      "path": "docs/verification/phase20/results.json",
+      "sha256": "4986ab3b2410ae83d5b8cf775659e30604e145f6a6a63ad42c1887e0a492b591",
+      "lines": 170
+    },
+    {
+      "path": "docs/verification/phase20/source-manifest.json",
+      "sha256": "e72836e9bb54c710229152d6b6fea939fbf78f2ce4f1b525cd44a335f6eb655c",
+      "lines": 53
+    },
+    {
+      "path": "metadata.json",
+      "sha256": "7d93cba5565377482a03235f45a557e7c97bbd017028fdec00c725d574dc934f",
+      "lines": 6
+    },
+    {
+      "path": "migrations/20261109_payment_evidence_observations.sql",
+      "sha256": "03022ca60aa0f6e145af1a7513cf5c5e0e40b71ca5f7bbaf90527f8552ba2b20",
+      "lines": 25
+    },
+    {
+      "path": "migrations/20261109_payment_evidence_replay.sql",
+      "sha256": "d0446a1ce77f8660ba2b06bc6c61ab83201ddc6964ab11d97380765d9f89ae45",
+      "lines": 24
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "5b58152d6e52c754520b66483648e2cb7c0274dc2aa851f1e85ca1fe459fa72e",
+      "lines": 4828
+    },
+    {
+      "path": "package.json",
+      "sha256": "7922005b2749076e7ae624e3162632d0e753b97e1571b448c67d92d23ec64a80",
+      "lines": 64
+    },
+    {
+      "path": "scripts/audit-gpu-execution.cjs",
+      "sha256": "4439ac4c0b5efe2b3e05db728ce724327c786c3d2ff1b948ecff86f7d900400e",
+      "lines": 44
+    },
+    {
+      "path": "scripts/migrateDatabase.ts",
+      "sha256": "0a5437bb7832c82a56ad28b1e022520a8130fa57a20a669629517345ddb0a82f",
+      "lines": 348
+    },
+    {
+      "path": "scripts/read-only-provider-guard.cjs",
+      "sha256": "06cf78473676308095fabdcb5c3d82895a4504bcf1dcf10bd7357a7d2400091e",
+      "lines": 19
+    },
+    {
+      "path": "scripts/security-check.cjs",
+      "sha256": "f1d91e398e3b3232d75a8d067c60aa9548d44f24d08be8e3e80ed051eb5df741",
+      "lines": 57
+    },
+    {
+      "path": "scripts/setupTreasuryWallet.ts",
+      "sha256": "8748fa95c6b526462f7fd4bebd8032c1a3e9a800331d5db00e8d51acc8c6b6e9",
+      "lines": 120
+    },
+    {
+      "path": "scripts/sql/20261108_prepaid_reservations.sql",
+      "sha256": "4a6c017bbcfd730cf2dc456af99cbc587c107645331c860c667fc90b546c92fb",
+      "lines": 14
+    },
+    {
+      "path": "scripts/test-agent-runtime.mts",
+      "sha256": "683fb1099ab8228d7feb8f9f220362433e52556dae76f0b96c305cabfeae5a32",
+      "lines": 19
+    },
+    {
+      "path": "scripts/test-phase16-postgres.cjs",
+      "sha256": "dcf6aee926456909590b8efdc9feb6ea501ee16570653eb7031e6c9642935ef4",
+      "lines": 61
+    },
+    {
+      "path": "server.ts",
+      "sha256": "078dbc721a116dfa62cefb3d54f65f506fdcc8d8077c9ccd1d69aa2c6fbcf810",
+      "lines": 5203
+    },
+    {
+      "path": "server/attackTestSuite.ts",
+      "sha256": "0aa3956e1256fd51d520cbca2661f1a9e8dedc3f5f7cff3bcfdaf33a5c23caae",
+      "lines": 1072
+    },
+    {
+      "path": "server/auth.ts",
+      "sha256": "60d2f1286ce86b03331c3e2df20d182f1b6463a100ecd6fa6319e93315df7430",
+      "lines": 754
+    },
+    {
+      "path": "server/automatedTestRunner.ts",
+      "sha256": "f061e1762b3de6ab2d2a5496585acae8d597e1c79573c3564a2aea7e53736c32",
+      "lines": 367
+    },
+    {
+      "path": "server/autonomousCapitalController.ts",
+      "sha256": "0db95e9b30f862b95cdda2526a20bd2089be5e62cb1ceafeb5bad0bb463e5cac",
+      "lines": 416
+    },
+    {
+      "path": "server/autonomousCustomerService.ts",
+      "sha256": "07a246bfff3d5b01942532235c48cc2d7b6ac33af3e72ea9f110aaa29b03394c",
+      "lines": 444
+    },
+    {
+      "path": "server/binanceConfig.ts",
+      "sha256": "ebb96993385487001b6d81bb0a0b588b0fb4e9b2ec08548b11da65b4db0e5284",
+      "lines": 132
+    },
+    {
+      "path": "server/binancePayReadOnly.ts",
+      "sha256": "e3b86db79465bb5497f700be747d72ee5a4a04d56deffdd9dd551d7707d316b6",
+      "lines": 66
+    },
+    {
+      "path": "server/binanceProvider.ts",
+      "sha256": "90e57924e729b7934c5cb224dc2eedfe311e788b84ed0fc2f360f48e034f567b",
+      "lines": 658
+    },
+    {
+      "path": "server/bootstrap.ts",
+      "sha256": "77765310276c01f53a5c137362b18c5c55278aaa4f3780b368f516bf7f698c76",
+      "lines": 195
+    },
+    {
+      "path": "server/boundedFeedXml.ts",
+      "sha256": "28a64b77c4477d22d66a0000c430fa9588ce155924b136cd3101863ad9133483",
+      "lines": 84
+    },
+    {
+      "path": "server/boundedSupplierJson.ts",
+      "sha256": "8a3c71ae982f30d4e7231b71a67336104c130d812311763ed00dbc083b0839c9",
+      "lines": 20
+    },
+    {
+      "path": "server/buyerEvidenceImport.ts",
+      "sha256": "5dbb7cf226c6560563de68db71314a7c3273115b5e6f2fd2c737fcef172a7c9d",
+      "lines": 101
+    },
+    {
+      "path": "server/canonicalReconciliation.ts",
+      "sha256": "91fd2c9c9a0d7a9d0c56d9c56f3870bbb0d722d83dd7d7e08a8efd7e5f65377f",
+      "lines": 430
+    },
+    {
+      "path": "server/circuitBreaker.ts",
+      "sha256": "3003d81e9a3d2b49805c0dccb3a3a416aea23d1324d241643ef22012beb57cf3",
+      "lines": 306
+    },
+    {
+      "path": "server/commandCenterJobSummary.ts",
+      "sha256": "b2a29dc6665670f8ee5acbfe265045d7ca93c8df45517b9acd3bcd194f997adc",
+      "lines": 30
+    },
+    {
+      "path": "server/commercialEvidence.ts",
+      "sha256": "ff1f00ff7f1f065a6703bc6cfc54ee6d7683a0c6c4f954a4a559d691b272edb9",
+      "lines": 97
+    },
+    {
+      "path": "server/commercialIntake.ts",
+      "sha256": "cd3d8d49ef4672b002514c06f81b1179dde3c0dc47ce42b580dbc404b2ce052d",
+      "lines": 120
+    },
+    {
+      "path": "server/commercialLeadFilter.ts",
+      "sha256": "285638ba844a059b878749fe1e2c093539b40421b4b20c14dd62a3fb6ce31022",
+      "lines": 28
+    },
+    {
+      "path": "server/commercialQuotePlanner.ts",
+      "sha256": "2697aca029b8b42c5361e74a43b8acfdd05169bb1168bab86b0591b4f39befd7",
+      "lines": 146
+    },
+    {
+      "path": "server/crashRecovery.ts",
+      "sha256": "dbd21e3268cd506fea36073f5dc35dc4a2aa8309919c222a9974edae24d19545",
+      "lines": 290
+    },
+    {
+      "path": "server/creditSpendPolicy.ts",
+      "sha256": "c2e463de0e73aa6c10bfdfda24f68cbdae56f52d8bbfb0070a248c6faee2f422",
+      "lines": 27
+    },
+    {
+      "path": "server/customerIntelligence.ts",
+      "sha256": "34d517a4cf92a0364c216327c3b888894aed4741f13b096239a2732aacca8f75",
+      "lines": 44
+    },
+    {
+      "path": "server/customerLeadEvidence.ts",
+      "sha256": "e9b699c4ee1339b6cfdccef501060e957634d7823a8c0f483f758061042bac3f",
+      "lines": 111
+    },
+    {
+      "path": "server/databaseEngine.ts",
+      "sha256": "2f071a0cec16dd45240ad0bec92056adb3e83e27cfc7a2d26c84e94bb9790770",
+      "lines": 1140
+    },
+    {
+      "path": "server/dealExecutor.ts",
+      "sha256": "ae729f9b0fbcc295b89a9bccd53cebe6c8415ab1908b84b41127e0607f0ef702",
+      "lines": 619
+    },
+    {
+      "path": "server/feedPublicationEvidence.ts",
+      "sha256": "d04794c7b97f713ad55f81f3bdc0424f5f36df1b35bd8f64688b8f3e50fc3e2a",
+      "lines": 91
+    },
+    {
+      "path": "server/financialExecutionPolicy.ts",
+      "sha256": "6b2528f065f336846ca342500fb786fe6ccd1231636093c6e41ea00b33fa6f4c",
+      "lines": 46
+    },
+    {
+      "path": "server/financialLockdown.ts",
+      "sha256": "3f40e226933323db2fb9fcc5ee58df982218d0e78c9e02319d1d57825b8d11f8",
+      "lines": 12
+    },
+    {
+      "path": "server/gpuArbitrageDiscovery.ts",
+      "sha256": "bb53fe624e02aa68162cd087d8c1a20335ef941f96dc1087756602e19633798e",
+      "lines": 122
+    },
+    {
+      "path": "server/gpuAuthIsolation.test.ts",
+      "sha256": "da496d44fe50c40e9b03119a90c121d9cd93871f22dc17e1bde3804c850af89a",
+      "lines": 45
+    },
+    {
+      "path": "server/gpuDemandMatcher.ts",
+      "sha256": "bafbbf985356c28523d94194e0ea46f82db404016214a8fe9e1e4cd15fb5dd36",
+      "lines": 98
+    },
+    {
+      "path": "server/gpuEvidenceHttp.test.ts",
+      "sha256": "7ddac8dad6dc00e1c530be1b9250e0587f2f0e9901d78dfb532549921f99b552",
+      "lines": 176
+    },
+    {
+      "path": "server/gpuEvidenceIntegration.test.ts",
+      "sha256": "2ef0e1a0e9864238bf746e58bcb13d96525ba017f43e6ae8bce5389bcd5a7100",
+      "lines": 83
+    },
+    {
+      "path": "server/gpuHunterX.ts",
+      "sha256": "2e70b9ef509f33a9f67b8746479aa14cdf403fa30f3a09859b4ac43b49182adc",
+      "lines": 325
+    },
+    {
+      "path": "server/gpuOfferEvidence.test.ts",
+      "sha256": "d48069a8b32329d73c18d765f54c568f008273b7229b69ff4dd40dcd8f2e9189",
+      "lines": 75
+    },
+    {
+      "path": "server/gpuOfferEvidence.ts",
+      "sha256": "96b3e1d79737161b017fa08e477031fa2fb6cc7b536aca87b614cec01dbb2df0",
+      "lines": 81
+    },
+    {
+      "path": "server/gpuOwnerAuthHttp.test.ts",
+      "sha256": "9827708477b6f41dfa44da9aeaa19499d060b2b4b6c78a2bc2f43d4355c2520e",
+      "lines": 52
+    },
+    {
+      "path": "server/gpuPriceComparison.ts",
+      "sha256": "1dddd8c80b330bfa58b6eac371e528a51c6e177158edfafbc0dad92eb110d654",
+      "lines": 148
+    },
+    {
+      "path": "server/gpuPriceRouter.ts",
+      "sha256": "40059dc2dd889b80013ffcb79b6cbe6713d392912b99577b7a5ba4aecf963168",
+      "lines": 1641
+    },
+    {
+      "path": "server/h100FleetController.ts",
+      "sha256": "85814e77682b147b0c56b3def9ba6c2a009f7df33f0b9772777e6e0ad77c12dd",
+      "lines": 84
+    },
+    {
+      "path": "server/hotWalletService.ts",
+      "sha256": "b325b637a72d88979ba553de0ac762ab71277f0f1d66a89f031132f80e912170",
+      "lines": 2919
+    },
+    {
+      "path": "server/jakeGroveCfoService.ts",
+      "sha256": "8494d19d20ad91ccfc1f047fd7a70273651d9fe6a9159668bdc4671bc35347ed",
+      "lines": 1246
+    },
+    {
+      "path": "server/launchGateVerification.ts",
+      "sha256": "b12d4f724fa0e0727d9bb22fe11c83b069ffcef80f47844a8740e4592f0e68b3",
+      "lines": 1061
+    },
+    {
+      "path": "server/launchReadiness/boundaries.ts",
+      "sha256": "24a07d453cb1a41a716cbc80e274fe4fade387996b4bbbcbe02da4b2f3e740f5",
+      "lines": 75
+    },
+    {
+      "path": "server/launchReadiness/certificationDrills.ts",
+      "sha256": "d68949b2319e2c8e3189aabe5eb5a7c67696433fe144bac2d8d79111e7b56fdd",
+      "lines": 68
+    },
+    {
+      "path": "server/leadDiscovery.ts",
+      "sha256": "d15d0ebe13f5506e21e3a9dbab04c62574e19260471912afc674d64071beb92e",
+      "lines": 299
+    },
+    {
+      "path": "server/leadQualification.ts",
+      "sha256": "6fc5bce53d991744028aec54a2f991f20640d304513ed6d1658fe25176433b2f",
+      "lines": 56
+    },
+    {
+      "path": "server/liveExecutionEngine.ts",
+      "sha256": "7a8c8daef272692edafaf5f83f39ecfe26f6ae2bd194195371b0936a50c666dd",
+      "lines": 417
+    },
+    {
+      "path": "server/moneyUtils.ts",
+      "sha256": "2be414459ad9f8bce2c8b99a2611e11a4ec039a8e6370a1a57c299e3d4512be5",
+      "lines": 200
+    },
+    {
+      "path": "server/opportunityEngine.ts",
+      "sha256": "f856164f0d16edc499c1958f22d1941fc6131f3bb554741be4c0439c36d80c95",
+      "lines": 1507
+    },
+    {
+      "path": "server/outboxWorker.ts",
+      "sha256": "0383eb2266811829436873d1c6090dc4fa3d11f1ef4948cc415ebb5041d80c32",
+      "lines": 538
+    },
+    {
+      "path": "server/ownerCommandCentre.ts",
+      "sha256": "c55273aa20455d554215d34c1c9280d16e4035acb4a23b573da154eeaa5376d9",
+      "lines": 18
+    },
+    {
+      "path": "server/ownerOperations.ts",
+      "sha256": "134943cfe22fc19a1432a061aca62895e5dfec6aa371e1d26a227809f371227c",
+      "lines": 36
+    },
+    {
+      "path": "server/ownerRateIdentity.ts",
+      "sha256": "b4cf8eb81a07642342fce73d6bf7a55e86af514baecc037612f84a6bc9acea1a",
+      "lines": 14
+    },
+    {
+      "path": "server/ownerSalesWorkspace.ts",
+      "sha256": "6b1e9aa73f1d3cebff989545c0672679f01578c03af7ce4b1d7400784d97503a",
+      "lines": 21
+    },
+    {
+      "path": "server/payfastProvider.ts",
+      "sha256": "f138f5aa929f3d721a39e1d802702a9e4d8528d4ccb87ffa569fd3d6e7fd098a",
+      "lines": 254
+    },
+    {
+      "path": "server/paymentEngine.ts",
+      "sha256": "52d0bddfc1679b3757f94f245e086a06019b7958d5834cc0ae31d38ad6720c26",
+      "lines": 1316
+    },
+    {
+      "path": "server/paymentEvidenceLedger.ts",
+      "sha256": "8ed452299eb68221a923cb243a63a48de39eac5a7ea28863983197438b0cbd6c",
+      "lines": 130
+    },
+    {
+      "path": "server/paymentEvidenceReview.ts",
+      "sha256": "29d9e321c9b655a79b0a4f904c830270a22ca04eb6de27d5421ca44b1831b7cb",
+      "lines": 22
+    },
+    {
+      "path": "server/pgDatabase.ts",
+      "sha256": "9b1046793bad160063deee091e18be04ac43b28f137ac1b994c8344c3f006069",
+      "lines": 382
+    },
+    {
+      "path": "server/phase20/commercialEvidence.ts",
+      "sha256": "5a3dcbdcc699a88140073d277a14c516a77c1c4768aee7bc609993b4f4f80633",
+      "lines": 33
+    },
+    {
+      "path": "server/phase20/discoverySources.ts",
+      "sha256": "3b0277a1bcd54bfc5ce003a382bf04dede4eb77e50fc2650f98bb17fe1bc2242",
+      "lines": 21
+    },
+    {
+      "path": "server/phase20/evidence.ts",
+      "sha256": "3f2832f2436cc4a7861daf9b66e3110133eac8582ee4d9c38464760859c8f7c2",
+      "lines": 77
+    },
+    {
+      "path": "server/phase20/gateway.ts",
+      "sha256": "a72a39a8c044f4b209262db55e8a91933ad5865460877f83b7292fbcf7660762",
+      "lines": 169
+    },
+    {
+      "path": "server/phase20/quotation.ts",
+      "sha256": "472ae2ec10972a0cd600e5e6903d099d184ca7f1479fa33361fedfe4bf8563ca",
+      "lines": 59
+    },
+    {
+      "path": "server/phase20/routes.ts",
+      "sha256": "86f06d43bd2b6293ca486b60f81d1674c945b91d084816c87ba125b60d444ab3",
+      "lines": 25
+    },
+    {
+      "path": "server/phase20/supplierEvidence.ts",
+      "sha256": "a14b14abc70c2d9008f448c0968f5513767d2a3cffe80bab953370c9d012667b",
+      "lines": 44
+    },
+    {
+      "path": "server/phase20/termination.ts",
+      "sha256": "3a45f2ecf5e7428d8072198405df476aaeeac147151a46161e4e5afa61c8e11b",
+      "lines": 51
+    },
+    {
+      "path": "server/preapprovedWorkloads.ts",
+      "sha256": "57e49dccde942a8de961667624b787611e38f925b22e3b88ab5b6a7f7deff9d4",
+      "lines": 102
+    },
+    {
+      "path": "server/prepaidReservationGate.ts",
+      "sha256": "c4cc456d303bb92b3ea845151d2d65ef166b5b2623dd2188ea4193ae0fac8386",
+      "lines": 71
+    },
+    {
+      "path": "server/productionEngine.ts",
+      "sha256": "8426447ce77e732e13ef3389924d0dbb524cd56823fe4aa113e86e4219cc3557",
+      "lines": 337
+    },
+    {
+      "path": "server/providerCredentialsService.ts",
+      "sha256": "d950a021ffea31079f79eb777c2c8ba7e49c92a975bc56b0283f4d06a8235986",
+      "lines": 646
+    },
+    {
+      "path": "server/providerFloatManager.ts",
+      "sha256": "44935bdd6788d273cdcf9dc5f2e1e17d53e67cbb32f4a1ac4d7a5d0426d8ac33",
+      "lines": 745
+    },
+    {
+      "path": "server/providerFundingAdapters.ts",
+      "sha256": "f6c9bf05779ae32e06f80f1871dd59beeb2c7ab2c0ac70753c81c8a2e00861cb",
+      "lines": 460
+    },
+    {
+      "path": "server/providerProvisioner.ts",
+      "sha256": "be794f9e34970dfa630782ff079815389e6e3e3d66078e6122560d8ff6b54fe9",
+      "lines": 1842
+    },
+    {
+      "path": "server/providers/akashProvider.ts",
+      "sha256": "06e5af203ca8bf3ac5e39d59641f695cbc709b58f96ddb1d35ae21dff273c2be",
+      "lines": 341
+    },
+    {
+      "path": "server/providers/baseProvider.ts",
+      "sha256": "569511ebf42a554ecfaba34f8736c9ddacbe18640c93634399b46da62985fa4c",
+      "lines": 133
+    },
+    {
+      "path": "server/providers/coreweaveProvider.ts",
+      "sha256": "c3fb689564c2df12825f11c3478d1a390a0153610df1280dcf9e30e292512b35",
+      "lines": 370
+    },
+    {
+      "path": "server/providers/hostingerProvider.ts",
+      "sha256": "644842c0e783ff5a60edb411584c42fc0473a23f2bc9a472a043843df7a5c476",
+      "lines": 371
+    },
+    {
+      "path": "server/providers/hyperstackProvider.ts",
+      "sha256": "c95b0a94226d11a565f54540ca7f2708e4089a93a85bf709e1dadc9a250d7892",
+      "lines": 390
+    },
+    {
+      "path": "server/providers/lambdaProvider.ts",
+      "sha256": "c3b8cf4d676aa65f9802ea82591bbc4ab3cbe924416c8dd9799bfb50f266cbd3",
+      "lines": 388
+    },
+    {
+      "path": "server/providers/lightningProvider.ts",
+      "sha256": "14e56076f428472f5bc7291dbb8896d665023ebe2a166b710e5d6aea190a737b",
+      "lines": 424
+    },
+    {
+      "path": "server/providers/proofOfExecutionService.ts",
+      "sha256": "ea1923adf13039e38c1e9f4291226b30a2325f8c990af0024789b0eeaf55a248",
+      "lines": 215
+    },
+    {
+      "path": "server/providers/providerRegistry.ts",
+      "sha256": "aa743a9d442d921efecf2977f285ef0af5f6da3e0a017b9e1a797faea691cbcb",
+      "lines": 548
+    },
+    {
+      "path": "server/providers/runpodProvider.ts",
+      "sha256": "02ba41ab405c3df3574081c16f4a678eab7f3481b7e33a468eca3ace06747555",
+      "lines": 468
+    },
+    {
+      "path": "server/providers/saladProvider.ts",
+      "sha256": "eb9a75aabee3396c65f532150a6f05d4bdeb068945f021c6bc25908dc16087a6",
+      "lines": 383
+    },
+    {
+      "path": "server/providers/tensordockProvider.ts",
+      "sha256": "2bcb29fc0201a42d22ab7b3241d657b648f19cae11bcb3124d856f16fcf01d57",
+      "lines": 424
+    },
+    {
+      "path": "server/providers/trueCostEngine.ts",
+      "sha256": "76bd20b5f219cdcee0a10cab940ec706f9639957a8ecf4b2639739b11889f771",
+      "lines": 193
+    },
+    {
+      "path": "server/providers/types.ts",
+      "sha256": "1fb1365cc3dfeceed5a1bf9b7186af092980105859ddcdc8da74b0fdf8bedbab",
+      "lines": 443
+    },
+    {
+      "path": "server/providers/vastProvider.ts",
+      "sha256": "a7c2de910fe83bbcf5b5902765a92d07e0bbf1586f95f457c74992bd7f5cccd4",
+      "lines": 458
+    },
+    {
+      "path": "server/providers/workloadClassifier.ts",
+      "sha256": "992b1472808603dc81f8acc4f5d5dcc703c4a37836fae031f595447464e9ed96",
+      "lines": 560
+    },
+    {
+      "path": "server/publicationTimestamp.ts",
+      "sha256": "6c86276d34e42a6506ad3afdbb232fdc35f30a074bfe2d5535f440fd52490613",
+      "lines": 25
+    },
+    {
+      "path": "server/rateLimit.ts",
+      "sha256": "82f1938c2e4bab41f04a256e85750781f654ad11a9b80bedce1a31e40d1410ad",
+      "lines": 28
+    },
+    {
+      "path": "server/readinessHealth.ts",
+      "sha256": "8c9ad9a9e5acb7f620c3802f3fc469a93409ab4606f3f586057a62d1cd97b94a",
+      "lines": 35
+    },
+    {
+      "path": "server/realityConfig.ts",
+      "sha256": "5acbdab9f8f090b87ff74e350a40c23169801e835ea775c47e91f8b72a559cbf",
+      "lines": 109
+    },
+    {
+      "path": "server/reconciliationEngine.ts",
+      "sha256": "34ca78ae2bf773232f16190711a8c47535c5fb6ba9ddca12d79399c236144a33",
+      "lines": 61
+    },
+    {
+      "path": "server/reconciliationGate.ts",
+      "sha256": "0dcbea5ff4f04bc9499a63b4a652d88167c3ea07371859b14058cc6ac2dd79cf",
+      "lines": 191
+    },
+    {
+      "path": "server/repositories/auditIdempotencyKillSwitchRepo.ts",
+      "sha256": "72b99f481f9cd35266b6b570a6579d6b6f2539eeed2196f4b001687dc94a43e3",
+      "lines": 398
+    },
+    {
+      "path": "server/repositories/baseRepo.ts",
+      "sha256": "49215dcccaca92d1e34cb88e4714e6df25faa3d478d55b02617c3f9c0269f298",
+      "lines": 50
+    },
+    {
+      "path": "server/repositories/customerAndAuthRepo.ts",
+      "sha256": "857f8f4903beb149d7cf701c80d1bde6f3d98c27510a2c605a8a0f141601ec11",
+      "lines": 195
+    },
+    {
+      "path": "server/repositories/demandQuotePaymentRepo.ts",
+      "sha256": "95011c78fdc3d61556d4bbe51d80d0f85d06481b719d28c6c693d7d55ea072ad",
+      "lines": 615
+    },
+    {
+      "path": "server/repositories/index.ts",
+      "sha256": "c9bb809e62449bc4d80bb3ea153b330208af553539c493e7d05832946c453bc6",
+      "lines": 40
+    },
+    {
+      "path": "server/repositories/operationJobSettlementOutboxRepo.ts",
+      "sha256": "19e12608c785f1a5491d5b8b04728f76ad30b4f106ae9540ae37bfdfc5b0b16b",
+      "lines": 632
+    },
+    {
+      "path": "server/repositories/treasuryAndReservationRepo.ts",
+      "sha256": "b2bf644445fee078e8c322793fb0d26f3d639e4cc5c24634f4445cd313cf8380",
+      "lines": 366
+    },
+    {
+      "path": "server/repositories/types.ts",
+      "sha256": "d0afe35ab88e58cde000e25de6544147eaa6fd66488f41b2765a0f362f87cde3",
+      "lines": 282
+    },
+    {
+      "path": "server/secureFeedFetch.ts",
+      "sha256": "76feb2513bb473c6cd2fb7650ef0b31507664dc305fd5429e737b3ffc4527690",
+      "lines": 173
+    },
+    {
+      "path": "server/simulationSafety.ts",
+      "sha256": "0a008c1c62b9afe06cce9edbe86a9067d7370a38558b2ba633a0fb15b64b4c1a",
+      "lines": 17
+    },
+    {
+      "path": "server/spaceStationOne.ts",
+      "sha256": "11997d0abf34bc64cae1a42b9e3bf61e44b0ae4ee09d45c37bf3a8435ccd779f",
+      "lines": 854
+    },
+    {
+      "path": "server/supplierBalanceDiagnosticsRoute.ts",
+      "sha256": "79b060a0a5d4e25f2cb18dc7836f4df0c3c1926ce0544c19496642b72d68e36b",
+      "lines": 23
+    },
+    {
+      "path": "server/supplierBalanceReadOnly.ts",
+      "sha256": "b24fbf70016a46e5ac6f0e81df87221d69f3efba9ac92d3210383a02e27147e7",
+      "lines": 39
+    },
+    {
+      "path": "server/supplierConnectivity.ts",
+      "sha256": "c7f57b13abb631cafba394fad6f5dfe20528e0a57e820e66055b717dda056d67",
+      "lines": 329
+    },
+    {
+      "path": "server/supplierReadOnlyDiagnostics.ts",
+      "sha256": "efcabb05cacbdb209b266681a6535a87601bea3b7f2a7bdf7d14b5774c076a8c",
+      "lines": 525
+    },
+    {
+      "path": "server/systemReadiness.ts",
+      "sha256": "c4451496563a8427fe8bb186d07846f3ae861367c5b2d7e02328d58fe31e734c",
+      "lines": 340
+    },
+    {
+      "path": "server/treasuryEngine.ts",
+      "sha256": "787f865079f16006e38aafbfcef4517c1c7c399823951faccfd7c3b483fa2e0e",
+      "lines": 1484
+    },
+    {
+      "path": "server/usdtChainVerifier.ts",
+      "sha256": "497fad04f47c1e7b07680606d19be51c24f2ac3658bd30e2728ff14299bc27d5",
+      "lines": 64
+    },
+    {
+      "path": "server/usdtInvoiceLedger.ts",
+      "sha256": "9b854c813cda3e79d5a3f0ba1d0cb9e81fc9f0d1a97f8f22272452f9813c95a0",
+      "lines": 85
+    },
+    {
+      "path": "server/verifiedProfitWithdrawalService.ts",
+      "sha256": "cc20a283163870e344133ebbbd70f67f86877d50284cb5e82a7ae655d850a3df",
+      "lines": 957
+    },
+    {
+      "path": "server/workload/workloadRunner.ts",
+      "sha256": "5f6c4960aa9a7341b9cb01cc90c6081c5a9556b3b3d7cab4a89eae94d529d1ce",
+      "lines": 324
+    },
+    {
+      "path": "server/zeroFundedBootstrapService.ts",
+      "sha256": "796456197fce58f5e6741e233fa2314ab0377d573c0db311ca6dbe91efdf2e7d",
+      "lines": 853
+    },
+    {
+      "path": "src/lib/supabase.ts",
+      "sha256": "b85357cd28ef07826be233f920fbd348e5984420a2ce62beab357c66cf2412ca",
+      "lines": 38
+    },
+    {
+      "path": "src/mock/initialData.ts",
+      "sha256": "74019b5b10d471b24dae4298b4e7f011e643a7c8eeda40ca4c963ad73413b476",
+      "lines": 76
+    },
+    {
+      "path": "src/services/cryptoEngine.ts",
+      "sha256": "32cb7c2ab2c21c54b5478dc230c57685ccba97a8cfdf6dff3cc6113cfba5336a",
+      "lines": 73
+    },
+    {
+      "path": "src/services/dealVerificationEngine.ts",
+      "sha256": "b71cb97e8fb880c580c8d37c6ab7b16be0989aae9503d9c95691af9d017fba2c",
+      "lines": 437
+    },
+    {
+      "path": "src/services/providerAdapters.ts",
+      "sha256": "1b35daa28eb58fc6b508347000c21de6a0c3e047e33cfec0a759edf0d5f85812",
+      "lines": 411
+    },
+    {
+      "path": "src/types/index.ts",
+      "sha256": "eaf9d5ca36f60cc57b15149f3f18539b4b1d4dc6a8bc8c62084e7534121f01a6",
+      "lines": 685
+    },
+    {
+      "path": "supabase/migrations/20260926000000_gpu_arbitrage_os_schema.sql",
+      "sha256": "59e70aabf0ce0d60c1894136cddb6083930ab813d16c68c5f6c2a5e31c1632af",
+      "lines": 313
+    },
+    {
+      "path": "supabase/migrations/20261001000000_production_financial_authority.sql",
+      "sha256": "5b3879c095b988178afb49ac226a4594aa68425ce1232e1b78a3a020f4403f7d",
+      "lines": 158
+    },
+    {
+      "path": "supabase/migrations/20261001000001_restore_financial_integrity_constraints.sql",
+      "sha256": "2c4639bf3cfdee0c072a7475e8e3f4f65e2e189dc42a8313d28e73864bc8abab",
+      "lines": 70
+    },
+    {
+      "path": "supabase/migrations/20261001000002_complete_versioned_financial_migrations.sql",
+      "sha256": "dc762ca82858d5765fb7b3d29d8c9a8072c6da35f4f53c5a8ece857a349b7de0",
+      "lines": 286
+    },
+    {
+      "path": "supabase/migrations/20261003000000_autonomous_provider_funding_and_profit_rules.sql",
+      "sha256": "7ba5abda8fa1f2834ed0fbda3834872d48c677d7f5068d25e5dfd8bdd165543a",
+      "lines": 57
+    },
+    {
+      "path": "supabase/migrations/20261108000000_gpu_buyer_evidence_review.sql",
+      "sha256": "0042893320d857260eb2fdd0abfa859e53b5b2f22a95a52415f73a954aba4fda",
+      "lines": 9
+    },
+    {
+      "path": "supabase/migrations/20261109000000_payment_evidence_observations.sql",
+      "sha256": "03022ca60aa0f6e145af1a7513cf5c5e0e40b71ca5f7bbaf90527f8552ba2b20",
+      "lines": 25
+    },
+    {
+      "path": "supabase/migrations/20261109000001_payment_evidence_replay.sql",
+      "sha256": "845f21847a2066deca93fd4bb94e3c8530999ee4babd41bfbba8cf1a9fbeb588",
+      "lines": 22
+    },
+    {
+      "path": "supabase/migrations/20261110_v5_commercial_evidence.sql",
+      "sha256": "635e362c31eebad08d7a9e5452650616c5959b61a433e50d182626663138d8ab",
+      "lines": 30
+    },
+    {
+      "path": "test/autonomousAcidTest.ts",
+      "sha256": "c3cc66572a5ecc7d2919e7169511bbe535e08c8a2a90ed15793f75213bd8edcf",
+      "lines": 316
+    },
+    {
+      "path": "test/binanceAndFloatsTest.ts",
+      "sha256": "89f9e0f749264da4c2d5743f15b4ca405e1a19dfc6e7d7a044b23b38b13dac65",
+      "lines": 354
+    },
+    {
+      "path": "test/build55NegativeGateSuite.ts",
+      "sha256": "c3d1c08330b5977d4b630e890401418890f4d9e6f887ebe368cd0a176e88cd7c",
+      "lines": 216
+    },
+    {
+      "path": "test/build57NegativeSuite.ts",
+      "sha256": "c0a5929433d2dfae25aabc5f3bc84b42a61796fbf799718d4a80b5274acc9668",
+      "lines": 342
+    },
+    {
+      "path": "test/commercialEvidencePostgresChecks.ts",
+      "sha256": "c8fe76ff7120ff386992eb1534453a8c1c66bcc61e69a61fa362127a824084ee",
+      "lines": 50
+    },
+    {
+      "path": "test/commercialLeadFilterSuite.ts",
+      "sha256": "9353975a96335dc90dc3d13a0a21b2404682fcb29230b66886079fb4a36ca992",
+      "lines": 64
+    },
+    {
+      "path": "test/commercialQuotePlannerSuite.ts",
+      "sha256": "352d1d5b8e6162ecf106458d59df174cd7af76123138f43ca1d42e18c97802dd",
+      "lines": 111
+    },
+    {
+      "path": "test/consolidationHttpSuite.ts",
+      "sha256": "3ff678c4ab43dfaeb2dd8cf6518bcaf679b6b9bc7ccbeaa0abab81cd426d1379",
+      "lines": 65
+    },
+    {
+      "path": "test/creditSpendPolicySuite.ts",
+      "sha256": "30e07d0d0b599fc679fedf62b05636cf40c02012675d7140e89dcc8eb72d514f",
+      "lines": 20
+    },
+    {
+      "path": "test/customerLeadEvidenceSuite.ts",
+      "sha256": "30217313995fc390bf5833ba2448f690dc270241657ef7e48ed46b9ecccc648e",
+      "lines": 82
+    },
+    {
+      "path": "test/databaseOutageIsolationSuite.ts",
+      "sha256": "7286f31b669af5963531ba8fb15d567cbcd88b3e1381630da02986b25aaab48b",
+      "lines": 48
+    },
+    {
+      "path": "test/directPurchaseBoundarySuite.cjs",
+      "sha256": "375c3d599cb4cef70fdfebee458cff87cb397ab3c800388000470092b58c6aae",
+      "lines": 12
+    },
+    {
+      "path": "test/feedPublicationEvidenceSuite.ts",
+      "sha256": "01d6dafa3da0e90e99f1d711248bbac802e8a12c3c8f645045bd999384d6e191",
+      "lines": 108
+    },
+    {
+      "path": "test/financialExecutionPolicySuite.ts",
+      "sha256": "fc756bf90fbeb1db8fd1c23a2fd82af6f8af71d54693a19334b37fe9b8caa492",
+      "lines": 21
+    },
+    {
+      "path": "test/financialIntegritySuite.ts",
+      "sha256": "65f32d289e3e9c77a34b52caa41fe3c38cd85a9a93fe9978e411e2fce457251b",
+      "lines": 422
+    },
+    {
+      "path": "test/gpuDemandApiSecuritySuite.ts",
+      "sha256": "9dab8dfe8a64b3c117c53c2290ed22378a3cbd09f5112bb2a20c2065cba0398b",
+      "lines": 135
+    },
+    {
+      "path": "test/gpuDemandFinancialSuite.ts",
+      "sha256": "7a565f249eb455ad4f9d34f3dfea25bfe8c61a348073ee46c2b7b47d58763590",
+      "lines": 75
+    },
+    {
+      "path": "test/gpuDemandMatcherSuite.ts",
+      "sha256": "93d5d432aa9889691e9b0266e6079fe6a4874541582ca3598e2f984fa19d463c",
+      "lines": 74
+    },
+    {
+      "path": "test/gpuNormalizedApiSuite.ts",
+      "sha256": "edeca853618ab89e9827d9c74dd0ec2dd820b6e423d5f159fd8517e634554ddd",
+      "lines": 104
+    },
+    {
+      "path": "test/gpuNormalizedPricingSuite.ts",
+      "sha256": "4e49b3d114c11e07000e697c58e04ed1725537baf54dbddd80de19c8561c8067",
+      "lines": 44
+    },
+    {
+      "path": "test/gpuPriceComparisonSuite.ts",
+      "sha256": "6e596a454c1a2c1deda57b0f7e6c04e9c08f5da94e208033249ff97685aa839e",
+      "lines": 45
+    },
+    {
+      "path": "test/h100FleetControllerSuite.ts",
+      "sha256": "9f8a8f7cfff6b806926d80f53244246c9e009077ea87da6f00a58ef4b2c2d985",
+      "lines": 24
+    },
+    {
+      "path": "test/jakeGroveCfoSuite.ts",
+      "sha256": "1fd635d493ba98899aa36f1ba2b97f94fe0b674c461614238b3327d13f74cf74",
+      "lines": 284
+    },
+    {
+      "path": "test/launchGateTest.ts",
+      "sha256": "59038ac20b4c6cd49c328fb16165dc5733e15a7d75721c90df80a66702ddac54",
+      "lines": 68
+    },
+    {
+      "path": "test/liveFinancialLockdownSuite.ts",
+      "sha256": "fccfb6ea257333dcbe3b67ac1da546acb953677591539cd371233184267ab860",
+      "lines": 107
+    },
+    {
+      "path": "test/outboxLockdownAudit.cjs",
+      "sha256": "0b7f6392157b7408220a10de5cf1e0e9e3d69792892f87e89bdcbfafd0e4fa15",
+      "lines": 89
+    },
+    {
+      "path": "test/outboxRuntimeSuite.ts",
+      "sha256": "a7b5c2108fec7ebadc075e292c577f73416ec3548f3f532610a10612e2bfc569",
+      "lines": 92
+    },
+    {
+      "path": "test/paymentEvidenceLedgerSuite.ts",
+      "sha256": "b35d2fea42e8eaa9b1df12eece061783eb9ffb26c41726a036aac199f21a162f",
+      "lines": 20
+    },
+    {
+      "path": "test/paymentEvidenceReviewSuite.ts",
+      "sha256": "2cef1531cfacacb492a5823a50fb5e720bf95fbca49dda83fd30e748c1487f26",
+      "lines": 17
+    },
+    {
+      "path": "test/phase16ReadinessSuite.ts",
+      "sha256": "bba1ed2b5a6093def68e48678a85fbb27e759c6361e33c6835764c5a81d6d514",
+      "lines": 79
+    },
+    {
+      "path": "test/phase18AuthSuite.ts",
+      "sha256": "fadd37844da6461c7f5ae6ce65d7a5e54b5c6dec0627e08b1a7816bfd92b1393",
+      "lines": 69
+    },
+    {
+      "path": "test/phase18StagingSuite.ts",
+      "sha256": "210f015a8c3bc81bb9460fc37cfc23340ac8f74dabc4b9cc0c0cf4ba5dc036ad",
+      "lines": 107
+    },
+    {
+      "path": "test/phase19AcquisitionPostgresChecks.ts",
+      "sha256": "7aff4ac6b159b077b65d702b24172ade723759ad5755f06e5287b0db6fd8e0c0",
+      "lines": 47
+    },
+    {
+      "path": "test/phase19OfflineFeedSuite.ts",
+      "sha256": "bd4be07e23c682c73d9e154e44920f7273daf8d0b81d35cf3808de753cbd1ea6",
+      "lines": 128
+    },
+    {
+      "path": "test/phase19ScannerIntegrationSuite.ts",
+      "sha256": "49e159244e83a2647cc0dc37dacb96583b6c035ba7e360d86400d96493919642",
+      "lines": 202
+    },
+    {
+      "path": "test/phase19SecuritySuite.ts",
+      "sha256": "1a6ca5f0bc86c39b6332a8db1e28b2c91c81149aba9e2c25d8238f19d2d96b42",
+      "lines": 36
+    },
+    {
+      "path": "test/phase20Discovery.test.ts",
+      "sha256": "c9bd628b02d90468e8b742b4c0f67b3ab7d7ffedc1590f0da60b03e29aeae14c",
+      "lines": 28
+    },
+    {
+      "path": "test/phase20FinancialBoundary.test.ts",
+      "sha256": "634ccbbc4d5066bbb89793f704a66ebd5d706c794ac900194cbc915549cb673e",
+      "lines": 43
+    },
+    {
+      "path": "test/phase20Fixtures.ts",
+      "sha256": "4a2be778f93f3b30c6072e58429a1ad9fa669e0846efa1a8a28b062c99763031",
+      "lines": 14
+    },
+    {
+      "path": "test/phase20GatewayWorker.ts",
+      "sha256": "b0b182923cd6016bedfd20dbb359667efa3e0d750139d5d24dd6e4ea560b67d1",
+      "lines": 21
+    },
+    {
+      "path": "test/phase20Http.test.ts",
+      "sha256": "b143c46802dc379f2e0219539d10e5cee1ed2115ac10126f799ebb02fac76c3c",
+      "lines": 43
+    },
+    {
+      "path": "test/phase20Models.test.ts",
+      "sha256": "ea5637fca5caf5c678afa31e91f2764cfd56180ac3b10bda863040dd6ceded1b",
+      "lines": 129
+    },
+    {
+      "path": "test/phase20PostgresChecks.ts",
+      "sha256": "1f66b6434c24074234e74e7dbe3bb62703408954cef5bbe7f98f56cb8000f503",
+      "lines": 138
+    },
+    {
+      "path": "test/phase20SupplierBalance.test.ts",
+      "sha256": "2d67f960a71a9178e05d1e104849e084bed8dda46337ad7e3c9600c6eaa59337",
+      "lines": 15
+    },
+    {
+      "path": "test/phase23CommercialAndSupplierSuite.ts",
+      "sha256": "7d1c3ca86061fe3d89815f42db003b2b44c889510a427adb8f80919e50369474",
+      "lines": 390
+    },
+    {
+      "path": "test/phase8SupplierEndpointSuite.ts",
+      "sha256": "09df9048b4b3b2f0475ec2dcdf960444f19ddc45ca7e385f1576462ca52ca7e6",
+      "lines": 116
+    },
+    {
+      "path": "test/phase8SupplierHealthSuite.ts",
+      "sha256": "4ee13219f31eb3f09c5ba6aa4d2899e256c24839e622dec67537382db5e0cfad",
+      "lines": 91
+    },
+    {
+      "path": "test/phase95_isolated_concurrency_test.cjs",
+      "sha256": "5a33919379b2716f3830fe455fecf6cf694890fb16764fec2e870aecca62a7f5",
+      "lines": 72
+    },
+    {
+      "path": "test/phase95_observation_db_test.cjs",
+      "sha256": "c4a868b39f941fdab7562b072b07488f7230fc3b06064a3cc5e8bc0bd616e782",
+      "lines": 28
+    },
+    {
+      "path": "test/phase95_payment_replay_test.cjs",
+      "sha256": "18afcf15065ac22f0c6f85a63e2f806f45d50bec753f7a74d86ebe2f6df4a8cf",
+      "lines": 31
+    },
+    {
+      "path": "test/phase9PurchaseGateSuite.cjs",
+      "sha256": "bca9096842c5558da1fd244ef65e51641346742e3c3623f90f1bc8a3144b1d4a",
+      "lines": 72
+    },
+    {
+      "path": "test/phase9_payment_evidence_audit.cjs",
+      "sha256": "e34115cf17a47f119b7f11d1fd3721943a980258d4c16e8239b165e434ce36d1",
+      "lines": 21
+    },
+    {
+      "path": "test/postgresHarnessSafetySuite.cjs",
+      "sha256": "ea96d091a7fe69acd5313c5d9bfb3c7a94d8dbf7df3faad1dbae1da372c735a5",
+      "lines": 27
+    },
+    {
+      "path": "test/prReviewSafetySuite.ts",
+      "sha256": "c977081ee95e1717f7c1bc6fe92514f340408d65f0e017de43e67c3cb4012179",
+      "lines": 43
+    },
+    {
+      "path": "test/prepaidPostgresIntegrationSuite.ts",
+      "sha256": "c90d02b1553db94c9c175417ed4efa8d22d6daa3ebef9ad89ab89453a266fe81",
+      "lines": 97
+    },
+    {
+      "path": "test/prepaidReservationGateSuite.ts",
+      "sha256": "87c876c1e180d17eb6a2c7d182945cd0d17b72751233f56d7c079b4bdbc6c96a",
+      "lines": 26
+    },
+    {
+      "path": "test/productionHardeningSuite.ts",
+      "sha256": "028b33909c2abc5a01a2bed2c1829d745a47a6d2a1bf4578b8673ec909ce3dc5",
+      "lines": 786
+    },
+    {
+      "path": "test/providerBillingValidationSuite.ts",
+      "sha256": "f86a9ac48870e7539664f48712a98ef93d95700aebc74c9a072e74c6ee7f70e1",
+      "lines": 146
+    },
+    {
+      "path": "test/providerReadinessSuite.ts",
+      "sha256": "568351fb25aa6a93a321c57aa49cea6108d80bec17f40d72348e1898692e4b2a",
+      "lines": 288
+    },
+    {
+      "path": "test/readinessRecoverySuite.ts",
+      "sha256": "0dfdba12286a31df628202e3efa73014ff53b1308c0412b2f4de691bcffc7dfc",
+      "lines": 87
+    },
+    {
+      "path": "test/secureFeedDnsEdgeSuite.ts",
+      "sha256": "645799aa6ddbd272ae0031de1093a128ac0916c187d28396795c40783c370297",
+      "lines": 69
+    },
+    {
+      "path": "test/secureFeedDnsIsolationSuite.ts",
+      "sha256": "f7dea3158d3df54e4807c50b00ea79936bd29cfb01f531090e1b05f2a5386531",
+      "lines": 34
+    },
+    {
+      "path": "test/secureFeedDnsPinningSuite.ts",
+      "sha256": "56efcda08c806d02f2328388828c6f976a77317e55182af0c5853f24253b1e22",
+      "lines": 65
+    },
+    {
+      "path": "test/secureFeedFinalNetworkSuite.ts",
+      "sha256": "2513ef9e7ebf1097ebb3be82995e3c1beff64d14cb6c3445914fbfbf8fb024df",
+      "lines": 101
+    },
+    {
+      "path": "test/secureFeedIntegrationSuite.ts",
+      "sha256": "44971369837adc02342917c0f1271e8587dab1a938ed934c3d96dd381e65a590",
+      "lines": 42
+    },
+    {
+      "path": "test/secureFeedNode24LookupSuite.ts",
+      "sha256": "90337e614b7e318fa4a50403ab8e777b973f6c5180a7ef42e045f9ff75793d93",
+      "lines": 96
+    },
+    {
+      "path": "test/secureFeedNode24ProductionSuite.ts",
+      "sha256": "8166e62a3b7287c254f16683a8515209cdec3cc4b07953300b250974a8521e2d",
+      "lines": 75
+    },
+    {
+      "path": "test/secureFeedSocketSuite.ts",
+      "sha256": "cecf49baa44b3dfc9a1e9d55dae06535db763b35c5e016afdcc78ec42b76028b",
+      "lines": 95
+    },
+    {
+      "path": "test/secureFeedTimeoutSuite.ts",
+      "sha256": "3e375a4ecfff5063d0432d913ac8beb645077b945aed4a34c21c0f46ec5b22fa",
+      "lines": 116
+    },
+    {
+      "path": "test/secureFeedTlsSuite.ts",
+      "sha256": "96476566f01dde15e61b2cae5059c6784824b4af6c01e13cb549a3900ecea071",
+      "lines": 83
+    },
+    {
+      "path": "test/secureFeedTransportSuite.ts",
+      "sha256": "946fb2d84ffdea7f9413cbcaab85a46060ba11cd35baba721669beaf8ba135f5",
+      "lines": 90
+    },
+    {
+      "path": "test/simulationBoundaryAudit.cjs",
+      "sha256": "7dbf114cf15b24b7e7c827c1fcd5acfb2b589b14bd4c0293c5ad3d649186419b",
+      "lines": 73
+    },
+    {
+      "path": "test/simulationGuardAudit.cjs",
+      "sha256": "ac8ee72d76ab5884786f443425cc4382a5aafabd40423e93dae428f65c22ad89",
+      "lines": 49
+    },
+    {
+      "path": "test/simulationLockdownSuite.ts",
+      "sha256": "555f74183b7af4ba70c313def37284a2a461e8e0db860c89bc5dedc268e8b827",
+      "lines": 83
+    },
+    {
+      "path": "test/simulationRuntimeSuite.ts",
+      "sha256": "b45694bf533e9911af748d065a09f85608aefb53eeb5b12fa677f575072812f0",
+      "lines": 67
+    },
+    {
+      "path": "test/supplierBalanceReadOnlySuite.ts",
+      "sha256": "61e0b4b0716b8b559c40ae6a7cd5373958f442973dedf2843156899dd349d798",
+      "lines": 24
+    },
+    {
+      "path": "test/supplierReadOnlyDiagnosticsSuite.ts",
+      "sha256": "3be3808c8bd1b6035aa9c5a281eeb0204b69c1435b99dd8b7a967f0bca86fc08",
+      "lines": 40
+    },
+    {
+      "path": "test/treasuryHotWalletSuite.ts",
+      "sha256": "cc38e7c251cad1c9b1248f27b92ad4e8e1ff05c5ca25c59669e814be00551493",
+      "lines": 611
+    },
+    {
+      "path": "test/usdtActualLedgerSuite.ts",
+      "sha256": "f621ee529e59b2780764a2614cbe19cbac24e9a5c9862c761bc62b23c7e9658c",
+      "lines": 345
+    },
+    {
+      "path": "test/usdtLedgerIsolationCheck.cjs",
+      "sha256": "02eb2560c3b66bb60a4ae2f4538cd4a57e805453adbf935c5edb3495199f7bd3",
+      "lines": 63
+    },
+    {
+      "path": "test/usdtPaymentPostgresSuite.cjs",
+      "sha256": "454ac36f3238e0152e5f9d278c0779069f6c2c360217aef7e1d0424ad0a0c6dc",
+      "lines": 134
+    },
+    {
+      "path": "test/v5CommercialEvidenceSuite.ts",
+      "sha256": "863b0d180f102dcdea310a048a8bd3d1da5dd53b442d5ae0da9c464f8eac20b0",
+      "lines": 14
+    },
+    {
+      "path": "test/zeroFundedBootstrapSuite.ts",
+      "sha256": "c7c0eb86bfa2a4ea02eb201a7d7f9355ff56392d235b251995d65c47f0d6a864",
+      "lines": 356
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "1abb4c9c0fdeb960d2dee63a47e8f63c9009d59394728c3a36b9240b1b4de795",
+      "lines": 43
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "8e81fb0b3d68e9aee9d6644a2501ac61700bf8e9ac80ab2ca3c3e843f7934a24",
+      "lines": 21
+    }
+  ],
+  "environmentNames": [
+    "AKASH_API_KEY",
+    "AKASH_WALLET_ADDRESS",
+    "ALLOW_DEV_JSON_FALLBACK",
+    "ALLOW_DEV_SEED_CUSTOMERS",
+    "ALLOW_DEV_SESSION_BYPASS",
+    "ALLOW_ISOLATED_GPU_DB_TEST",
+    "ALLOW_PREVIEW_SESSION",
+    "AUDIT_CHAIN_SECRET",
+    "BINANCE_API_KEY",
+    "BINANCE_API_SECRET",
+    "BINANCE_BASE_URL",
+    "BINANCE_ENABLED",
+    "BINANCE_ENV",
+    "BINANCE_MAX_DAILY_EXPOSURE",
+    "BINANCE_MAX_DAILY_EXPOSURE_USD",
+    "BINANCE_MAX_SINGLE_EXPOSURE",
+    "BINANCE_MAX_SINGLE_EXPOSURE_USD",
+    "BINANCE_MIN_RESERVE",
+    "BINANCE_MIN_RESERVE_USD",
+    "BINANCE_PAY_CERT_SN",
+    "BINANCE_PAY_PUBLIC_KEY",
+    "BINANCE_PAY_SECRET_KEY",
+    "BINANCE_RECV_WINDOW",
+    "BINANCE_TREASURY_ASSET",
+    "BINANCE_WEBHOOK_SECRET",
+    "BINANCE_WITHDRAWALS_ENABLED",
+    "BSC_RECEIPT_TIMEOUT_MS",
+    "BSC_REQUIRED_CONFIRMATIONS",
+    "BSC_RPC_FALLBACK_URLS",
+    "BSC_RPC_MAX_BLOCK_AGE_SECONDS",
+    "BSC_RPC_TIMEOUT_MS",
+    "BSC_RPC_URL",
+    "BSC_USDT_CONTRACT_ADDRESS",
+    "COREWEAVE_API_KEY",
+    "CUSTOMER_API_KEY",
+    "DATABASE_SSL",
+    "DATABASE_SSL_CA",
+    "DATABASE_SSL_REJECT_UNAUTHORIZED",
+    "DATABASE_URL",
+    "DB_MIGRATION_EXECUTE",
+    "DB_MIGRATION_EXPECT_DATABASE",
+    "DB_MIGRATION_EXPECT_PORT",
+    "DB_MIGRATION_EXPECT_SERVER_ADDRESS",
+    "DB_MIGRATION_EXPECT_TRANSPORT",
+    "DB_MIGRATION_TARGET",
+    "DB_MIGRATION_TARGET_CONFIRM",
+    "DIRECT_URL",
+    "DISABLE_HMR",
+    "DISABLE_JSON_PERSISTENCE",
+    "ENABLE_STUDIO_AUTH_FALLBACK",
+    "ESCROW_SIGNING_SECRET",
+    "ETHEREUM_MAINNET_RPC_URL",
+    "EXECUTION_MODE",
+    "EXPECTED_STAGING_REVISION",
+    "GEMINI_API_KEY",
+    "GITHUB_SHA",
+    "GPU_EVIDENCE_VERIFIER_READY",
+    "GPU_PURCHASING_ENABLED",
+    "HOME",
+    "HOSTINGER_API_KEY",
+    "HOSTINGER_API_TOKEN",
+    "HYPERSTACK_API_KEY",
+    "LAMBDA_API_KEY",
+    "LEAD_RSS_FEEDS",
+    "LEAD_SOURCE_REGISTRY_JSON",
+    "LEAD_TEST_IN_MEMORY",
+    "LIGHTNING_API_KEY",
+    "LIGHTNING_ORG_ID",
+    "LIGHTNING_USER_ID",
+    "MAX_HOT_WALLET_BALANCE_USD",
+    "NODE_ENV",
+    "OWNER_API_KEY",
+    "OWNER_API_TOKEN",
+    "PAYFAST_CANCEL_URL",
+    "PAYFAST_MERCHANT_ID",
+    "PAYFAST_MERCHANT_KEY",
+    "PAYFAST_NOTIFY_URL",
+    "PAYFAST_PASSPHRASE",
+    "PAYFAST_RETURN_URL",
+    "PAYFAST_SANDBOX",
+    "PHASE20_REQUEST_KEY",
+    "PHASE20_TEST_SCHEMA",
+    "PHASE20_WORKER_MODE",
+    "POSTGRES_URL",
+    "QUOTE_LOCK_SECRET",
+    "REALITY_LEVEL",
+    "RENDER",
+    "RENDER_GIT_COMMIT",
+    "RUNPOD_API_KEY",
+    "SALAD_API_KEY",
+    "SALAD_ORG_ID",
+    "STRICT_AUTH_ENFORCEMENT",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_DB_URL",
+    "SUPABASE_URL",
+    "SYSTEM_MODE",
+    "SYSTEM_OPERATING_MODE",
+    "TARGET_HOT_WALLET_BALANCE_USD",
+    "TENSORDOCK_API_KEY",
+    "TEST_DATABASE_URL",
+    "TREASURY_DAILY_LIMIT_USD",
+    "TREASURY_HOT_WALLET_ADDRESS",
+    "TREASURY_HOT_WALLET_NETWORK",
+    "TREASURY_HOT_WALLET_PRIVATE_KEY",
+    "TREASURY_HOURLY_LIMIT_USD",
+    "TREASURY_MAX_AUTO_PAYOUT_USD",
+    "TREASURY_MAX_HOT_WALLET_BALANCE_USD",
+    "TREASURY_MAX_STALENESS_SECONDS",
+    "TREASURY_MAX_WITHDRAWAL_PER_TX_USD",
+    "TREASURY_MIN_GAS_BNB",
+    "TREASURY_MIN_GAS_RESERVE_BNB",
+    "TREASURY_MIN_WITHDRAWAL_USD",
+    "TREASURY_TARGET_HOT_WALLET_BALANCE_USD",
+    "TREASURY_USDT_CONTRACT",
+    "TREASURY_WALLET_ADDRESS",
+    "TZ",
+    "USDT_DB_SSL",
+    "USDT_ERC20_RECEIVING_ADDRESS",
+    "VAST_API_KEY",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_SUPABASE_URL",
+    "WITHDRAWAL_COOLDOWN_HOURS"
+  ],
+  "criticalPaths": [
+    {
+      "path": "agents/registry.json",
+      "locations": [
+        {
+          "line": 21,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 55,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server.ts",
+      "locations": [
+        {
+          "line": 33,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 37,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 67,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 80,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 177,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 178,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 179,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 180,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 181,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 182,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 183,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 184,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 186,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 187,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 188,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 189,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 190,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 191,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 192,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 219,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1896,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1914,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1922,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1927,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1935,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 1944,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1994,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 2028,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 2037,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 2100,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 2115,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 2116,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 2130,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 2134,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 2137,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 2405,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 2407,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 2408,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 2751,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 2753,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 2754,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 2918,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3096,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 3156,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3362,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3412,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3423,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 3440,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3459,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3474,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3480,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3481,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3490,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3506,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3507,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3528,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 3531,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 3532,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3534,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3540,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3544,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3545,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3547,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3548,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3551,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3557,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3561,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3562,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3565,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3571,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3575,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3576,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3578,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3584,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3589,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3601,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3615,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3623,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3624,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3629,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3641,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3651,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3655,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 3656,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3662,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 3705,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3718,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3734,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3748,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3771,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3772,
+          "markers": [
+            "requireOwnerAuth",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3777,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3790,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3795,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3808,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3829,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3837,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3838,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 3861,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 3902,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 3992,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 4035,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 4045,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 4078,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 4105,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 4360,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 4473,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 4474,
+          "markers": [
+            "requireOwnerAuth",
+            "settle"
+          ]
+        },
+        {
+          "line": 4480,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 4537,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 4563,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 4564,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 4571,
+          "markers": [
+            "Provision",
+            "terminate"
+          ]
+        },
+        {
+          "line": 4678,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 4737,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 4910,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 5191,
+          "markers": [
+            "Worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/attackTestSuite.ts",
+      "locations": [
+        {
+          "line": 761,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 1040,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1064,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1065,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/auth.ts",
+      "locations": [
+        {
+          "line": 409,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 538,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/autonomousCapitalController.ts",
+      "locations": [
+        {
+          "line": 30,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 38,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 96,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 101,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 106,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 224,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 276,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 282,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 286,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 311,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 318,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 319,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 328,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 350,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 354,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 359,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 367,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 377,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 379,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 384,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 392,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 402,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 405,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 408,
+          "markers": [
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/autonomousCustomerService.ts",
+      "locations": [
+        {
+          "line": 161,
+          "markers": [
+            "setInterval"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/binanceConfig.ts",
+      "locations": [
+        {
+          "line": 13,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 56,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 57,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 71,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 121,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 122,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/binanceProvider.ts",
+      "locations": [
+        {
+          "line": 22,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 36,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 41,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 61,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 346,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 553,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 555,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 560,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 571,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 591,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 597,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 598,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 600,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 605,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 610,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 615,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 618,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 625,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 636,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 638,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 651,
+          "markers": [
+            "WITHDRAW"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/bootstrap.ts",
+      "locations": [
+        {
+          "line": 93,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 96,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 149,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 152,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 159,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 166,
+          "markers": [
+            "Settle",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 168,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 169,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 174,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 175,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 177,
+          "markers": [
+            "Worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/circuitBreaker.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 19,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 33,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 49,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 65,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 77,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 107,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 117,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 119,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 143,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 172,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 222,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 223,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 224,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 226,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 227,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 297,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/commandCenterJobSummary.ts",
+      "locations": [
+        {
+          "line": 18,
+          "markers": [
+            "PROVISION",
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/commercialIntake.ts",
+      "locations": [
+        {
+          "line": 72,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 92,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 103,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/commercialLeadFilter.ts",
+      "locations": [
+        {
+          "line": 4,
+          "markers": [
+            "purchase"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/crashRecovery.ts",
+      "locations": [
+        {
+          "line": 4,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 5,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 36,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 40,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 45,
+          "markers": [
+            "setInterval"
+          ]
+        },
+        {
+          "line": 54,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 67,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 113,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 130,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 158,
+          "markers": [
+            "Provision",
+            "terminate"
+          ]
+        },
+        {
+          "line": 172,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 178,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 191,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 192,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 244,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 248,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 262,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 263,
+          "markers": [
+            "Worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/creditSpendPolicy.ts",
+      "locations": [
+        {
+          "line": 1,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/databaseEngine.ts",
+      "locations": [
+        {
+          "line": 44,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 97,
+          "markers": [
+            "PROVISION",
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 104,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 145,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 153,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 155,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 188,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 206,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 352,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 529,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 624,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 625,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 632,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 633,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 635,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 862,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 974,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 978,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 986,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 987,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 988,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 991,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1042,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1043,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1055,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1072,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1085,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/dealExecutor.ts",
+      "locations": [
+        {
+          "line": 17,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 18,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 29,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 30,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 50,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 51,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 52,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 53,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 67,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 71,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 73,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 79,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 84,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 89,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 93,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 95,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 102,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 107,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 117,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 121,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 122,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 129,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 130,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 131,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 134,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 135,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 136,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 163,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 165,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 171,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 172,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 173,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 175,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 192,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 218,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 222,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 223,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 227,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 229,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 237,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 241,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 242,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 245,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 260,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 265,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 267,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 280,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 281,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 282,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 286,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 288,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 295,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 347,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 348,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 433,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 478,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 497,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 500,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 506,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 516,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 524,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 530,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 532,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 533,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 546,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 547,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 562,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 565,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 566,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 570,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 571,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 600,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 611,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 614,
+          "markers": [
+            "Settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/financialExecutionPolicy.ts",
+      "locations": [
+        {
+          "line": 3,
+          "markers": [
+            "Purchase"
+          ]
+        },
+        {
+          "line": 5,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 11,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 19,
+          "markers": [
+            "Purchase"
+          ]
+        },
+        {
+          "line": 25,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 30,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 40,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 42,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 44,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/financialLockdown.ts",
+      "locations": [
+        {
+          "line": 4,
+          "markers": [
+            "provision",
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/gpuAuthIsolation.test.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 11,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/gpuOfferEvidence.test.ts",
+      "locations": [
+        {
+          "line": 46,
+          "markers": [
+            "purchase"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/gpuOwnerAuthHttp.test.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 12,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/h100FleetController.ts",
+      "locations": [
+        {
+          "line": 72,
+          "markers": [
+            "Provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/hotWalletService.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 118,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 173,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 181,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 219,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 220,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 228,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 229,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 760,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 808,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1038,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1057,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1086,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1099,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1106,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1118,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1153,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1209,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1210,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1246,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1307,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1310,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1317,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1318,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1319,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1320,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1336,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1358,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1366,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1367,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1438,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1615,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 1717,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1768,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 1986,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1991,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2029,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2199,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 2203,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2221,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2224,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2234,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2239,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2242,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2285,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2288,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2298,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2303,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2306,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2345,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2361,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 2533,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2566,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 2602,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 2684,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 2686,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 2718,
+          "markers": [
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/jakeGroveCfoService.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 112,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 119,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 137,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 141,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 179,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 180,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 185,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 328,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 632,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 633,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 638,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 753,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 755,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 761,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 768,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 773,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 777,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 793,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 803,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 804,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 809,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 812,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 820,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 841,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 850,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 852,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 853,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 869,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 876,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 957,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 958,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 959,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 981,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1067,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 1087,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 1094,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 1121,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1123,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1183,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1198,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1209,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1214,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1224,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 1238,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/launchGateVerification.ts",
+      "locations": [
+        {
+          "line": 12,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 16,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 122,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 153,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 154,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 155,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 156,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 162,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 190,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 192,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 193,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 223,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 229,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 232,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 250,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 275,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 281,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 450,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 453,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 455,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 456,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 458,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 459,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 460,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 461,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 603,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 604,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 613,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 687,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 702,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 712,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 729,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 746,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 839,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 843,
+          "markers": [
+            "Worker",
+            "worker"
+          ]
+        },
+        {
+          "line": 845,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 846,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 847,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 851,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 852,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 855,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 856,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 861,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 862,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 864,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 921,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 931,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 973,
+          "markers": [
+            "Provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/launchReadiness/boundaries.ts",
+      "locations": [
+        {
+          "line": 56,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 63,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 68,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 72,
+          "markers": [
+            "Purchase"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/launchReadiness/certificationDrills.ts",
+      "locations": [
+        {
+          "line": 28,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 45,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 51,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 52,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 58,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 62,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 65,
+          "markers": [
+            "worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/liveExecutionEngine.ts",
+      "locations": [
+        {
+          "line": 10,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 17,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 69,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 74,
+          "markers": [
+            "PROVISION",
+            "Provision"
+          ]
+        },
+        {
+          "line": 241,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 258,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 260,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 276,
+          "markers": [
+            "provision",
+            "worker"
+          ]
+        },
+        {
+          "line": 281,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 289,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 290,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 292,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 294,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 312,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 313,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 316,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 317,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 318,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 332,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 347,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 348,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 349,
+          "markers": [
+            "Provision",
+            "terminate"
+          ]
+        },
+        {
+          "line": 355,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 370,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 390,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 393,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 395,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 411,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 412,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/moneyUtils.ts",
+      "locations": [
+        {
+          "line": 41,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 52,
+          "markers": [
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/opportunityEngine.ts",
+      "locations": [
+        {
+          "line": 226,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 582,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 585,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 588,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 686,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 688,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 689,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 819,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 869,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 873,
+          "markers": [
+            "settle",
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/outboxWorker.ts",
+      "locations": [
+        {
+          "line": 14,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 18,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 19,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 33,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 36,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 51,
+          "markers": [
+            "WORKER",
+            "worker"
+          ]
+        },
+        {
+          "line": 53,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 55,
+          "markers": [
+            "setInterval"
+          ]
+        },
+        {
+          "line": 56,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 99,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 101,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 103,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 104,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 106,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 109,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 118,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 124,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 131,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 145,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 164,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 166,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 189,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 194,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 195,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 197,
+          "markers": [
+            "PURCHASE",
+            "purchase"
+          ]
+        },
+        {
+          "line": 201,
+          "markers": [
+            "Purchase",
+            "Worker"
+          ]
+        },
+        {
+          "line": 210,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 245,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 248,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 258,
+          "markers": [
+            "WORKER",
+            "purchase"
+          ]
+        },
+        {
+          "line": 266,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 268,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 302,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 303,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 305,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 309,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 315,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 317,
+          "markers": [
+            "PROVISION",
+            "provision"
+          ]
+        },
+        {
+          "line": 324,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 330,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 352,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 353,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 365,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 366,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 396,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 398,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 399,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 405,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 422,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 425,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 436,
+          "markers": [
+            "WORKER"
+          ]
+        },
+        {
+          "line": 476,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 477,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 480,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 519,
+          "markers": [
+            "Worker",
+            "worker"
+          ]
+        },
+        {
+          "line": 522,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 538,
+          "markers": [
+            "Worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/ownerCommandCentre.ts",
+      "locations": [
+        {
+          "line": 7,
+          "markers": [
+            "provision",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 11,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 12,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/ownerOperations.ts",
+      "locations": [
+        {
+          "line": 11,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 12,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/ownerSalesWorkspace.ts",
+      "locations": [
+        {
+          "line": 5,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 8,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 14,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 15,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/payfastProvider.ts",
+      "locations": [
+        {
+          "line": 99,
+          "markers": [
+            "createPayment"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/paymentEngine.ts",
+      "locations": [
+        {
+          "line": 29,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 36,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 51,
+          "markers": [
+            "createPayment"
+          ]
+        },
+        {
+          "line": 108,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 114,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 117,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 170,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 288,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 487,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 491,
+          "markers": [
+            "createPayment"
+          ]
+        },
+        {
+          "line": 654,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 674,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 675,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 688,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 692,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 703,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 704,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 705,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 706,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 711,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 731,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 844,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 917,
+          "markers": [
+            "createPayment"
+          ]
+        },
+        {
+          "line": 933,
+          "markers": [
+            "createPayment"
+          ]
+        },
+        {
+          "line": 992,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 994,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 997,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1024,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1033,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1061,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1082,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1085,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1216,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1220,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1246,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1257,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1260,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 1261,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1265,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1268,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1272,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1274,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1304,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/paymentEvidenceLedger.ts",
+      "locations": [
+        {
+          "line": 86,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/paymentEvidenceReview.ts",
+      "locations": [
+        {
+          "line": 19,
+          "markers": [
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/pgDatabase.ts",
+      "locations": [
+        {
+          "line": 186,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 194,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 196,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 198,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 367,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/phase20/gateway.ts",
+      "locations": [
+        {
+          "line": 161,
+          "markers": [
+            "Provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/phase20/supplierEvidence.ts",
+      "locations": [
+        {
+          "line": 4,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 5,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/phase20/termination.ts",
+      "locations": [
+        {
+          "line": 12,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 17,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/preapprovedWorkloads.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 8,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 26,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 33,
+          "markers": [
+            "purchase",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 34,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 35,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 68,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 78,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/prepaidReservationGate.ts",
+      "locations": [
+        {
+          "line": 57,
+          "markers": [
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providerCredentialsService.ts",
+      "locations": [
+        {
+          "line": 108,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 238,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 390,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 521,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 536,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providerFloatManager.ts",
+      "locations": [
+        {
+          "line": 7,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 31,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 155,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 187,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 190,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 237,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 247,
+          "markers": [
+            "WITHDRAW"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providerFundingAdapters.ts",
+      "locations": [
+        {
+          "line": 16,
+          "markers": [
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providerProvisioner.ts",
+      "locations": [
+        {
+          "line": 5,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 18,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 23,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 32,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 60,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 61,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 69,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 73,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 228,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 231,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 234,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 236,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 246,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 252,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 257,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 265,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 266,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 312,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 316,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 321,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 326,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 334,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 344,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 345,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 357,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 358,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 412,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 421,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 430,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 440,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 453,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 454,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 495,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 505,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 514,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 524,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 535,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 568,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 587,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 631,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 661,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 666,
+          "markers": [
+            "TERMINATE",
+            "terminate"
+          ]
+        },
+        {
+          "line": 675,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 676,
+          "markers": [
+            "settle",
+            "terminate"
+          ]
+        },
+        {
+          "line": 681,
+          "markers": [
+            "TERMINATE",
+            "terminate"
+          ]
+        },
+        {
+          "line": 689,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 703,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 709,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 710,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 717,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 718,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 728,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 733,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 744,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 750,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 751,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 758,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 759,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 769,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 774,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 784,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 790,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 791,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 798,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 799,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 807,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 874,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 942,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 943,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 1001,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1037,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 1601,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 1710,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1740,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 1744,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1761,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1763,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 1765,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 1768,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1772,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1789,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1792,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 1793,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1794,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1819,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 1823,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1826,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 1827,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1828,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1838,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 1842,
+          "markers": [
+            "Provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/akashProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 59,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 91,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 114,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 136,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 272,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 273,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 288,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 289,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/baseProvider.ts",
+      "locations": [
+        {
+          "line": 23,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 27,
+          "markers": [
+            "terminate"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/coreweaveProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 49,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 262,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 263,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 278,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 279,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 313,
+          "markers": [
+            "TERMINATE",
+            "Terminate"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/hostingerProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 49,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 262,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 263,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 278,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 279,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 339,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/hyperstackProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 49,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 273,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 274,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 289,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 290,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 322,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 324,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 326,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 358,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/lambdaProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 49,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 105,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 273,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 274,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 289,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 290,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 322,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 324,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 325,
+          "markers": [
+            "TERMINATE",
+            "terminate"
+          ]
+        },
+        {
+          "line": 356,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/lightningProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 65,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 98,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 125,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 147,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 291,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 292,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 307,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 308,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 374,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/proofOfExecutionService.ts",
+      "locations": [
+        {
+          "line": 31,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 32,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 44,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 142,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 169,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 177,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 193,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 194,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 196,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 197,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 207,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 208,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 209,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/providerRegistry.ts",
+      "locations": [
+        {
+          "line": 8,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 130,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 480,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 483,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 492,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 530,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 531,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 542,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 543,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/runpodProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 62,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 97,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 125,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 147,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 291,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 292,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 307,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 308,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/saladProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 59,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 92,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 115,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 137,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 284,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 285,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 300,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 301,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/tensordockProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 50,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 85,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 111,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 133,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 284,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 285,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 300,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 301,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 367,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/types.ts",
+      "locations": [
+        {
+          "line": 84,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 128,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 244,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 260,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 264,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 271,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 278,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 288,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 408,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 409,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 420,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 421,
+          "markers": [
+            "terminate"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/providers/vastProvider.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 10,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 50,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 83,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 109,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 131,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 280,
+          "markers": [
+            "Provision",
+            "provision"
+          ]
+        },
+        {
+          "line": 281,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 296,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 297,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 396,
+          "markers": [
+            "TERMINATE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/auditIdempotencyKillSwitchRepo.ts",
+      "locations": [
+        {
+          "line": 250,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 258,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 322,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 323,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 324,
+          "markers": [
+            "PROVISION",
+            "provision"
+          ]
+        },
+        {
+          "line": 325,
+          "markers": [
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/demandQuotePaymentRepo.ts",
+      "locations": [
+        {
+          "line": 33,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 87,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 284,
+          "markers": [
+            "createPayment"
+          ]
+        },
+        {
+          "line": 315,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 346,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 350,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 356,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 381,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 382,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 424,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 503,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 508,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 513,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 575,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/index.ts",
+      "locations": [
+        {
+          "line": 6,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 15,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 17,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 35,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/operationJobSettlementOutboxRepo.ts",
+      "locations": [
+        {
+          "line": 9,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 23,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 24,
+          "markers": [
+            "SETTLE",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 25,
+          "markers": [
+            "SETTLE",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 26,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 27,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 36,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 37,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 187,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 250,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 259,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 313,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 314,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 315,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 324,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 327,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 328,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 329,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 330,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 331,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 335,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 337,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 338,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 339,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 340,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 341,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 342,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 343,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 344,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 345,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 351,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 353,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 357,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 358,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 365,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 366,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 369,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 381,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 400,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 401,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 403,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 404,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 405,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 406,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 408,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 444,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 451,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 454,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 460,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 467,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 473,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 481,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 484,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 490,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 497,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 503,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 516,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 519,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 524,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 533,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 543,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 545,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 549,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 579,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 600,
+          "markers": [
+            "worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/treasuryAndReservationRepo.ts",
+      "locations": [
+        {
+          "line": 138,
+          "markers": [
+            "PURCHASE",
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 149,
+          "markers": [
+            "PURCHASE",
+            "SETTLE"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/repositories/types.ts",
+      "locations": [
+        {
+          "line": 58,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 112,
+          "markers": [
+            "PURCHASE",
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 146,
+          "markers": [
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 147,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 148,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 182,
+          "markers": [
+            "PROVISION",
+            "TERMINATE"
+          ]
+        },
+        {
+          "line": 193,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 194,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 202,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 204,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 267,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/secureFeedFetch.ts",
+      "locations": [
+        {
+          "line": 108,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 110,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 111,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 158,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 159,
+          "markers": [
+            "settle"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/spaceStationOne.ts",
+      "locations": [
+        {
+          "line": 104,
+          "markers": [
+            "purchase"
+          ]
+        },
+        {
+          "line": 106,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 138,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 155,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 478,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 523,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 815,
+          "markers": [
+            "PURCHASE"
+          ]
+        },
+        {
+          "line": 831,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 835,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/supplierBalanceDiagnosticsRoute.ts",
+      "locations": [
+        {
+          "line": 5,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 6,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/supplierBalanceReadOnly.ts",
+      "locations": [
+        {
+          "line": 2,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/supplierConnectivity.ts",
+      "locations": [
+        {
+          "line": 41,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 174,
+          "markers": [
+            "provision"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/supplierReadOnlyDiagnostics.ts",
+      "locations": [
+        {
+          "line": 183,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 186,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 242,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 316,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 398,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        },
+        {
+          "line": 498,
+          "markers": [
+            "requireOwnerAuth"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/systemReadiness.ts",
+      "locations": [
+        {
+          "line": 7,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 9,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 111,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 186,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 208,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 212,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 217,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 222,
+          "markers": [
+            "Worker",
+            "worker"
+          ]
+        },
+        {
+          "line": 223,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 225,
+          "markers": [
+            "Worker"
+          ]
+        },
+        {
+          "line": 229,
+          "markers": [
+            "Worker",
+            "worker"
+          ]
+        },
+        {
+          "line": 230,
+          "markers": [
+            "worker"
+          ]
+        },
+        {
+          "line": 231,
+          "markers": [
+            "worker"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/treasuryEngine.ts",
+      "locations": [
+        {
+          "line": 32,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 81,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 82,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 91,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 127,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 162,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 184,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 813,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 929,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 932,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 961,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 966,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 995,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 1031,
+          "markers": [
+            "SETTLE",
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 1088,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1094,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1112,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1142,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1155,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1176,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1182,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 1184,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1203,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1213,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1259,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 1322,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 1450,
+          "markers": [
+            "withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/verifiedProfitWithdrawalService.ts",
+      "locations": [
+        {
+          "line": 17,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 22,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 23,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 24,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 29,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 30,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 39,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 40,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 47,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 52,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 53,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 71,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 72,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 73,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 76,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 78,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 91,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 131,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 135,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 136,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 139,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 150,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 152,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 155,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 158,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 174,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 179,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 184,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 197,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 212,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 223,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 227,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 229,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 230,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 234,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 235,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 237,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 247,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 248,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 255,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 259,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 262,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 272,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 278,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 279,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 301,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 306,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 308,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 311,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 320,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 322,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 329,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 351,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 357,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 359,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 362,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 371,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 373,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 377,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 381,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 385,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 390,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 395,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 396,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 397,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 402,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 403,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 431,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 440,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 443,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 447,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 460,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 468,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 480,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 495,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 503,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 542,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 569,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 584,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 586,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 589,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 590,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 592,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 602,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 608,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 613,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 619,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 629,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 630,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 638,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 639,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 655,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 668,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 673,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 678,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 681,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 686,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 687,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 690,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 707,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 716,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 725,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 729,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 730,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 732,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 744,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 745,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 750,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 754,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 759,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 767,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 771,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 772,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 777,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 780,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 784,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 785,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 788,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 794,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 800,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 801,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 809,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 816,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 817,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 818,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 830,
+          "markers": [
+            "WITHDRAW"
+          ]
+        },
+        {
+          "line": 831,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 841,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 842,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 846,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 851,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 852,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 855,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 860,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 861,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 865,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 868,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 874,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 876,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 883,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 884,
+          "markers": [
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 887,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 913,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 922,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 928,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 929,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 931,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 933,
+          "markers": [
+            "WITHDRAW",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 936,
+          "markers": [
+            "WITHDRAW",
+            "Withdraw",
+            "withdraw"
+          ]
+        },
+        {
+          "line": 940,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 942,
+          "markers": [
+            "withdraw"
+          ]
+        },
+        {
+          "line": 956,
+          "markers": [
+            "Withdraw"
+          ]
+        },
+        {
+          "line": 957,
+          "markers": [
+            "Withdraw"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/workload/workloadRunner.ts",
+      "locations": [
+        {
+          "line": 5,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 15,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 46,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 56,
+          "markers": [
+            "SETTLE"
+          ]
+        },
+        {
+          "line": 76,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 103,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 133,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 134,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 162,
+          "markers": [
+            "PROVISION",
+            "Provision"
+          ]
+        },
+        {
+          "line": 164,
+          "markers": [
+            "Provision"
+          ]
+        },
+        {
+          "line": 166,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 176,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 177,
+          "markers": [
+            "PROVISION",
+            "provision"
+          ]
+        },
+        {
+          "line": 180,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 181,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 201,
+          "markers": [
+            "PROVISION"
+          ]
+        },
+        {
+          "line": 237,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 266,
+          "markers": [
+            "Settle"
+          ]
+        },
+        {
+          "line": 267,
+          "markers": [
+            "SETTLE",
+            "settle"
+          ]
+        },
+        {
+          "line": 278,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 286,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 287,
+          "markers": [
+            "SETTLE",
+            "Settle"
+          ]
+        },
+        {
+          "line": 290,
+          "markers": [
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 291,
+          "markers": [
+            "settle"
+          ]
+        },
+        {
+          "line": 292,
+          "markers": [
+            "SETTLE",
+            "Settle",
+            "settle"
+          ]
+        },
+        {
+          "line": 296,
+          "markers": [
+            "Terminate"
+          ]
+        },
+        {
+          "line": 297,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 308,
+          "markers": [
+            "terminate"
+          ]
+        },
+        {
+          "line": 311,
+          "markers": [
+            "terminate"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "server/zeroFundedBootstrapService.ts",
+      "locations": [
+        {
+          "line": 199,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 537,
+          "markers": [
+            "provision"
+          ]
+        },
+        {
+          "line": 556,
+          "markers": [
+            "PROVISION"
+          ]
+        }
+      ]
+    }
+  ]
+}

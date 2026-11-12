@@ -98,7 +98,7 @@ export class PostgresSimulationGateway {
     try {const r=await this.pool.query<GatewayRecord>('SELECT * FROM phase20_simulation_requests WHERE idempotency_key=$1',[key]);return gatewayResult(r.rows[0]?'FOUND':'NOT_FOUND',r.rows[0]);}
     catch {return gatewayResult('SIMULATION_STORE_UNAVAILABLE');}
   }
-  async transition(key: string, eventKey: string, version: number, target: GatewayState, observation?: ResourceObservation): Promise<GatewayResult> {
+  async transition(key: string, eventKey: string, version: number, target: GatewayState, observation?: ResourceObservation, lease?: {worker:string;fence:string}): Promise<GatewayResult> {
     if (!reference(key) || !reference(eventKey) || !integer(version) || version<1 || !Object.hasOwn(transitions,target)) return gatewayResult('INVALID_TRANSITION');
     let digest: string;
     try { digest=sha256(canonicalFacts({key,eventKey,version,target,observationDigest:observation ? sha256(canonicalFacts({...observation})) : ''})); }
@@ -106,6 +106,11 @@ export class PostgresSimulationGateway {
     return this.transaction(async client=>{
       const r=await client.query<GatewayRecord>('SELECT * FROM phase20_simulation_requests WHERE idempotency_key=$1 FOR UPDATE',[key]);
       const row=r.rows[0]; if (!row) return gatewayResult('NOT_FOUND');
+      if(lease) {
+        if(!reference(lease.worker)||!(/^[1-9][0-9]{0,18}$/).test(lease.fence))return gatewayResult('STALE_WORKER_FENCE');
+        const held=await client.query(`SELECT request_id FROM phase21_simulation_leases WHERE request_id=$1 AND worker=$2 AND fence=$3::bigint AND expires_at>clock_timestamp() FOR UPDATE`,[row.id,lease.worker,lease.fence]);
+        if(!held.rows.length)return gatewayResult('STALE_WORKER_FENCE',row);
+      }
       const duplicate=await client.query('SELECT payload_digest FROM phase20_simulation_events WHERE request_id=$1 AND event_key=$2',[row.id,eventKey]);
       if (duplicate.rows[0]) return gatewayResult(duplicate.rows[0].payload_digest===digest?'REPLAY':'IDEMPOTENCY_CONFLICT',row);
       if (target==='SIMULATION_RUNNING' && Number(row.deadline_ms)<=Date.now()) return gatewayResult('SIMULATION_DEADLINE_EXPIRED',row);
