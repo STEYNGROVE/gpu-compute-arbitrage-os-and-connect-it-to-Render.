@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
-import {readSupplierOperation,collectSupplierSnapshot} from '../server/phase21/supplierReadOnly.js';
+import {readSupplierOperation,collectSupplierSnapshot,providerUsdCents} from '../server/phase21/supplierReadOnly.js';
 process.env.NODE_ENV='test';process.env.DISABLE_JSON_PERSISTENCE='true';delete process.env.DATABASE_URL;
 function transport(data:unknown,status=200) {
   const captured:any={requests:0,resolutions:0};
@@ -33,4 +33,9 @@ test('account mismatch blocks inventory queries and no-auto-charge is never infe
 
 test('secret-store exceptions are sanitized before transport',async()=>{
   await assert.rejects(readSupplierOperation('VAST_ACCOUNT',()=>{throw Error('PRIVATE_SECRET_STORE_DETAIL');},transport({})),error=>{assert.equal((error as Error).message,'SUPPLIER_CREDENTIAL_UNAVAILABLE');return true;});
+});
+
+test('provider decimal quotes use exact integer parsing and conservative explicit rounding',()=>{
+  assert.equal(providerUsdCents(0.07,true),7);assert.equal(providerUsdCents(0.3456,true),35);assert.equal(providerUsdCents(2.001),null);
+  assert.equal(providerUsdCents(2.01),201);assert.equal(providerUsdCents(-1),null);assert.equal(providerUsdCents(Infinity),null);assert.equal(providerUsdCents(1e-7),null);
 });

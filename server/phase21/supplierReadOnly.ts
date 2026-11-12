@@ -51,9 +51,15 @@ export async function readSupplierOperation(operation:ReadOnlyOperation,readSecr
   } catch {complete(false);throw Error('READ_ONLY_SUPPLIER_VERIFICATION_FAILED');}
   finally {clearTimeout(timer);controller.abort();}
 }
-const dollarsToCents=(value:unknown):number|null=>{
-  if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>1000000)return null;
-  const cents=Math.round(value*100);return Number.isSafeInteger(cents)&&Math.abs(value*100-cents)<0.000001?cents:null;
+/** Parse the provider's decimal representation with integer arithmetic; never multiply binary floats. */
+export const providerUsdCents=(value:unknown,roundUp=false):number|null=>{
+  if(typeof value!=='number'||!Number.isFinite(value))return null;
+  const match=/^(0|[1-9][0-9]{0,6})(?:\.([0-9]{1,16}))?$/.exec(String(value));
+  if(!match)return null;
+  const fraction=match[2]??'',tail=fraction.slice(2),hasRemainder=/[1-9]/.test(tail);
+  if(hasRemainder&&!roundUp)return null;
+  const cents=BigInt(match[1])*100n+BigInt((fraction+'00').slice(0,2))+(hasRemainder&&roundUp?1n:0n);
+  return cents<=100000000n?Number(cents):null;
 };
 const identity=(value:unknown)=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(value)?value:typeof value==='number'&&Number.isSafeInteger(value)&&value>0?String(value):null;
 /** Two independently requested API responses, expected-account binding, no capacity reservation or signing. */
@@ -64,7 +70,7 @@ export async function collectSupplierSnapshot(provider:'vast_ai'|'runpod',expect
   if(account?.errors!=null && (!Array.isArray(account.errors)||account.errors.length))throw Error('SUPPLIER_ACCOUNT_UNVERIFIED');
   const user=provider==='vast_ai'?account:account?.data?.myself;
   if(identity(user?.id)!==expectedAccountId)throw Error('SUPPLIER_ACCOUNT_MISMATCH');
-  const balanceCents=dollarsToCents(provider==='vast_ai'?user.credit:user.clientBalance);
+  const balanceCents=providerUsdCents(provider==='vast_ai'?user.credit:user.clientBalance);
   const catalog:any=await read(provider==='vast_ai'?'VAST_OFFERS':'RUNPOD_CATALOG');
   if(catalog?.errors!=null && (!Array.isArray(catalog.errors)||catalog.errors.length))throw Error('SUPPLIER_CATALOG_UNVERIFIED');
   const raw=provider==='vast_ai'?catalog?.offers:catalog?.data?.gpuTypes;
@@ -73,7 +79,7 @@ export async function collectSupplierSnapshot(provider:'vast_ai'|'runpod',expect
     const rawId=typeof row?.id==='number'?String(row.id):row?.id;
     const id=typeof rawId==='string'&&/^[A-Za-z0-9][A-Za-z0-9 _.-]{0,127}$/.test(rawId)?rawId:null,model=provider==='vast_ai'?row?.gpu_name:row?.displayName;
     const rawPrice=provider==='vast_ai'?row?.dph_total:row?.lowestPrice?.uninterruptablePrice;
-    const price=typeof rawPrice==='number'&&Number.isFinite(rawPrice)&&rawPrice>0&&rawPrice<=1000000?Math.ceil(rawPrice*100):null;
+    const price=providerUsdCents(rawPrice,true);
     if(!id || typeof model!=='string'||!model.trim()||model.length>80||price===null||price<=0)return [];
     const count=provider==='vast_ai'?row.num_gpus:1;
     if(!Number.isSafeInteger(count)||count<1||count>128)return [];
