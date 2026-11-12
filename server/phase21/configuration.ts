@@ -39,7 +39,25 @@ export function secureDatabaseOptions(raw:string,env:Record<string,string|undefi
   const mode=url.searchParams.get('sslmode');
   if(production && (env.DATABASE_SSL_REJECT_UNAUTHORIZED==='false' || ['disable','allow','prefer','no-verify'].includes(mode || '') ||
     ['sslkey','sslcert','uselibpqcompat'].some(k=>url.searchParams.has(k)))) throw Error('DATABASE_TLS_REQUIRED');
-  const tls=production || env.DATABASE_SSL==='true' || Boolean(env.DATABASE_SSL_CA) || Boolean(mode) || /\.(supabase\.co|supabase\.com|neon\.tech)$/.test(url.hostname);
+  // Render private-network PostgreSQL endpoints use internal DNS.
+  // Only allow plaintext on an explicitly recognized internal endpoint.
+  const renderInternal =
+    production &&
+    Boolean(env.RENDER_SERVICE_ID) &&
+    /^dpg-[a-z0-9-]+-a$/.test(url.hostname) &&
+    env.RENDER_INTERNAL_DB_HOST === url.hostname &&
+    !url.hostname.includes('.') &&
+    !mode &&
+    env.DATABASE_SSL !== 'true' &&
+    !env.DATABASE_SSL_CA;
+
+  const tls = !renderInternal && (
+    production ||
+    env.DATABASE_SSL === 'true' ||
+    Boolean(env.DATABASE_SSL_CA) ||
+    Boolean(mode) ||
+    /\.(supabase\.co|supabase\.com|neon\.tech)$/.test(url.hostname)
+  );
   for(const key of ['sslmode','sslcert','sslkey','sslrootcert','uselibpqcompat','ssl'])url.searchParams.delete(key);
   return {connectionString:url.href,ssl:tls?{rejectUnauthorized:true,...(env.DATABASE_SSL_CA?{ca:readCa(env.DATABASE_SSL_CA)}:{})}:undefined,
     connectionTimeoutMillis:5000,query_timeout:5000,statement_timeout:5000};
