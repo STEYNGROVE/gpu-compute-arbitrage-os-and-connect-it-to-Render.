@@ -1,5 +1,27 @@
 import type { JobPlan, Offer, QualificationPolicy } from "./model.js";
 import { validatePlan, defaultPolicy } from "./model.js";
+/** Stable selection is shared by matching and the dashboard catalog window. */
+export function selectRecentOffers(
+  offers: readonly Offer[],
+  now = Date.now(),
+): Offer[] {
+  return offers
+    .map((offer, index) => {
+      const observed = Date.parse(offer.retrievedAt);
+      return {
+        offer,
+        index,
+        time:
+          Number.isFinite(observed) && observed <= now ? observed : -Infinity,
+      };
+    })
+    .sort((a, b) =>
+      a.time === b.time ? a.index - b.index : a.time > b.time ? -1 : 1,
+    )
+    .slice(0, 500)
+    .map(({ offer }) => offer);
+}
+
 /** Indicative screening only: catalog prices do not establish duration, reservation, all-in costs or eligibility.
  * Costs are in the plan currency's minor units. Catalog USD cannot be mixed with another currency without FX evidence.
  */
@@ -21,21 +43,8 @@ export function compareWholesale(
     plan.transferMinor +
     plan.contingencyMinor +
     plan.taxMinor;
-  return offers
-    .map((offer, index) => {
-      const observed = Date.parse(offer.retrievedAt);
-      return {
-        offer,
-        index,
-        time:
-          Number.isFinite(observed) && observed <= now ? observed : -Infinity,
-      };
-    })
-    .sort((a, b) =>
-      a.time === b.time ? a.index - b.index : a.time > b.time ? -1 : 1,
-    )
-    .slice(0, 500)
-    .map(({ offer }) => {
+  return selectRecentOffers(offers, now)
+    .map((offer) => {
       const reasons: string[] = [];
       const observed = Date.parse(offer.retrievedAt),
         expires = Date.parse(offer.expiresAt);

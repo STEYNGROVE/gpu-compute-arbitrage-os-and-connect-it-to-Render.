@@ -1,4 +1,4 @@
-import { compareWholesale } from "./matching.js";
+import { compareWholesale, selectRecentOffers } from "./matching.js";
 import {
   EvidenceAuthority,
   canonicalFacts,
@@ -319,12 +319,13 @@ export class PrefundedHunter {
             now,
           ).slice(0, 10),
         ),
-        wholesaleMatches: latest(batches.flatMap((b) => b.offers))
-          .slice(-500)
-          .map((o) => ({
-            ...o,
-            stale: Date.parse(o.expiresAt) <= now,
-          })),
+        wholesaleMatches: selectRecentOffers(
+          latest(batches.flatMap((b) => b.offers)),
+          now,
+        ).map((o) => ({
+          ...o,
+          stale: Date.parse(o.expiresAt) <= now,
+        })),
         realizedRevenue: { status: "NOT_CONNECTED", amountMinor: null },
         projectedRevenue: "PER_QUALIFIED_PLAN_ONLY",
         restrictedNetworks,

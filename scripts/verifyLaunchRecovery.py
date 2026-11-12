@@ -13,6 +13,6 @@ for name,command in commands:
   with log.open('w') as stream:result=subprocess.run(command,env=env,stdout=stream,stderr=subprocess.STDOUT,timeout=900)
   code=result.returncode
  except subprocess.TimeoutExpired:code=124
- content=log.read_bytes();row={'testName':name,'command':command,'commitSha':commit,'environment':'ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS','result':'PASS' if code==0 else 'FAIL','exitCode':code,'seconds':round(time.monotonic()-started,3),'evidence':{'logFile':str(log),'sha256':hashlib.sha256(content).hexdigest(),'bytes':len(content)},'note':'Execution audit exit 0 does not certify its reported commercial blockers.' if name=='execution-audit' else ''}
+ content=log.read_bytes();row={'testName':name,'command':command,'commitSha':commit,'environment':'ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS','result':'PASS' if code==0 else 'FAIL','exitCode':code,'seconds':round(time.monotonic()-started,3),'evidence':{'logFile':str(log),'sha256':hashlib.sha256(content).hexdigest(),'bytes':len(content)},'note':'Strict financial audit failure is retained; it is not waived by passing public-mode checks.' if name=='execution-audit' else ''}
  rows.append(row);(ROOT/'tests.json').write_text(json.dumps({'recordedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'tests':rows,'complete':len(rows)==len(commands)},indent=2)+'\n');print(json.dumps({k:row[k] for k in ['testName','result','exitCode','seconds']}),flush=True)
 raise SystemExit(1 if any(r['exitCode']!=0 for r in rows) else 0)

@@ -416,3 +416,27 @@ test("enterprise lead context preserves published organization and deadline whil
   assert.equal(context.contactRoute, b.candidates[0].sourceUrl);
   assert.equal(b.candidates[0].funding, "UNVERIFIED");
 });
+
+test("catalog window also includes a freshly reobserved historical offer ID ahead of 500 older records", async () => {
+  const { selectRecentOffers } =
+    await import("../server/prefunded/matching.js");
+  const old = Array.from({ length: 600 }, (_, i) =>
+    offer("vast:history-" + i, now - 120000),
+  );
+  const map = new Map(old.map((item) => [item.id, item]));
+  const refreshed = {
+    ...old[0],
+    retrievedAt: new Date(now).toISOString(),
+    expiresAt: new Date(now + 60000).toISOString(),
+  };
+  map.set(refreshed.id, refreshed);
+  const values = [...map.values()];
+  const selected = selectRecentOffers(values, now);
+  assert.equal(selected.length, 500);
+  assert.equal(selected[0], refreshed);
+  assert.equal(values[1], old[1]);
+  assert.equal(
+    compareWholesale(plan, values, undefined, now)[0].offerId,
+    refreshed.id,
+  );
+});
