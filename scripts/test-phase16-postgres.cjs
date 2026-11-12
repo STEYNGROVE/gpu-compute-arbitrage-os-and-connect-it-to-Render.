@@ -43,6 +43,7 @@ async function main() {
       } finally {await client.end();}})().catch(e=>{console.error(e.message);process.exitCode=1;});
     `], env);
     run(process.execPath, ['--import', 'tsx', 'test/prepaidPostgresIntegrationSuite.ts'], env);
+    run(process.execPath, ['--import', 'tsx', 'test/postgresTimeoutIntegration.ts'], env);
     console.log('PASS: disposable local reservation certification; broader financial-system certification remains blocked');
   } catch (error) {
     failed = true;

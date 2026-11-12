@@ -1,0 +1,90 @@
+[
+  {
+    "command": "npm run typecheck",
+    "exit_code": 0,
+    "log": "final-typecheck.log",
+    "reported_count": null
+  },
+  {
+    "command": "npm run lint",
+    "exit_code": 0,
+    "log": "final-lint.log",
+    "reported_count": null
+  },
+  {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "log": "final-security.log",
+    "reported_count": null
+  },
+  {
+    "command": "npm run test:postgres-tls",
+    "exit_code": 0,
+    "log": "final-postgres.log",
+    "reported_count": 36
+  },
+  {
+    "command": "npm run test:phase21",
+    "exit_code": 0,
+    "log": "final-phase21.log",
+    "reported_count": 65
+  },
+  {
+    "command": "npm run test:phase21-postgres",
+    "exit_code": 0,
+    "log": "final-integration.log",
+    "reported_count": {
+      "phase20": 14,
+      "phase21_archive": 9,
+      "phase21_controls": 7,
+      "additional_checks": "reservation/exposure/migration/password/actual-query-timeout"
+    }
+  },
+  {
+    "command": "npm run build",
+    "exit_code": 0,
+    "log": "final-build.log",
+    "reported_count": null
+  },
+  {
+    "command": "npm audit --json",
+    "exit_code": 0,
+    "log": "dependency-audit.json",
+    "reported_count": {
+      "known_vulnerabilities": 0
+    }
+  },
+  {
+    "command": "bash scripts/generate-test-tls.sh",
+    "exit_code": 0,
+    "log": "generate-tls.log",
+    "reported_count": null
+  },
+  {
+    "command": "NODE_ENV=production STRICT_AUTH_ENFORCEMENT=true DISABLE_JSON_PERSISTENCE=true node --import tsx --test server/gpuOfferEvidence.test.ts server/gpuEvidenceIntegration.test.ts server/gpuEvidenceHttp.test.ts server/gpuAuthIsolation.test.ts server/gpuOwnerAuthHttp.test.ts",
+    "exit_code": 0,
+    "log": "production-auth-evidence.log",
+    "reported_count": 18
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true npm test",
+    "exit_code": 0,
+    "log": "final-full-test.log",
+    "reported_count": {
+      "postgres": 36,
+      "phase20": 57,
+      "phase21": 65,
+      "legacy": "heterogeneous suite counts retained in log"
+    }
+  },
+  {
+    "command": "git diff --check",
+    "exit_code": 0,
+    "log": null
+  },
+  {
+    "command": "git diff --cached --check (before log whitespace normalization)",
+    "exit_code": 2,
+    "reason": "test banner trailing whitespace in retained logs"
+  }
+]

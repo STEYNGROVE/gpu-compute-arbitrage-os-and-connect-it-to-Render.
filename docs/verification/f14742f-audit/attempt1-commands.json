@@ -1,0 +1,74 @@
+[
+  {
+    "command": "npm run typecheck",
+    "exit_code": 127,
+    "seconds": 0.86,
+    "log": "verify-00.log"
+  },
+  {
+    "command": "npm run lint",
+    "exit_code": 127,
+    "seconds": 0.76,
+    "log": "verify-01.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "seconds": 1.25,
+    "log": "verify-02.log"
+  },
+  {
+    "command": "npm run test:postgres-tls",
+    "exit_code": 127,
+    "seconds": 0.73,
+    "log": "verify-03.log"
+  },
+  {
+    "command": "npm run test:phase20",
+    "exit_code": 127,
+    "seconds": 0.72,
+    "log": "verify-04.log"
+  },
+  {
+    "command": "npm run test:phase21",
+    "exit_code": 127,
+    "seconds": 0.71,
+    "log": "verify-05.log"
+  },
+  {
+    "command": "npm test",
+    "exit_code": 127,
+    "seconds": 0.66,
+    "log": "verify-06.log"
+  },
+  {
+    "command": "npm run test:phase21-postgres",
+    "exit_code": 0,
+    "seconds": 11.15,
+    "log": "verify-07.log"
+  },
+  {
+    "command": "npm run test:purchase-boundary",
+    "exit_code": 0,
+    "seconds": 0.97,
+    "log": "verify-08.log"
+  },
+  {
+    "command": "npm run audit:gpu-execution",
+    "exit_code": 1,
+    "seconds": 0.96,
+    "log": "verify-09.log"
+  },
+  {
+    "command": "npm run build",
+    "exit_code": 127,
+    "seconds": 0.67,
+    "log": "verify-10.log"
+  },
+  {
+    "command": "git diff --check",
+    "exit_code": 0,
+    "seconds": 0.05,
+    "log": "verify-11.log"
+  }
+]

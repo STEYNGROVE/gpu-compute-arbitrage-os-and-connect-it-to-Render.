@@ -1,0 +1,22 @@
+[
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedTlsSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedTlsSuite-recheck.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedSocketSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedSocketSuite-recheck.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedFinalNetworkSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedFinalNetworkSuite-recheck.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedNode24LookupSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedNode24LookupSuite-recheck.log"
+  }
+]

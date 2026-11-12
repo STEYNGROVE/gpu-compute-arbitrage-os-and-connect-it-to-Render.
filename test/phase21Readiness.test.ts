@@ -22,7 +22,7 @@ test('secret checks detect placeholders, reuse and frontend variables without di
 });
 test('database URL TLS options cannot disable certificate verification',()=>{
   const raw=databaseUrl()+'?sslmode=require';const result=secureDatabaseOptions(raw,{NODE_ENV:'production'},()=>{throw Error('NO_CA');});
-  assert.equal(result.ssl!.rejectUnauthorized,true);assert(!result.connectionString.includes('sslmode'));
+  assert.deepEqual(result.ssl,{rejectUnauthorized:true});assert(!result.connectionString.includes('sslmode'));
   for(const query of ['sslmode=disable','uselibpqcompat=true','sslcert=private-path'])assert.throws(()=>secureDatabaseOptions(databaseUrl()+'?'+query,{NODE_ENV:'production'},()=>''));
   assert.throws(()=>secureDatabaseOptions(raw,{NODE_ENV:'production',DATABASE_SSL_REJECT_UNAUTHORIZED:'false'},()=>''));
 });

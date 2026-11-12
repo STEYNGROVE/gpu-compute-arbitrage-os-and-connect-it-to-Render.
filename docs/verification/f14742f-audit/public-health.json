@@ -1,0 +1,15 @@
+[
+  {
+    "path": "/api/health",
+    "error": "TimeoutError"
+  },
+  {
+    "path": "/api/ready",
+    "http": 200,
+    "body": {
+      "status": "ready",
+      "database": "connected",
+      "revision": "2482877c3a2221a7eabc5c8da42db67c440268ca"
+    }
+  }
+]

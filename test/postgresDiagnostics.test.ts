@@ -41,3 +41,8 @@ test('handles null and malformed errors safely', () => {
   assert.equal(classifyPostgresError('secret'), 'UNCLASSIFIED');
   assert.equal(classifyPostgresError({ code: 123 }), 'UNCLASSIFIED');
 });
+
+
+test('prototype property names are unsupported diagnostic codes',()=>{
+  for(const code of ['toString','__proto__','constructor','hasOwnProperty'])assert.equal(classifyPostgresError({code}),'UNCLASSIFIED');
+});

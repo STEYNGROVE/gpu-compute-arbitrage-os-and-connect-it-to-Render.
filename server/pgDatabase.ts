@@ -27,11 +27,12 @@ export interface PgDatabaseConfig {
  */
 export class PostgresDatabaseService {
   private pool: pg.Pool | null = null;
+  private poolGeneration = 0;
   private isConnected: boolean = false;
   private connectionError: string | null = null;
   private isInitialized: boolean = false;
 
-  constructor() {
+  constructor(private readonly createPool:(config:pg.PoolConfig)=>pg.Pool = config=>new Pool(config)) {
     this.configurePool();
   }
 
@@ -47,13 +48,16 @@ export class PostgresDatabaseService {
 
     if (rawConnStr && (rawConnStr.startsWith('postgres://') || rawConnStr.startsWith('postgresql://'))) {
       try {
-        this.pool = new Pool({
+        const pool = this.createPool({
           ...secureDatabaseOptions(rawConnStr,process.env,p=>fs.readFileSync(p,'utf8')),
           max:15,idleTimeoutMillis:30000
         });
 
-        this.pool.on('error', (err) => {
-          console.error('[POSTGRES POOL ERROR]', {code:(err as {code?:string}).code || 'UNKNOWN'});
+        this.pool = pool;
+        this.poolGeneration++;
+        pool.on('error', (err) => {
+          if(this.pool!==pool)return;
+          console.error('[POSTGRES POOL ERROR]', {category:classifyPostgresError(err)});
           this.isConnected = false;
           this.connectionError = 'POSTGRES_UNAVAILABLE';
         });
@@ -66,6 +70,7 @@ export class PostgresDatabaseService {
 
   public async close(): Promise<void> {
     const pool = this.pool;
+    this.poolGeneration++;
     this.pool = null;
     this.isConnected = false;
     this.isInitialized = false;
@@ -77,12 +82,14 @@ export class PostgresDatabaseService {
 
   /** Read-only reconnect probe. No schema initialization, directory seeding or financial workers. */
   public async probeReadiness():Promise<boolean> {
-    if(!this.pool)return false;
+    const pool=this.pool;
+    if(!pool)return false;
     let client:pg.PoolClient|undefined;
     try {
-      client=await this.pool.connect();await client.query('SELECT 1');await this.verifySchemaReadiness(client);
+      client=await pool.connect();await client.query('SELECT 1');await this.verifySchemaReadiness(client);
+      if(this.pool!==pool)return false;
       this.isConnected=true;this.connectionError=null;return true;
-    } catch {this.isConnected=false;this.connectionError='POSTGRES_UNAVAILABLE';return false;}
+    } catch {if(this.pool===pool){this.isConnected=false;this.connectionError='POSTGRES_UNAVAILABLE';}return false;}
     finally{client?.release();}
   }
 
@@ -91,39 +98,47 @@ export class PostgresDatabaseService {
       this.configurePool();
     }
     if (this.pool) {
+      const pool=this.pool;
       try {
-        const client = await this.pool.connect();
+        const client = await pool.connect();
         try {
           await client.query('SELECT 1 as health');
-          this.isConnected = true;
-          this.connectionError = null;
-
           // Read-only schema readiness verification (zero runtime DDL mutation)
-          if (!options?.skipSchemaCheck) {
+          if (process.env.NODE_ENV==='production' || !options?.skipSchemaCheck) {
             await this.verifySchemaReadiness(client);
           }
+          if(this.pool!==pool)throw Error('DATABASE_POOL_REPLACED');
+          this.isConnected = true;
+          this.connectionError = null;
           this.isInitialized = true;
           return { success: true, mode: 'REMOTE_POSTGRES' };
         } finally {
           client.release();
         }
       } catch (err: any) {
+        if(this.pool!==pool)return {success:false,mode:'POSTGRES_DISCONNECTED',error:'POSTGRES_UNAVAILABLE'};
         console.warn('[POSTGRES CONNECTION FAILED]', classifyPostgresError(err));
+        this.isConnected = false;
         // Attempt failover to DIRECT_URL if distinct from DATABASE_URL
         const directUrl = process.env.DIRECT_URL?.trim();
         const primaryUrl = process.env.DATABASE_URL?.trim();
         if (directUrl && directUrl !== primaryUrl && (directUrl.startsWith('postgres://') || directUrl.startsWith('postgresql://'))) {
           try {
+            const closingGeneration=this.poolGeneration+1;
+            await this.close();
+            if(this.poolGeneration!==closingGeneration)return {success:false,mode:'POSTGRES_DISCONNECTED',error:'POSTGRES_UNAVAILABLE'};
             this.configurePool(directUrl);
             if (this.pool) {
-              const fallbackClient = await this.pool.connect();
+              const fallbackPool=this.pool;
+              const fallbackClient = await fallbackPool.connect();
               try {
                 await fallbackClient.query('SELECT 1 as health');
-                this.isConnected = true;
-                this.connectionError = null;
-                if (!options?.skipSchemaCheck) {
+                if (process.env.NODE_ENV==='production' || !options?.skipSchemaCheck) {
                   await this.verifySchemaReadiness(fallbackClient);
                 }
+                if(this.pool!==fallbackPool)throw Error('DATABASE_POOL_REPLACED');
+                this.isConnected = true;
+                this.connectionError = null;
                 this.isInitialized = true;
                 return { success: true, mode: 'REMOTE_POSTGRES' };
               } finally {
@@ -272,7 +287,7 @@ export class PostgresDatabaseService {
       isConnected: this.isConnected,
       error: this.connectionError,
       mode: this.isConnected ? 'POSTGRESQL_LIVE' : 'POSTGRES_DISCONNECTED',
-      liveExecutionAllowed: this.isConnected
+      liveExecutionAllowed: this.assertLiveModeAllowed().allowed
     };
   }
 

@@ -1,0 +1,4 @@
+PASS: DNS pinning option verified
+PASS: Original TLS hostname preserved
+PASS: Wrong certificate rejected
+SOCKET SECURITY SUITE: ALL PASSED
