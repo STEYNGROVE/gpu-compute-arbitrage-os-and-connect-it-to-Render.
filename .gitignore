@@ -16,3 +16,6 @@ wallet.json
 secrets/
 server/data/wallet
 server/data/secret
+
+# Owner-only prefunded hunter evidence archive (runtime data, never source)
+data/prefunded-evidence/

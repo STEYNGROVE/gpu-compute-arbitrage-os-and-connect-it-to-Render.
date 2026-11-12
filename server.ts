@@ -1,4 +1,5 @@
 import {registerProductionStatic} from './server/phase21/staticAssets.js';
+import { registerPrefundedHunter } from './server/prefunded/routes.js';
 import {productionHeaders,runtimePort} from './server/phase21/httpSecurity.js';
 import { registerPhase21Readiness } from './server/phase21/routes.js';
 import { deploymentLifecycle, gracefulShutdown } from './server/phase21/lifecycle.js';
@@ -196,6 +197,7 @@ registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerPhase20Readiness(app, requireOwnerAuth);
 registerPhase21Readiness(app, requireOwnerAuth);
+registerPrefundedHunter(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
 registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
