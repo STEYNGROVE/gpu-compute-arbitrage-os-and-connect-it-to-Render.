@@ -22,6 +22,7 @@ test('production serves frontend assets and SPA routes but never backend artifac
     for(const target of ['/server.cjs','/server.cjs.map','/%73erver.cjs','/server%2Ecjs','/server.cjs?download=1','/assets/server.cjs','/assets/index.js.map','/assets/%2e%2e/server.cjs','/SERVER.CJS']){
       const response=await fetch(base+target);assert.equal(response.status,404,target);assert.ok(!(await response.text()).includes(privateMarker));
     }
+    assert.equal((await fetch(base+'/server.cjs',{headers:{Range:'bytes=0-4095'}})).status,404);
     const unknown=await fetch(base+'/other-backend.js');assert.ok(!(await unknown.text()).includes(privateMarker));
     for(const target of ['/','/index.html','/dashboard']){const response=await fetch(base+target);assert.equal(response.status,200);assert.match(await response.text(),/FRONTEND_FIXTURE/);}
     const asset=await fetch(base+'/assets/index.js');assert.equal(asset.status,200);assert.equal(await asset.text(),'FRONTEND_JS_FIXTURE');

@@ -555,3 +555,10 @@ test('HTML payment callback text cannot reflect markup or query-array objects, e
  assert.equal(safeHtmlText('<img src=x onerror="x">'),'&lt;img src=x onerror=&quot;x&quot;&gt;');assert.equal(safeHtmlText(['malformed']),'N/A');assert.equal(safeHtmlText('x'.repeat(257)),'N/A');assert.equal(safeHtmlText('valid-reference_1'),'valid-reference_1');
  const source=await readFile('server.ts','utf8');assert.equal((source.match(/const intentId = safeHtmlText\(req.query.intent_id\)/g)||[]).length,2);
 });
+
+
+test('payment return URLs cannot claim funding, ledger credit or absence of a charge without independent verification',async()=>{
+ const {readFile}=await import('node:fs/promises');const source=await readFile('server.ts','utf8');
+ const handlers=source.slice(source.indexOf('// Payment Customer Return Handlers'),source.indexOf('// --- 8. Production Static'));
+ assert(handlers.includes('Payment status is awaiting verification.'));assert(!handlers.includes('has been confirmed and credited'));assert(!handlers.includes('No funds were charged.'));
+});
