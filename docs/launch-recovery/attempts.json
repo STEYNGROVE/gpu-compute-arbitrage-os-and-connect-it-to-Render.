@@ -26,6 +26,6 @@
       "evidence": "tests-d621b9c.json and combined-suite log digest"
     }
   ],
-  "publicRuntimeChecks": "All six GET attempts timed out; no HTTP behavior claimed verified.",
+  "publicRuntimeChecks": "Initial six GET attempts timed out. Later IPv4-first bounded requests returned readiness200, anonymous owner403 and backend/source-map206. See both public-runtime manifests.",
   "hostedStagingSmoke": "Not triggered; existing workflow is manual-only and deployment is unauthorized."
 }
