@@ -323,6 +323,45 @@ async function runPhase23Suite() {
     });
     assert.strictEqual(patchQualifiedRes.status, 200, 'Owner PATCH status to QUALIFIED returns 200');
 
+
+    // Phase 19: manual qualification never proves a customer.
+    const evidenceRes = await fetch(
+      `${baseUrl}/api/acquisition/leads`,
+      { headers: { Authorization: `Bearer ${ownerSecret}` } }
+    );
+    assert.strictEqual(evidenceRes.status, 200);
+
+    const evidenceData = (await evidenceRes.json()) as any;
+    const qualifiedLead = evidenceData.leads.find(
+      (l: any) => l.id === sampleLeadId
+    );
+
+    assert(qualifiedLead, 'Qualified lead remains accessible');
+    assert.strictEqual(qualifiedLead.status, 'QUALIFIED');
+    assert(qualifiedLead.evidenceAssessment);
+    assert.strictEqual(
+      qualifiedLead.evidenceAssessment.verifiedCustomer,
+      false
+    );
+    assert.strictEqual(
+      qualifiedLead.evidenceAssessment.paymentVerified,
+      false
+    );
+    assert.strictEqual(
+      qualifiedLead.evidenceAssessment.realizedRevenueUsd,
+      0
+    );
+    assert.strictEqual(
+      qualifiedLead.evidenceAssessment.status,
+      'CANDIDATE'
+    );
+    assert.strictEqual(evidenceData.verifiedCustomers, 0);
+    assert.strictEqual(evidenceData.realizedRevenueUsd, 0);
+
+    console.log(
+      '  PASS: Manual QUALIFIED status cannot verify a customer'
+    );
+
     // Invalid status rejected
     const patchInvalidRes = await fetch(`${baseUrl}/api/acquisition/leads/${sampleLeadId}`, {
       method: 'PATCH',

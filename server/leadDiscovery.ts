@@ -1,3 +1,5 @@
+import { assessFeedPublication } from './feedPublicationEvidence.js';
+import { assessCustomerLeadEvidence } from './customerLeadEvidence.js';
 import { isCommercialComputeLead } from './commercialLeadFilter.js';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { Pool } from 'pg';
@@ -118,7 +120,9 @@ async function ready() {
   throw Error('DATABASE_URL_NOT_CONFIGURED');
 }
 
-async function scan() {
+async function scan(
+  fetchFeed: (url: string) => Promise<string> = secureFeedFetch
+) {
   await ready();
   const results = [] as Array<{ feed: string; inserted: number; error?: string }>;
   const feedList = feeds();
@@ -140,10 +144,18 @@ async function scan() {
     }
     let inserted = 0;
     try {
-      const xml = await secureFeedFetch(feed);
+      const xml = await fetchFeed(feed);
       const entries = Array.from(xml.matchAll(/<(item|entry)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)).slice(0, MAX_ENTRIES);
       for (const m of entries) {
         const entry = m[2];
+
+        // Phase 19: ingestion time is not publication evidence.
+        // Only recently published entries enter candidate discovery.
+        const publication = assessFeedPublication(entry);
+
+        if (!publication.eligibleForFreshReview) {
+          continue;
+        }
         const title = xmlDecode(field(entry, 'title'))
           .replace(/<[^>]+>/g, '')
           .slice(0, 240);
@@ -194,10 +206,34 @@ async function scan() {
   return { mode: 'DISCOVERY_ONLY', outreachEnabled: false, purchasingEnabled: false, results };
 }
 
-export function registerLeadDiscovery(app: Express, owner: (req: Request, res: Response, next: NextFunction) => void) {
+function withEvidenceAssessment(
+  leads: AcquisitionLeadRecord[]
+) {
+  return leads.map(lead => ({
+    ...lead,
+    evidenceAssessment: assessCustomerLeadEvidence({
+      title: lead.title,
+      description: ('description' in lead &&
+        typeof lead.description === 'string')
+        ? lead.description
+        : '',
+      sourceUrl: lead.source_url,
+      publishedAt: null,
+      buyerIdentity: null,
+      requirementDetails: null,
+      customerConfirmationReference: null
+    })
+  }));
+}
+
+export function registerLeadDiscovery(
+  app: Express,
+  owner: (req: Request, res: Response, next: NextFunction) => void,
+  fetchFeed: (url: string) => Promise<string> = secureFeedFetch
+) {
   app.post('/api/acquisition/discover', owner, async (_req, res) => {
     try {
-      res.json(await scan());
+      res.json(await scan(fetchFeed));
     } catch (e: any) {
       res.status(503).json({ error: String(e.message || e) });
     }
@@ -208,7 +244,7 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
       if (process.env.NODE_ENV === 'test' &&
           process.env.LEAD_TEST_IN_MEMORY === 'true') {
         return res.json({
-          leads: inMemoryLeadsStore,
+          leads: withEvidenceAssessment(inMemoryLeadsStore),
           verifiedCustomers: 0,
           realizedRevenueUsd: 0
         });
@@ -218,9 +254,9 @@ export function registerLeadDiscovery(app: Express, owner: (req: Request, res: R
         const r = await db.query(
           'SELECT id,title,source_url,source_feed,description,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
         );
-        return res.json({ leads: r.rows, verifiedCustomers: 0, realizedRevenueUsd: 0 });
+        return res.json({ leads: withEvidenceAssessment(r.rows), verifiedCustomers: 0, realizedRevenueUsd: 0 });
       }
-      return res.json({ leads: inMemoryLeadsStore, verifiedCustomers: 0, realizedRevenueUsd: 0 });
+      return res.json({ leads: withEvidenceAssessment(inMemoryLeadsStore), verifiedCustomers: 0, realizedRevenueUsd: 0 });
     } catch (e: any) {
       res.status(503).json({ error: String(e.message || e) });
     }
