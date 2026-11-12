@@ -2,15 +2,24 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { EventEmitter } from 'node:events';
 import pg from 'pg';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
 import { PostgresDatabaseService,pgDbService } from '../server/pgDatabase.js';
 import { startDiscoveryServices } from '../server/phase21/startup.js';
+
+const fixtureDatabaseUrl=()=>{
+  const url=new URL('postgresql://fixture@primary.example/db');
+  url.password='synthetic-password';
+  return url.href;
+};
 
 // No socket or provider is opened; preserve the caller's environment after each fixture.
 async function fixture(run:(s:PostgresDatabaseService,pools:FakePool[])=>Promise<void>,direct?:string) {
   const keys=['DATABASE_URL','DIRECT_URL','SUPABASE_DB_URL','POSTGRES_URL','NODE_ENV','DATABASE_SSL_CA','DATABASE_SSL_REJECT_UNAUTHORIZED','NODE_TLS_REJECT_UNAUTHORIZED'];
   const previous=Object.fromEntries(keys.map(k=>[k,process.env[k]]));
   keys.forEach(k=>delete process.env[k]);
-  process.env.NODE_ENV='production';process.env.DATABASE_URL='postgresql://fixture:fixture@primary.example/db';
+  process.env.NODE_ENV='production';process.env.DATABASE_URL=fixtureDatabaseUrl();
   if(direct)process.env.DIRECT_URL=direct;
   const pools:FakePool[]=[];
   const service=new PostgresDatabaseService(config=>{const pool=new FakePool(config);pools.push(pool);return pool as unknown as pg.Pool;});
@@ -92,3 +101,19 @@ test('shutdown during failover drain cannot reopen a pool',()=>fixture(async(s,p
   const init=s.initialize();await entered;await s.close();finish();
   assert.equal((await init).success,false);assert.equal(p.length,1);assert.equal(s.isLiveDatabaseConnected(),false);
 },'postgresql://fixture:fixture@fallback.example/db'));
+
+test('fallback cannot substitute the trusted URL authority with a driver host parameter',()=>fixture(async(s,p)=>{
+  p[0].fail=true;assert.equal((await s.initialize()).success,false);
+  assert.equal(p.length,1);assert.equal(p[0].ended,1);assert.equal(s.getStatus().liveExecutionAllowed,false);
+},'postgresql://fixture:fixture@fallback.example/db?host=other.example'));
+test('actual production schema verifier performs SELECTs only and verifies local checksums',()=>fixture(async(s)=>{
+  const sqls:string[]=[];
+  const client={query:async(sql:string,params?:string[][])=>{
+    sqls.push(sql);assert.match(sql,/^SELECT /);
+    if(sql.includes('information_schema.tables'))return {rows:params![0].map(table_name=>({table_name}))};
+    if(sql==='SELECT version, checksum FROM schema_migrations')return {rows:fs.readdirSync('supabase/migrations').filter(f=>f.endsWith('.sql')).map(file=>({version:file.slice(0,-4),checksum:createHash('sha256').update(fs.readFileSync(path.join('supabase/migrations',file),'utf8').trim()).digest('hex')}))};
+    return {rows:[]};
+  }} as unknown as pg.PoolClient;
+  await PostgresDatabaseService.prototype.verifySchemaReadiness.call(s,client);
+  assert.equal(sqls.length,3);assert.ok(sqls.some(sql=>sql.includes('schema_migrations')));assert.ok(sqls.some(sql=>sql.includes('acquisition_leads')));
+}));
