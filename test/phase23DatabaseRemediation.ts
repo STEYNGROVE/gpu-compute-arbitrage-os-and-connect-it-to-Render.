@@ -79,6 +79,13 @@ try {
     try{await blocker.query('BEGIN');await blocker.query('LOCK TABLE acquisition_leads IN ACCESS SHARE MODE');const r=runner();assert.equal(r.status,1);assert.match(r.stderr,/MIGRATION_LOCK_NOT_AVAILABLE/);assert.equal(await exists(),false);}
     finally{await blocker.query('ROLLBACK');await blocker.end();}
   });
+  await check('Phase24 transaction rollback leaves publication absent and legacy rows unchanged',async()=>{
+    const before=(await sourceClient!.query('SELECT * FROM public.acquisition_leads ORDER BY id')).rows;
+    await sourceClient!.query('BEGIN');
+    try{await sourceClient!.query(sql);assert.equal(await exists(),true);}finally{await sourceClient!.query('ROLLBACK');}
+    assert.equal(await exists(),false);
+    assert.deepEqual((await sourceClient!.query('SELECT * FROM public.acquisition_leads ORDER BY id')).rows,before);
+  });
   await check('authorized isolated CLI applies forward migration and records exact checksum once',async()=>{
     const r=runner({NODE_ENV:'production',DATABASE_SSL_CA:cert});assert.equal(r.status,0,'isolated migration runner failed: '+r.stderr);assert.equal(await exists(),true);
     assert.equal((await sourceClient!.query('SELECT checksum FROM schema_migrations WHERE version=$1',[version])).rows[0].checksum,sqlHash);
@@ -97,6 +104,35 @@ try {
     for(const drift of ["ALTER TABLE acquisition_leads ALTER COLUMN published_at SET DEFAULT now()","UPDATE acquisition_leads SET published_at=now() WHERE published_at IS NULL; ALTER TABLE acquisition_leads ALTER COLUMN published_at SET NOT NULL"]){
       await sourceClient!.query('BEGIN');try{await sourceClient!.query(drift);await assert.rejects(sourceClient!.query(sql),/PHASE23_COLUMN_POLICY_CONFLICT/);}finally{await sourceClient!.query('ROLLBACK');}
     }
+  });
+  await check('Phase24 deployed legacy read/write SQL remains compatible without inventing publication dates',async()=>{
+    // SQL shapes independently read from deployed commit 2482877 server/leadDiscovery.ts.
+    await sourceClient!.query('BEGIN');
+    try {
+      const indexes=(await sourceClient!.query("SELECT indexdef FROM pg_indexes WHERE schemaname='public' AND tablename='acquisition_leads' ORDER BY indexname")).rows;
+      const constraints=(await sourceClient!.query("SELECT conname,pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conrelid='public.acquisition_leads'::regclass ORDER BY conname")).rows;
+      const oldInsert=`INSERT INTO acquisition_leads (id,title,source_url,source_feed,description)
+        VALUES($1,$2,$3,$4,$5) ON CONFLICT(source_url) DO UPDATE SET description=EXCLUDED.description
+        WHERE acquisition_leads.description IS NULL OR acquisition_leads.description='' RETURNING (xmax = 0) AS newly_inserted`;
+      await sourceClient!.query(oldInsert,['old-writer','Legacy SQL','https://example.org/old-writer','https://example.org/feed','']);
+      await sourceClient!.query(oldInsert,['different-id','Legacy SQL','https://example.org/old-writer','https://example.org/feed','updated']);
+      assert.deepEqual((await sourceClient!.query("SELECT description,published_at FROM acquisition_leads WHERE id='old-writer'")).rows,[{description:'updated',published_at:null}]);
+      const oldRead='SELECT id,title,source_url,source_feed,description,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100';
+      assert.equal((await sourceClient!.query(oldRead)).rowCount,3);
+      await sourceClient!.query('UPDATE acquisition_leads SET status=$1 WHERE id=$2 RETURNING id,status',['REVIEWING','old-writer']);
+      await sourceClient!.query(sql);
+      assert.deepEqual((await sourceClient!.query("SELECT indexdef FROM pg_indexes WHERE schemaname='public' AND tablename='acquisition_leads' ORDER BY indexname")).rows,indexes);
+      assert.deepEqual((await sourceClient!.query("SELECT conname,pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conrelid='public.acquisition_leads'::regclass ORDER BY conname")).rows,constraints);
+    } finally {await sourceClient!.query('ROLLBACK');}
+  });
+  await check('Phase24 public-qualified migration does not mutate a shadow table on search_path',async()=>{
+    await sourceClient!.query('BEGIN');
+    try {
+      await sourceClient!.query('CREATE SCHEMA phase24_shadow; CREATE TABLE phase24_shadow.acquisition_leads(id text); SET LOCAL search_path=phase24_shadow,public');
+      await sourceClient!.query(sql);
+      assert.equal((await sourceClient!.query("SELECT count(*)::int AS n FROM information_schema.columns WHERE table_schema='phase24_shadow' AND table_name='acquisition_leads'")).rows[0].n,1);
+      assert.equal(await exists(),true);
+    } finally {await sourceClient!.query('ROLLBACK');}
   });
   await check('custom-format backup restores rows, NULL dates, schema and migration checksums into a new local database',async()=>{
     const started=Date.now();const dump=path.join(directory,'fixture.dump');
