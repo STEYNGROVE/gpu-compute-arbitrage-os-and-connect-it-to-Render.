@@ -1,3 +1,4 @@
+import { classifyPostgresError } from './diagnostics/postgres.js';
 import { secureDatabaseOptions } from './phase21/configuration.js';
 import { liveOperationsAllowed } from './simulationSafety.js';
 import pg from 'pg';
@@ -107,7 +108,7 @@ export class PostgresDatabaseService {
           client.release();
         }
       } catch (err: any) {
-        console.warn('[POSTGRES CONNECTION FAILED]', 'UNAVAILABLE');
+        console.warn('[POSTGRES CONNECTION FAILED]', classifyPostgresError(err));
         // Attempt failover to DIRECT_URL if distinct from DATABASE_URL
         const directUrl = process.env.DIRECT_URL?.trim();
         const primaryUrl = process.env.DATABASE_URL?.trim();
