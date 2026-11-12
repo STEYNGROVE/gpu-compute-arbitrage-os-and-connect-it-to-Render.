@@ -1,5 +1,5 @@
 {
-  "implementationCommit": "93c2cb340c7f2f2ed943aa3d21de1370ec750825",
+  "implementationCommit": "cee2e8241ef92b03b721c44d19bdd7f40b597acd",
   "sources": [
     {
       "path": ".github/workflows/ci.yml",
@@ -463,7 +463,7 @@
     },
     {
       "path": "server/phase21/supplierReadOnly.ts",
-      "sha256": "efb35fc24f374ae0882f61e3108188b7f7fc88c45a8cf6a39498e0bd9b4f1f06"
+      "sha256": "52e99bc0815a0f28e65fee4142d83bc5d2fc3850e75f66c15b9cab5501d8bf91"
     },
     {
       "path": "server/phase21/workerLease.ts",
@@ -939,7 +939,7 @@
     },
     {
       "path": "test/phase21Supplier.test.ts",
-      "sha256": "0e9ca24e6cc4696faab70bb492b45ffe6372caf5310b7db291e41b3970f6ade2"
+      "sha256": "d6ab69a8492e5fe41e14f403c55a692752e293b2593c4906772e6b5249210c06"
     },
     {
       "path": "test/phase23CommercialAndSupplierSuite.ts",

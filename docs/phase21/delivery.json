@@ -1,0 +1,54 @@
+{
+  "branch": "feature/phase21-production-commercial-certification",
+  "finalSourceCommit": "cee2e8241ef92b03b721c44d19bdd7f40b597acd",
+  "draftPr": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/47",
+  "localCommands": {
+    "exit0": 30,
+    "exit1LaunchDenial": 1
+  },
+  "namedTests": {
+    "phase21": 65,
+    "phase20": 57,
+    "productionAuth": 18,
+    "failed": 0,
+    "skipped": 0
+  },
+  "postgresScenarios": {
+    "phase20": 14,
+    "phase21Archive": 9,
+    "phase21Controls": 7,
+    "failed": 0,
+    "skipped": 0
+  },
+  "hostedPreviouslyVerifiedCommit": "ab1a9c1d77d68ad35350ab80c78271ca0cbcdffb",
+  "finalHeadHostedStatus": "PENDING_AFTER_FINAL_PUSH",
+  "codeRabbit": "DRAFT_REVIEW_SKIPPED_NO_FINDINGS",
+  "blockerStatuses": [
+    "PARTIAL",
+    "PARTIAL",
+    "PARTIAL",
+    "PARTIAL",
+    "PARTIAL"
+  ],
+  "productionDeploymentReady": false,
+  "liveFinancialReady": false,
+  "verifiedSuppliers": 0,
+  "verifiedCapacity": 0,
+  "verifiedCustomers": 0,
+  "verifiedContracts": 0,
+  "verifiedPayments": 0,
+  "verifiedRealizedRevenueMinorUnits": "0",
+  "productionMutationPerformed": false,
+  "paidGpuProvisioned": false,
+  "providerCancellationExecuted": false,
+  "financialExecutionPerformed": false,
+  "outreachPerformed": false,
+  "ownerApprovalsRequired": [
+    "read-only provider credentials/account identity",
+    "independent legal/accounting/security/database acceptance",
+    "nonproduction discovery configuration/schema rehearsal",
+    "separate bounded provider lifecycle certification",
+    "separate production migration/deployment",
+    "separate payment/financial activation"
+  ]
+}

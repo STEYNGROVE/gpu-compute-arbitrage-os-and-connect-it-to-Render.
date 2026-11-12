@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-12T07:24:44.594214+00:00",
+  "runs": [
+    {
+      "conclusion": "success",
+      "databaseId": 43174575081,
+      "headSha": "ab1a9c1d77d68ad35350ab80c78271ca0cbcdffb",
+      "name": "Phase 18 staging verification",
+      "status": "completed",
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43174575081"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 43174575127,
+      "headSha": "ab1a9c1d77d68ad35350ab80c78271ca0cbcdffb",
+      "name": "CI / Automated Verification Pipeline",
+      "status": "completed",
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43174575127"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 43174446844,
+      "headSha": "a941f48d729c5d393bef7afc4970c8c045f1818a",
+      "name": "Phase 18 staging verification",
+      "status": "completed",
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43174446844"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 43174446952,
+      "headSha": "a941f48d729c5d393bef7afc4970c8c045f1818a",
+      "name": "CI / Automated Verification Pipeline",
+      "status": "completed",
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43174446952"
+    }
+  ],
+  "codeRabbit": "SKIPPED_DRAFT_PR_BY_BOT_POLICY_NO_FINDINGS"
+}

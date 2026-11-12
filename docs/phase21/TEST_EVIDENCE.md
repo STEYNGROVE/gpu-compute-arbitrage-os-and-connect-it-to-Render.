@@ -29,18 +29,18 @@ Strict launch audit exit 1 is an actual failing launch gate: 13 safety controls 
 | `NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedNode24LookupSuite.ts` | 0 | `check-24-attempt-1.log` |
 | `NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/secureFeedNode24ProductionSuite.ts` | 0 | `check-25-attempt-1.log` |
 | `NODE_ENV=production STRICT_AUTH_ENFORCEMENT=true tsx --test server/gpuOfferEvidence.test.ts server/gpuEvidenceIntegration.test.ts server/gpuEvidenceHttp.test.ts server/gpuAuthIsolation.test.ts server/gpuOwnerAuthHttp.test.ts` | 0 | `check-26-attempt-1.log` |
-| `npm run typecheck` | 0 | `check-00-attempt-6.log` |
 | `npm run lint` | 0 | `check-01-attempt-2.log` |
 | `npm run security:check` | 0 | `check-02-attempt-4.log` |
-| `npm test` | 0 | `check-09-attempt-2.log` |
-| `npm run build` | 0 | `check-10-attempt-2.log` |
 | `npm run audit:gpu-execution` | 1 | `check-11-attempt-2.log` |
 | `npm audit --audit-level=moderate` | 0 | `check-12-attempt-2.log` |
 | `npm audit --omit=dev --audit-level=moderate` | 0 | `check-13-attempt-2.log` |
 | `git diff --check` | 0 | `check-27-attempt-2.log` |
-| `npm run test:phase21` | 0 | `check-28-attempt-5.log` |
 | `npm run test:phase21-postgres` | 0 | `check-29-attempt-5.log` |
 | `npm run plan:phase21-migrations` | 0 | `check-30-attempt-3.log` |
+| `npm run typecheck` | 0 | `check-00-attempt-7.log` |
+| `npm test` | 0 | `check-09-attempt-3.log` |
+| `npm run build` | 0 | `check-10-attempt-3.log` |
+| `npm run test:phase21` | 0 | `check-28-attempt-6.log` |
 
 ## Named counts
 
@@ -49,13 +49,13 @@ Strict launch audit exit 1 is an actual failing launch gate: 13 safety controls 
   "npm run test:phase21": {
     "exitStatus": 0,
     "namedTests": {
-      "tests": 64,
-      "pass": 64,
+      "tests": 65,
+      "pass": 65,
       "fail": 0,
       "skipped": 0
     },
     "scenarios": {},
-    "log": "check-28-attempt-5.log"
+    "log": "check-28-attempt-6.log"
   },
   "npm run test:phase21-postgres": {
     "exitStatus": 0,

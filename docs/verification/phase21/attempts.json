@@ -334,5 +334,29 @@
     "exitStatus": 0,
     "seconds": 1.57,
     "log": "check-30-attempt-3.log"
+  },
+  {
+    "command": "npm run typecheck",
+    "exitStatus": 0,
+    "seconds": 23.23,
+    "log": "check-00-attempt-7.log"
+  },
+  {
+    "command": "npm test",
+    "exitStatus": 0,
+    "seconds": 72.6,
+    "log": "check-09-attempt-3.log"
+  },
+  {
+    "command": "npm run build",
+    "exitStatus": 0,
+    "seconds": 14.88,
+    "log": "check-10-attempt-3.log"
+  },
+  {
+    "command": "npm run test:phase21",
+    "exitStatus": 0,
+    "seconds": 3.87,
+    "log": "check-28-attempt-6.log"
   }
 ]
