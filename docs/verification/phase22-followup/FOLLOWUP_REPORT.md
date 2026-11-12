@@ -61,3 +61,7 @@ Exact commands, exits, durations and retained logs are in [commands.json](comman
 | `git diff HEAD --check` | 0 | Pass; [12.log](12.log) |
 
 Hosted code-commit results: **both workflows passed at 3c291da**. [CI run 43215488918](https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43215488918) and [offline run 43215488908](https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43215488908) completed successfully. No failed or pending jobs in that candidate snapshot; staging skipped by design. Exact job/step results are in [hosted-candidate.json](hosted-candidate.json). Later documentation-only commit checks are separately observable on draft PR #52; no claim of deployment follows from any CI result.
+
+## Later workspace confirmation and live verification
+
+The user subsequently confirmed Steyn’s workspace. The [live verification report](../phase22-live/LIVE_VERIFICATION.md) replaces the earlier pending-workspace status with actual service/deploy metadata and read-only database schema/checksum results, including a confirmed missing published_at compatibility blocker. The earlier observations above remain historical; no migration, deployment or configuration change followed the confirmation.
