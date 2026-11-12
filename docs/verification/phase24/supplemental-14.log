@@ -1,0 +1,38 @@
+npm notice run react-example@0.0.0 npx
+npm notice run 'tsx' --test server/gpuOfferEvidence.test.ts server/gpuEvidenceIntegration.test.ts server/gpuEvidenceHttp.test.ts server/gpuAuthIsolation.test.ts server/gpuOwnerAuthHttp.test.ts
+ISOLATION_RESULT 403 {
+  status: 'forbidden',
+  error: 'OWNER_AUTHENTICATION_REQUIRED',
+  message: 'Owner authentication required. Provide valid Owner session or header X-Owner-Api-Key.'
+}
+✔ owner authentication rejects invalid requests (248.901769ms)
+▶ normalized GPU endpoint enforces Phase 6 safety
+  ✔ unauthorized requests return 403 (292.055384ms)
+  ✔ authenticated catalog responses fail closed (96.921462ms)
+  ✔ invalid pricing is rejected (37.029923ms)
+VAST_INVENTORY_UNAVAILABLE
+  ✔ partial supplier failure remains read-only (11.572384ms)
+VAST_INVENTORY_UNAVAILABLE
+RUNPOD_INVENTORY_UNAVAILABLE
+  ✔ all supplier failures return safe 503 (10.250538ms)
+✔ normalized GPU endpoint enforces Phase 6 safety (489.006538ms)
+✔ catalog pricing is never capacity verified (9.266846ms)
+✔ expired supplier evidence fails closed (0.790847ms)
+✔ all supplier catalog offers remain non-purchasable (1.952231ms)
+✔ invalid GPU pricing is excluded (0.669616ms)
+✔ catalog offer never proves capacity (5.899385ms)
+✔ expired evidence becomes stale (1.652923ms)
+✔ unavailable capacity is rejected (1.628308ms)
+✔ capacity evidence allows review, not purchase (2.099462ms)
+✔ future timestamps fail closed (1.249154ms)
+✔ invalid prices fail closed (0.568077ms)
+AUTH_DIAGNOSTIC 403 {"status":"forbidden","error":"OWNER_AUTHENTICATION_REQUIRED","message":"Owner authentication required. Provide valid Owner session or header X-Owner-Api-Key."}
+✔ real owner middleware protects GPU comparison (249.668077ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2263.593231

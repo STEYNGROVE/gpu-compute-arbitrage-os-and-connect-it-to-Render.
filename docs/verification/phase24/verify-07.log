@@ -1,0 +1,1290 @@
+npm notice run react-example@0.0.0 test
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/jakeGroveCfoSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/zeroFundedBootstrapSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/providerReadinessSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/binanceAndFloatsTest.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/financialIntegritySuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/launchGateTest.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/treasuryHotWalletSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/build55NegativeGateSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/productionHardeningSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx -e "import { attackTestSuiteService } from './server/attackTestSuite.js'; attackTestSuiteService.runFullSuite().then(r => { if (!r.allPassed) process.exit(1); console.log('All attack tests passed.'); process.exit(0); });" && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase23CommercialAndSupplierSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/creditSpendPolicySuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/supplierReadOnlyDiagnosticsSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/prepaidReservationGateSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/gpuDemandApiSecuritySuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/gpuDemandFinancialSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase8SupplierHealthSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase8SupplierEndpointSuite.ts && node test/phase9PurchaseGateSuite.cjs && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/supplierBalanceReadOnlySuite.ts && npm run test:simulation-safety && npm run test:phase16 && npm run test:phase18 && npm run test:consolidation && npm run test:phase19 && npm run test:phase20 && npm run test:phase21 && npm run test:postgres-tls && npm run test:security-regression && npm run test:static-assets && npm run test:phase23
+================================================================
+  JAKE GROVE — AUTONOMOUS CFO VERIFICATION SUITE (BUILD 53)
+  (Immutable Ledger, Financial Control Plane & Zero Drift)
+================================================================
+
+--- 1. IMMUTABLE DOUBLE-ENTRY LEDGER ---
+  ✅ PASS: Ledger debits strictly match credits
+  ✅ PASS: Journal SHA-256 hash chain is cryptographically valid
+  ✅ PASS: Posting records correct formatted USD amount ($15.50)
+  ✅ PASS: Posting generates authentic 64-character SHA-256 audit hash
+  ✅ PASS: Ledger remains balanced after new posting
+  ✅ PASS: Hash chain maintains unbroken link after posting
+  ✅ PASS: Ledger strictly rejects $0.00 zero-value postings
+
+--- 2. JAKE GROVE CFO APPROVAL GATES ---
+  ✅ PASS: Rejects transactions without verified customer payment
+  ✅ PASS: Decision status is WAITING_FOR_FUNDING
+  ✅ PASS: No approval token issued for unverified customer
+  ✅ PASS: Strictly rejects negative net margin transaction
+  ✅ PASS: Status is REJECTED for unprofitable transaction
+  ✅ PASS: Approves profitable transaction with verified customer escrow
+  ✅ PASS: Gate status is APPROVED
+  ✅ PASS: Issues cryptographic approval token
+  ✅ PASS: Customer payment confirmed flag is true
+  ✅ PASS: Zero operator capital satisfied flag is true
+
+--- 3. WORKLOAD EXECUTION PROOF & VERIFICATION ---
+  ✅ PASS: Fails closed on non-zero workload exit code
+  ✅ PASS: Verifies workload with exit code 0 and valid SHA-256 output hash
+
+--- 4. SETTLEMENT, ACTUAL COST & CFO_RECONCILED ---
+  ✅ PASS: Settlement executes successfully
+  ✅ PASS: Transaction reaches final state "CFO_RECONCILED"
+  ✅ PASS: Calculates true realized profit: $25.00 - $14.50 - $0.35 = $10.15
+  ✅ PASS: Trace record lifecycle stage is "CFO_RECONCILED"
+  ✅ PASS: Reconciled with Binance treasury rail
+
+--- 5. RECONCILIATION EXCEPTION & AUTOMATIC FREEZE ---
+  ✅ PASS: Exception moves lifecycle to RECONCILIATION_EXCEPTION
+  ✅ PASS: Final status flags exception
+  ✅ PASS: Freezes related spending on exception
+
+--- 6. FIRST VERIFIED REVENUE ACID TEST (SECTION 13) ---
+  ✅ PASS: Unfunded real-evidence audit correctly reports incomplete verification
+  ✅ PASS: Unfunded audit does not claim successful reconciliation
+  ✅ PASS: No unverified realized profit ($0.00)
+  ✅ PASS: All 10 external-evidence stages evaluated
+
+--- 7. CFO COMMAND CENTER PROVENANCE ---
+  ✅ PASS: Authoritative CFO name is Jake Grove
+  ✅ PASS: Cash metric includes verified source provenance
+  ✅ PASS: Revenue metric includes verified source provenance
+  ✅ PASS: 24h Operator spend is strictly $0.00
+
+================================================================
+  JAKE GROVE CFO TEST SUITE COMPLETE: 35/35 PASSED
+================================================================
+
+================================================================
+  ZERO-FUNDED PROVIDER BOOTSTRAP SUITE
+  (Strict Operator Capital Protection & Customer-Funded Routing)
+================================================================
+
+--- 1. OPERATOR MONEY PROTECTION & DEFAULT SETTINGS ---
+  ✅ PASS: Owner Capital Mode is strictly DISABLED by default
+  ✅ PASS: Default maxSingleTransactionUsd is $0.00 (Zero Operator Capital)
+  ✅ PASS: Initial operator daily spent is $0.00
+
+--- 2. NO FAKE BALANCES & TRUTHFUL REPORTING ---
+  ✅ PASS: Evaluates all 10 providers in registry
+  ✅ PASS: vast_ai has valid financial state (observed: UNKNOWN)
+  ✅ PASS: vast_ai does NOT display fabricated balance strings
+  ✅ PASS: vast_ai with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: runpod has valid financial state (observed: UNKNOWN)
+  ✅ PASS: runpod does NOT display fabricated balance strings
+  ✅ PASS: runpod with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: tensordock has valid financial state (observed: PAY_AS_YOU_GO)
+  ✅ PASS: tensordock does NOT display fabricated balance strings
+  ✅ PASS: akash has valid financial state (observed: UNKNOWN)
+  ✅ PASS: akash does NOT display fabricated balance strings
+  ✅ PASS: akash with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: salad has valid financial state (observed: UNKNOWN)
+  ✅ PASS: salad does NOT display fabricated balance strings
+  ✅ PASS: salad with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: lightning_ai has valid financial state (observed: UNKNOWN)
+  ✅ PASS: lightning_ai does NOT display fabricated balance strings
+  ✅ PASS: lightning_ai with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: hyperstack has valid financial state (observed: UNKNOWN)
+  ✅ PASS: hyperstack does NOT display fabricated balance strings
+  ✅ PASS: hyperstack with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: coreweave has valid financial state (observed: UNKNOWN)
+  ✅ PASS: coreweave does NOT display fabricated balance strings
+  ✅ PASS: coreweave with unverified balance truthfully displays 'FUNDING_STATUS_UNKNOWN'
+  ✅ PASS: lambda has valid financial state (observed: PAY_AS_YOU_GO)
+  ✅ PASS: lambda does NOT display fabricated balance strings
+  ✅ PASS: hostinger has valid financial state (observed: PAYMENT_REQUIRED)
+  ✅ PASS: hostinger does NOT display fabricated balance strings
+
+--- 3. TRI-STATE GPU DISTINCTION ---
+  ✅ PASS: Unfunded prepaid provider classifies as AVAILABLE_GPU (not purchasable)
+  ✅ PASS: Unfunded prepaid provider is NOT purchasable without capital
+  ✅ PASS: Unfunded prepaid provider is NOT executable
+  ✅ PASS: Pay-as-you-go provider is PURCHASABLE without advance deposit
+
+--- 4. CUSTOMER-FUNDED EXECUTION MODE & ESCROW ---
+  ✅ PASS: Job escrow initializes in PAYMENT_RECEIVED state
+  ✅ PASS: Customer payment received recorded accurately ($25.00)
+  ✅ PASS: Provider budget recorded accurately ($15.00)
+  ✅ PASS: Refund liability matches amount received
+  ✅ PASS: Escrow successfully transitions to FUNDS_RESERVED_FOR_JOB
+  ✅ PASS: Reserved amount matches authorized allocation ($12.50)
+  ✅ PASS: Over-budget reservation throws RESERVE_EXCEEDS_BUDGET
+  ✅ PASS: Strictly prevents allocating more funds than authorized provider budget
+
+--- 5. PROVIDER SPENDING GATE EVALUATION ---
+  ✅ PASS: Unfunded prepaid provider spending gate evaluates allowed = false
+  ✅ PASS: Unfunded prepaid provider spending gate sets gateState = WAITING_FOR_FUNDING
+  ✅ PASS: Gate marks providerFinanciallyExecutable = false when account is unfunded
+  ✅ PASS: Job without customer payment is rejected by spending gate
+  ✅ PASS: Gate records customerPaymentVerified = false
+  ✅ PASS: Pay-as-you-go provider with customer escrow passes spending gate (allowed = true)
+  ✅ PASS: Spending gate sets gateState = APPROVED
+  ✅ PASS: Gate records customerPaymentVerified = true
+  ✅ PASS: Cost exceeding customer budget is rejected
+  ✅ PASS: Over-budget job sets gateState = EXECUTION_BLOCKED
+
+--- 6. ZERO-CAPITAL ROUTING & FIRST REVENUE STRATEGY ---
+  ✅ PASS: Route without zero-capital providers reports hasZeroCapitalPath = false
+  ✅ PASS: Report status strictly equals NO ZERO-CAPITAL EXECUTION PATH AVAILABLE
+  ✅ PASS: All 3 candidate providers correctly marked as blocked due to required advance deposits
+  ✅ PASS: Route including PAYG providers reports hasZeroCapitalPath = true
+  ✅ PASS: Report status equals ZERO_CAPITAL_ROUTE_AVAILABLE
+  ✅ PASS: Lambda identified as zero-operator-capital compatible provider
+
+--- 7. OWNER CAPITAL MODE AUTHORIZATION & LIMITS ---
+  ✅ PASS: Enabling Owner Capital Mode without explicit maxSingleTransactionUsd is strictly REJECTED
+  ✅ PASS: Enabling with explicit limits succeeds
+  ✅ PASS: Owner Capital Mode is now active
+  ✅ PASS: Max single transaction set to $150
+  ✅ PASS: Max daily spend set to $450
+  ✅ PASS: Disabling Owner Capital Mode succeeds
+  ✅ PASS: Owner Capital Mode successfully restored to false (Safe Default)
+
+--- 8. GENUINE CREDIT & PROMOTIONAL DETECTION ---
+
+================================================================
+  ZERO-FUNDED PROVIDER BOOTSTRAP SUITE: 66/66 PASSED
+  ALL OPERATOR CAPITAL PROTECTION & ZERO-FUNDED TESTS PASSED 100%
+================================================================
+
+================================================================
+  PROVIDER READINESS & FIRST VERIFIED REVENUE TEST SUITE
+================================================================
+
+--- 1. UNIFIED PROVIDER ARCHITECTURE CONTRACT ---
+  ✅ PASS: All 10 providers registered (found: 10)
+  ✅ PASS: Provider vast_ai exists in registry
+  ✅ PASS: vast_ai implements discoverGPUs()
+  ✅ PASS: vast_ai implements getLivePricing()
+  ✅ PASS: vast_ai implements getAvailability()
+  ✅ PASS: vast_ai implements getInstanceTypes()
+  ✅ PASS: vast_ai implements estimateCost()
+  ✅ PASS: vast_ai implements provision()
+  ✅ PASS: vast_ai implements start()
+  ✅ PASS: vast_ai implements stop()
+  ✅ PASS: vast_ai implements restart()
+  ✅ PASS: vast_ai implements terminate()
+  ✅ PASS: vast_ai implements getInstanceStatus()
+  ✅ PASS: vast_ai implements getTelemetry()
+  ✅ PASS: vast_ai implements submitWorkload()
+  ✅ PASS: vast_ai implements retrieveOutput()
+  ✅ PASS: vast_ai implements getUsage()
+  ✅ PASS: vast_ai implements getBilling()
+  ✅ PASS: vast_ai implements healthCheck()
+  ✅ PASS: Provider runpod exists in registry
+  ✅ PASS: runpod implements discoverGPUs()
+  ✅ PASS: runpod implements getLivePricing()
+  ✅ PASS: runpod implements getAvailability()
+  ✅ PASS: runpod implements getInstanceTypes()
+  ✅ PASS: runpod implements estimateCost()
+  ✅ PASS: runpod implements provision()
+  ✅ PASS: runpod implements start()
+  ✅ PASS: runpod implements stop()
+  ✅ PASS: runpod implements restart()
+  ✅ PASS: runpod implements terminate()
+  ✅ PASS: runpod implements getInstanceStatus()
+  ✅ PASS: runpod implements getTelemetry()
+  ✅ PASS: runpod implements submitWorkload()
+  ✅ PASS: runpod implements retrieveOutput()
+  ✅ PASS: runpod implements getUsage()
+  ✅ PASS: runpod implements getBilling()
+  ✅ PASS: runpod implements healthCheck()
+  ✅ PASS: Provider tensordock exists in registry
+  ✅ PASS: tensordock implements discoverGPUs()
+  ✅ PASS: tensordock implements getLivePricing()
+  ✅ PASS: tensordock implements getAvailability()
+  ✅ PASS: tensordock implements getInstanceTypes()
+  ✅ PASS: tensordock implements estimateCost()
+  ✅ PASS: tensordock implements provision()
+  ✅ PASS: tensordock implements start()
+  ✅ PASS: tensordock implements stop()
+  ✅ PASS: tensordock implements restart()
+  ✅ PASS: tensordock implements terminate()
+  ✅ PASS: tensordock implements getInstanceStatus()
+  ✅ PASS: tensordock implements getTelemetry()
+  ✅ PASS: tensordock implements submitWorkload()
+  ✅ PASS: tensordock implements retrieveOutput()
+  ✅ PASS: tensordock implements getUsage()
+  ✅ PASS: tensordock implements getBilling()
+  ✅ PASS: tensordock implements healthCheck()
+  ✅ PASS: Provider akash exists in registry
+  ✅ PASS: akash implements discoverGPUs()
+  ✅ PASS: akash implements getLivePricing()
+  ✅ PASS: akash implements getAvailability()
+  ✅ PASS: akash implements getInstanceTypes()
+  ✅ PASS: akash implements estimateCost()
+  ✅ PASS: akash implements provision()
+  ✅ PASS: akash implements start()
+  ✅ PASS: akash implements stop()
+  ✅ PASS: akash implements restart()
+  ✅ PASS: akash implements terminate()
+  ✅ PASS: akash implements getInstanceStatus()
+  ✅ PASS: akash implements getTelemetry()
+  ✅ PASS: akash implements submitWorkload()
+  ✅ PASS: akash implements retrieveOutput()
+  ✅ PASS: akash implements getUsage()
+  ✅ PASS: akash implements getBilling()
+  ✅ PASS: akash implements healthCheck()
+  ✅ PASS: Provider salad exists in registry
+  ✅ PASS: salad implements discoverGPUs()
+  ✅ PASS: salad implements getLivePricing()
+  ✅ PASS: salad implements getAvailability()
+  ✅ PASS: salad implements getInstanceTypes()
+  ✅ PASS: salad implements estimateCost()
+  ✅ PASS: salad implements provision()
+  ✅ PASS: salad implements start()
+  ✅ PASS: salad implements stop()
+  ✅ PASS: salad implements restart()
+  ✅ PASS: salad implements terminate()
+  ✅ PASS: salad implements getInstanceStatus()
+  ✅ PASS: salad implements getTelemetry()
+  ✅ PASS: salad implements submitWorkload()
+  ✅ PASS: salad implements retrieveOutput()
+  ✅ PASS: salad implements getUsage()
+  ✅ PASS: salad implements getBilling()
+  ✅ PASS: salad implements healthCheck()
+  ✅ PASS: Provider lightning_ai exists in registry
+  ✅ PASS: lightning_ai implements discoverGPUs()
+  ✅ PASS: lightning_ai implements getLivePricing()
+  ✅ PASS: lightning_ai implements getAvailability()
+  ✅ PASS: lightning_ai implements getInstanceTypes()
+  ✅ PASS: lightning_ai implements estimateCost()
+  ✅ PASS: lightning_ai implements provision()
+  ✅ PASS: lightning_ai implements start()
+  ✅ PASS: lightning_ai implements stop()
+  ✅ PASS: lightning_ai implements restart()
+  ✅ PASS: lightning_ai implements terminate()
+  ✅ PASS: lightning_ai implements getInstanceStatus()
+  ✅ PASS: lightning_ai implements getTelemetry()
+  ✅ PASS: lightning_ai implements submitWorkload()
+  ✅ PASS: lightning_ai implements retrieveOutput()
+  ✅ PASS: lightning_ai implements getUsage()
+  ✅ PASS: lightning_ai implements getBilling()
+  ✅ PASS: lightning_ai implements healthCheck()
+  ✅ PASS: Provider hyperstack exists in registry
+  ✅ PASS: hyperstack implements discoverGPUs()
+  ✅ PASS: hyperstack implements getLivePricing()
+  ✅ PASS: hyperstack implements getAvailability()
+  ✅ PASS: hyperstack implements getInstanceTypes()
+  ✅ PASS: hyperstack implements estimateCost()
+  ✅ PASS: hyperstack implements provision()
+  ✅ PASS: hyperstack implements start()
+  ✅ PASS: hyperstack implements stop()
+  ✅ PASS: hyperstack implements restart()
+  ✅ PASS: hyperstack implements terminate()
+  ✅ PASS: hyperstack implements getInstanceStatus()
+  ✅ PASS: hyperstack implements getTelemetry()
+  ✅ PASS: hyperstack implements submitWorkload()
+  ✅ PASS: hyperstack implements retrieveOutput()
+  ✅ PASS: hyperstack implements getUsage()
+  ✅ PASS: hyperstack implements getBilling()
+  ✅ PASS: hyperstack implements healthCheck()
+  ✅ PASS: Provider coreweave exists in registry
+  ✅ PASS: coreweave implements discoverGPUs()
+  ✅ PASS: coreweave implements getLivePricing()
+  ✅ PASS: coreweave implements getAvailability()
+  ✅ PASS: coreweave implements getInstanceTypes()
+  ✅ PASS: coreweave implements estimateCost()
+  ✅ PASS: coreweave implements provision()
+  ✅ PASS: coreweave implements start()
+  ✅ PASS: coreweave implements stop()
+  ✅ PASS: coreweave implements restart()
+  ✅ PASS: coreweave implements terminate()
+  ✅ PASS: coreweave implements getInstanceStatus()
+  ✅ PASS: coreweave implements getTelemetry()
+  ✅ PASS: coreweave implements submitWorkload()
+  ✅ PASS: coreweave implements retrieveOutput()
+  ✅ PASS: coreweave implements getUsage()
+  ✅ PASS: coreweave implements getBilling()
+  ✅ PASS: coreweave implements healthCheck()
+  ✅ PASS: Provider lambda exists in registry
+  ✅ PASS: lambda implements discoverGPUs()
+  ✅ PASS: lambda implements getLivePricing()
+  ✅ PASS: lambda implements getAvailability()
+  ✅ PASS: lambda implements getInstanceTypes()
+  ✅ PASS: lambda implements estimateCost()
+  ✅ PASS: lambda implements provision()
+  ✅ PASS: lambda implements start()
+  ✅ PASS: lambda implements stop()
+  ✅ PASS: lambda implements restart()
+  ✅ PASS: lambda implements terminate()
+  ✅ PASS: lambda implements getInstanceStatus()
+  ✅ PASS: lambda implements getTelemetry()
+  ✅ PASS: lambda implements submitWorkload()
+  ✅ PASS: lambda implements retrieveOutput()
+  ✅ PASS: lambda implements getUsage()
+  ✅ PASS: lambda implements getBilling()
+  ✅ PASS: lambda implements healthCheck()
+  ✅ PASS: Provider hostinger exists in registry
+  ✅ PASS: hostinger implements discoverGPUs()
+  ✅ PASS: hostinger implements getLivePricing()
+  ✅ PASS: hostinger implements getAvailability()
+  ✅ PASS: hostinger implements getInstanceTypes()
+  ✅ PASS: hostinger implements estimateCost()
+  ✅ PASS: hostinger implements provision()
+  ✅ PASS: hostinger implements start()
+  ✅ PASS: hostinger implements stop()
+  ✅ PASS: hostinger implements restart()
+  ✅ PASS: hostinger implements terminate()
+  ✅ PASS: hostinger implements getInstanceStatus()
+  ✅ PASS: hostinger implements getTelemetry()
+  ✅ PASS: hostinger implements submitWorkload()
+  ✅ PASS: hostinger implements retrieveOutput()
+  ✅ PASS: hostinger implements getUsage()
+  ✅ PASS: hostinger implements getBilling()
+  ✅ PASS: hostinger implements healthCheck()
+
+--- 2. CREDENTIAL ISOLATION & TENSORDOCK vs LIGHTNING AI SEPARATION ---
+  ✅ PASS: TensorDock has dedicated provider ID
+  ✅ PASS: Lightning AI has dedicated provider ID
+  ✅ PASS: TensorDock health derives authentic status (observed: CONFIGURATION_REQUIRED)
+  ✅ PASS: TensorDock strictly NEVER uses LIGHTNING_USER_ID
+  ✅ PASS: Lightning AI health derives authentic status (observed: CONFIGURATION_REQUIRED)
+
+--- 3. WORKLOAD CLASSIFICATION & HARDWARE NORMALIZATION ---
+  ✅ PASS: Classifies LLM training correctly
+  ✅ PASS: LLM training enforces minimum 80GB VRAM
+  ✅ PASS: LLM training requires BF16 support
+  ✅ PASS: Classifies Whisper workload correctly
+  ✅ PASS: Whisper accepts lightweight 12-16GB VRAM
+  ✅ PASS: Classifies Stable Diffusion correctly
+  ✅ PASS: Normalizes H100 variant to H100 canonical
+  ✅ PASS: H100 normalized VRAM is 80GB
+  ✅ PASS: H100 interconnect is SXM5
+  ✅ PASS: Normalizes RTX 4090 variant
+  ✅ PASS: RTX 4090 compute capability is 8.9 (Ada Lovelace)
+  ✅ PASS: A5000 and RTX 4090 both have 24GB VRAM
+  ✅ PASS: RTX 4090 benchmark score is strictly higher than A5000 despite equal VRAM
+
+--- 4. TRUE COST CALCULATION & ECONOMIC FORMULAS ---
+  ✅ PASS: Base GPU cost matches 0.74 * 10 = $7.40
+  ✅ PASS: True compute cost strictly includes CPU, RAM, storage, network, startup, and payment fees
+  ✅ PASS: Net profit is calculated correctly (observed: $5.309)
+  ✅ PASS: Gross margin % calculated correctly (observed: 35.39%)
+  ✅ PASS: ROI % calculated correctly (observed: 54.78%)
+  ✅ PASS: Profit per GPU-hour is positive
+  ✅ PASS: Composite provider score is generated
+
+--- 5. 10-STEP PREFLIGHT SAFETY CHECKLIST ---
+  ✅ PASS: Preflight checklist returns boolean pass verdict
+  ✅ PASS: Preflight without customer payment authorization strictly fails closed
+  ✅ PASS: Preflight failure reason explicitly identifies payment authorization
+  ✅ PASS: Preflight with negative net profit strictly fails closed
+
+--- 6. REAL TELEMETRY FAIL-CLOSED BEHAVIOR ---
+  ✅ PASS: Telemetry source is UNKNOWN or PROVIDER_API
+  ✅ PASS: Telemetry fails closed with null (UNKNOWN) instead of fabricated 0% or 100%
+
+--- 7. PROOF-OF-EXECUTION & REVENUE SETTLEMENT ENGINE ---
+  ✅ PASS: Proof record contains SHA-256 immutable record hash
+  ✅ PASS: Actual cost recorded accurately
+  ✅ PASS: Net profit = 3.50 - 0.74 - 0.40 = $2.36
+  ✅ PASS: PROJECTED_REVENUE is strictly NOT real cash
+  ✅ PASS: SETTLED_REVENUE is classified as verified real cash
+  ✅ PASS: Projected revenue tracked separately
+  ✅ PASS: Settled revenue tracked separately
+  ✅ PASS: Verified cash includes ONLY settled revenue
+
+--- 8. FIRST VERIFIED REVENUE AUDIT GATE ---
+  ✅ PASS: Verified First Revenue stage: 1. Real workload received
+  ✅ PASS: Verified First Revenue stage: 2. Real payment authorized
+  ✅ PASS: Verified First Revenue stage: 3. Real GPU discovered
+  ✅ PASS: Verified First Revenue stage: 4. Real cheapest provider selected
+  ✅ PASS: Verified First Revenue stage: 5. Real instance provisioned
+  ✅ PASS: Verified First Revenue stage: 6. Real workload executed
+  ✅ PASS: Verified First Revenue stage: 7. Real output delivered
+  ✅ PASS: Verified First Revenue stage: 8. Real provider cost verified
+  ✅ PASS: Verified First Revenue stage: 9. Real customer revenue captured
+  ✅ PASS: Verified First Revenue stage: 10. Real profit realized & settled
+================================================================
+  PROVIDER READINESS SUITE: 230/230 PASSED
+  ALL PROVIDER READINESS & FIRST REVENUE TESTS PASSED 100%
+================================================================
+[BOOTSTRAP] Local .env loading disabled outside explicit development
+
+===============================================================
+[BOOTSTRAP] GPU COMPUTE ARBITRAGE OS v13 INITIALIZATION
+[BOOTSTRAP] Mode: TEST
+===============================================================
+=== Running Binance Canonical Payment, Webhook Replay Protection, Treasury Floats, and Safety Tests ===
+[TEST 1] Binance HMAC-SHA256 Webhook Signature & BINANCE_WEBHOOK_SECRET Enforcement
+  -> PASS: Binance HMAC-SHA256 signature verified correctly and rejected forgery.
+  -> PASS: Native Binance Pay RSA-SHA256 protocol (BinancePay-Timestamp/Nonce/Signature) verified and rejected forgery.
+  -> PASS: BINANCE_WEBHOOK_SECRET strictly enforced; API secret fallback permanently blocked.
+[TEST 1d] Independent Binance/Blockchain Settlement Verification
+  -> PASS: Independent settlement verification strictly validates txId, asset, amount, destination, and confirmations >= 15.
+[TEST 2] Dynamic Capital Allocation Starting Defaults
+  -> Calculated Floats for $1,000: {
+  binance: '$700 (70%)',
+  vast: '$150 (15%)',
+  runpod: '$100 (10%)',
+  lambda: '$50 (5%)'
+}
+  -> PASS: Capital float allocation exactly matches 70/15/10/5 specification.
+[TEST 3] Float Rebalancing Safety Gates
+  -> PASS: Unauthorized rebalancing rejected: REJECTED: Provider float rebalance requires explicit authorized credentials or OWNER session.
+[TEST 4] Granular Kill Switch Domain Testing
+  -> Found 6 registered kill switch domains:
+     - [GLOBAL_KILL_SWITCH]: Master emergency kill switch — immediately halts all customer payments, provisioning, outbox events, and capital flows. (Active: false)
+     - [NEW_CUSTOMER_PAYMENTS_KILL_SWITCH]: Blocks new customer escrow payment intent creation and settlements. (Active: false)
+     - [NEW_PROVISIONING_KILL_SWITCH]: Blocks new compute hardware reservations and provisioning calls to Vast, RunPod, and Lambda. (Active: false)
+     - [BINANCE_OUTFLOW_KILL_SWITCH]: Blocks any withdrawal, conversion, or outbound fund movement from Binance Spot treasury. (Active: false)
+     - [PROVIDER_REBALANCING_KILL_SWITCH]: Blocks automated capital top-ups and rebalancing to compute provider floats. (Active: false)
+     - [AUTONOMOUS_EXECUTION_KILL_SWITCH]: Halts autonomous arbitrage deal selection and execution; manual owner authorization required. (Active: false)
+  -> PASS: Granular kill switches verified and reactive.
+[TEST 5] Provider Exposure Mathematical Model
+  -> PASS: calculateProviderExposure returned exact sum with zero float drift: $207.75
+[TEST 6] Opportunity Selection by riskAdjustedExpectedProfit
+  -> Calculated Economics: Gross Revenue: $25, Expected Net: $16.88, Risk-Adjusted Profit: $16.53
+  -> PASS: riskAdjustedExpectedProfit computed accurately.
+[TEST 6] Settled Arbitrage Vault Transfer to Binance Treasury
+  -> PASS: Zero amount transfer safely rejected.
+  -> PASS: Over-vault amount transfer safely rejected.
+  -> PASS: Valid transfer blocked without capital or ledger mutations.
+=== ALL TESTS PASSED SUCCESSFULLY ===
+=== Starting V23 Financial Integrity Test Suite ===
+
+[TEST 1] Currency & Minor Units Validation:
+  -> PASS: USD and ZAR enforced, minor units calculated precisely with zero float drift.
+
+[TEST 2] Payment Verification Strict Fail-Closed Gates:
+  -> PASS: createIntent fail-closed when PostgreSQL is offline.
+  -> PASS: verifyPayment fail-closed when PostgreSQL is offline.
+
+[TEST 3] Binance HMAC-SHA256 Signature & Webhook Security Validation:
+  -> PASS: Binance HMAC-SHA256 signature, timing-safe match, and tampering rejection verified.
+
+[TEST 4] Exclusive Binance Provider & Decommissioned Legacy Rejection:
+  -> PASS: Binance is exclusive customer payment and treasury rail; all legacy rails decommissioned.
+
+[TEST 5] Reconciliation Anti-Loophole & Binance Rail Integrity:
+  -> PASS: Unverified external rail -> autonomous capital deployment permanently locked.
+
+[TEST 6] Production Engine Experiment Mutator:
+  -> PASS: Zero fabricated metrics; advance strictly requires verifiable evidence.
+
+[TEST 7] Emergency Kill Switch & Cycle Guard:
+  -> PASS: Emergency kill switch halts all execution immediately.
+
+[TEST 8] Cryptographic Ledger Hash Chain Integrity:
+  -> Initial Ledger verification passed (0 entries checked).
+  -> PASS: Cryptographic hash chain dynamically preserved upon record addition.
+
+[TEST 9] Server-Authoritative Economics Engine:
+  -> Server economics precisely calculated with zero client math trust.
+  -> PASS: Fail-closed policy gate correctly blocked unbacked LIVE execution (LIVE execution requires confirmed, verified demand with authorized escrow.).
+
+[TEST 10] Settlement Idempotency & Replay Protection:
+  -> PASS: Idempotency cache stores and returns exact prior response.
+
+[TEST 11] Ephemeral Browser Session Management:
+  -> PASS: Browser sessions enforce strict role boundaries with zero secret exposure.
+
+[TEST 12] Concurrent Execution & Double Spend Protection:
+  -> PASS: Execution mutex strictly blocked double spend. Winner: job-1794493466049-7777a6, Loser rejected: "Capital Risk Gate Blocked: Insufficient available balance ($5.00 available, $20.00 required)".
+
+[TEST 13] Crash Recovery & Ledger Invariant Continuity:
+  -> PASS: Crash recovery intact. Block height: 2, zero tampering detected.
+
+=== ALL 13 AUDIT, CONCURRENCY & RECOVERY CHECKS PASSED WITH 100% SUCCESS ===
+
+[BOOTSTRAP] Local .env loading disabled outside explicit development
+
+===============================================================
+[BOOTSTRAP] GPU COMPUTE ARBITRAGE OS v13 INITIALIZATION
+[BOOTSTRAP] Mode: TEST
+===============================================================
+================================================================
+  RUNNING PRODUCTION LAUNCH GATE & END-TO-END SCENARIO BATTERY
+  (Canonical Binance Payment Rail & PostgreSQL Replay Protection)
+================================================================
+
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 1/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 2/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 3/3, Unknown: 0/2)
+🚨 [CIRCUIT BREAKER TRIPPED] Rule: MAX_CONSECUTIVE_PROVIDER_FAILURES | Reason: 3 consecutive hardware provider provisioning failures detected (Simulated hardware connection failure 3).
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 1/3, Unknown: 0/2)
+🚨 [CIRCUIT BREAKER TRIPPED] Rule: RECONCILIATION_DISCREPANCY_DETECTED | Reason: Reconciliation discrepancy of $10.00 USD detected against BINANCE_SPOT_TEST_DISC
+[EVALUATION TIMESTAMP]: 2026-11-12T14:24:28.827Z
+[LAUNCH STATUS]: BLOCKED_FAIL_CLOSED
+[ALL GATES PASSED]: NO (FAIL-CLOSED)
+[BLOCKING ITEMS COUNT]: 9
+
+--- 1. EVALUATION OF 11 STRICT PRODUCTION LAUNCH GATES ---
+  🔴 BLOCKED [DATABASE] Production PostgreSQL Connected & Migrations Applied
+       Requirement: Authoritative PostgreSQL database must be connected and migration schemas applied. JSON storage is forbidden for live money.
+       Observed:    DISCONNECTED. DATABASE_URL not configured or unreachable.
+  🔴 BLOCKED [SECRETS] Production Cryptographic Secrets & Zero Frontend Leakage
+       Requirement: All 5 cryptographic secrets (OWNER_API_KEY, CUSTOMER_API_KEY, ESCROW_SIGNING_SECRET, QUOTE_LOCK_SECRET, AUDIT_CHAIN_SECRET) must be unique production keys (>=16 chars) with zero browser exposure.
+       Observed:    Unconfigured/test keys: [OWNER_API_KEY, CUSTOMER_API_KEY, ESCROW_SIGNING_SECRET, QUOTE_LOCK_SECRET, AUDIT_CHAIN_SECRET]
+  🔴 BLOCKED [SAFETY] Strict LIVE Reality Level & Zero Simulated Data (PostgreSQL Authority)
+       Requirement: REALITY_LEVEL must be LIVE and PostgreSQL authoritative tables (treasury_ledger, customers, compute_jobs, settlements) must contain 0 synthetic, paper, or live-seed records.
+       Observed:    REALITY_LEVEL=LIVE, pgZeroSimulatedRecords=false (err=PostgreSQL disconnected — cannot verify authoritative state, ledger=-1, cust=-1, jobs=-1, settle=-1), localSimRows=false.
+  🟢 PASS [BINANCE] Canonical Binance Payment Rail & Treasury Velocity Controls
+       Requirement: Binance must be the canonical payment/treasury rail, emergency stop must be clear, and hot-wallet limits must enforce $2,500/tx, $5,000/hr, $15,000/day, $20,000 max balance.
+       Observed:    Canonical rail=BINANCE, Limits verified ($2500/tx, $5000/hr, $15000/day, $20000 max), EmergencyStop=false.
+  🔴 BLOCKED [BINANCE] Binance Treasury Authority & Fresh Reconciliation
+       Requirement: Binance Spot API credentials must be authenticated, canTrade=expected, balance readable, clock synchronized (<1000ms), withdrawals disabled, and reconciliation green and fresh.
+       Observed:    BINANCE_API_KEY or BINANCE_API_SECRET unconfigured. Fail-closed: live capital deployment locked.
+  🔴 BLOCKED [GPU_SUPPLY] GPU Compute Hardware Supplier Verification
+       Requirement: At least one compute hardware supplier (Vast.ai, RunPod, or Lambda) must have an active API key, authenticate successfully via live API, verify account permissions, and confirm available GPU supply catalog.
+       Observed:    No GPU provider passed live authentication and supply verification. Preflight: vast_ai: VAST_API_KEY environment variable is not configured. | runpod: RUNPOD_API_KEY environment variable is not configured. | lambda: LAMBDA_API_KEY environment variable is not configured.
+  🟢 PASS [SAFETY] Automated Integrity Test Suite
+       Requirement: 100% of automated unit, financial integrity, float rebalancing, and attack defense tests must pass cleanly with exit code 0.
+       Observed:    100% of automated tests verified: 25/25 tests passed across 5 suites with exit code 0 (Executed at 2026-11-12T14:24:28.813Z).
+  🟢 PASS [SAFETY] Production Build Artifacts
+       Requirement: Production bundle must compile clean static client assets and bundled dist/server.cjs.
+       Observed:    dist/server.cjs and dist/index.html compiled successfully.
+  🟢 PASS [SAFETY] Autonomous Risk Circuit Breakers & Kill Switches
+       Requirement: Emergency kill switches must be proven reactive: activate → verify rejection → deactivate → verify normal operation.
+       Observed:    Evidence verified: Kill switch activated → execution strictly rejected (active=true) → deactivated → normal operation restored (active=false).
+  🟢 PASS [SAFETY] Initial Live Mode Exposure Cap Gate
+       Requirement: Initial live autonomous exposure must be evidence-tested: over-limit attempt must reject; within-cap attempt must accept.
+       Observed:    Evidence verified: Over-limit attempt ($1000.00 > $500.00) strictly REJECTED (EXCEEDS_MAX_SINGLE_EXPOSURE); within-cap attempt ($25.00) ACCEPTED.
+  🔴 BLOCKED [DATABASE] PostgreSQL Authoritative Schema Migrations & Checksum Integrity
+       Requirement: All versioned PostgreSQL DDL migrations must be applied in schema_migrations with stored checksum === current file checksum.
+       Observed:    Pending live PostgreSQL connection to verify versioned DDL migrations and SHA-256 checksums.
+  🔴 BLOCKED [SECRETS] Production Authentication & Zero Security Bypass
+       Requirement: NODE_ENV must be production, OWNER_API_KEY configured, and all development session/auth bypasses disabled.
+       Observed:    NODE_ENV=production, hasOwnerSecret=false, noBypassFlags=true.
+  🔴 BLOCKED [BINANCE] Canonical Customer Payment Verification
+       Requirement: Canonical payment rail (BINANCE) must be configured and able to cryptographically verify customer payments before capital authorization.
+       Observed:    Canonical payment provider (BINANCE) is not yet configured with live credentials.
+  🔴 BLOCKED [DATABASE] Settlement & Fresh Reconciliation Gate
+       Requirement: Reconciliation must be green and fresh (<300s) with 0 discrepancy, and settlement Merkle chain must be valid.
+       Observed:    Reconciliation status=ERROR (PostgreSQL database offline. Cannot verify reconciliation against authoritative ledger. Live execution blocked.); ledgerIntegrity.valid=true.
+
+--- 2. VERIFICATION OF 16 END-TO-END CRITICAL LAUNCH SCENARIOS ---
+  ✅ PASS [SCENARIO_1_GOLDEN_PATH] End-to-End Cryptographic Payment & Merkle Ledger Verification (0ms)
+       Attempt:  Verify cryptographic payment signature and existing Merkle ledger chain without synthetic mutation
+       Observed: Verified cryptographic signature and Merkle ledger integrity (0 records checked, 0 synthetic mutations).
+  ✅ PASS [SCENARIO_2_DUPLICATE_WEBHOOK_EVENT] Duplicate Payment Notification (PostgreSQL Idempotency Replay Protection) (0ms)
+       Attempt:  Submit identical transaction reference twice to verify idempotency gate
+       Observed: Duplicate transaction reference detected and blocked from second ledger credit.
+  ✅ PASS [SCENARIO_3_FORGED_BINANCE_WEBHOOK] Forged Payment Notification (Tampered Signature Rejection) (1ms)
+       Attempt:  Submit forged payment notification with tampered amount and invalid HMAC signature
+       Observed: Signature mismatch detected. Forged notification rejected with zero side effects.
+  ✅ PASS [SCENARIO_4_WRONG_AMOUNT] Payment with Wrong Amount (Underpayment / Overpayment Gate) (0ms)
+       Attempt:  Simulate Binance payment webhook where received amount does not match locked quotation
+       Observed: Mismatch detected: Expected $100, received $50. Settlement blocked.
+  ✅ PASS [SCENARIO_5_WRONG_REFERENCE] Payment with Wrong Reference (Unknown Order Rejection) (0ms)
+       Attempt:  Query PostgreSQL authoritative payment_intents & quotes for non-existent quote intent reference
+       Observed: Non-existent reference confirmed absent in PostgreSQL authoritative state and safely rejected. No orphaned capital allocated.
+  ✅ PASS [SCENARIO_6_DUPLICATE_CUSTOMER_REQUEST] Duplicate Customer Request (Replay Protection) (0ms)
+       Attempt:  Submit identical client request nonce within the duplicate submission window
+       Observed: Duplicate nonce detected. Cached response returned without re-executing.
+  ✅ PASS [SCENARIO_7_PROVIDER_FAILURE] GPU Provider Failure Handling & Circuit Breaker Tracking (0ms)
+       Attempt:  Simulate hardware provider provisioning timeout or SSH drop
+       Observed: Provider failure tracked correctly (recorded failures: 1). Provider health updated with failover active.
+  ✅ PASS [SCENARIO_8_GPU_DISAPPEARS_MID_JOB] GPU Disappears Mid-Job (Durable State Machine Recovery) (0ms)
+       Attempt:  Verify crash recovery state machine readiness via read-only inspection of provider_operations and capital_reservations
+       Observed: Read-only recovery inspection verified (Stale operations: 0, Expired reservations: 0).
+  ✅ PASS [SCENARIO_9_BINANCE_MISMATCH] Binance Balance Discrepancy (Reconciliation Circuit Breaker) (2ms)
+       Attempt:  Inject balance discrepancy (+1000 minor units) between Binance Spot API balance and internal ledger
+       Observed: Discrepancy injected (+1000 minor units): Status DISCREPANCY. Discrepancy cents: 1000. Circuit breaker tripped: true. Autonomous deployment gate: HALTED.
+  ✅ PASS [SCENARIO_10_POSTGRESQL_OUTAGE] PostgreSQL Outage (Fail-Closed Execution Policy) (1ms)
+       Attempt:  Verify that LIVE execution strictly fails closed when PostgreSQL is unavailable
+       Observed: Simulated outage test: failClosedEnforced=true ("SIMULATION_LOCKDOWN: Live execution is disabled."). Active state: isConnected=false, allowed=false.
+  ✅ PASS [SCENARIO_11_WORKER_CRASH_RESTART] Worker Crash & Restart Recovery (Outbox Pattern) (0ms)
+       Attempt:  Verify outbox queue health and lease recovery readiness via read-only inspection
+       Observed: Outbox queue verified (READ-ONLY). Queue depth: 0, Dead letters: 0, Stale processing: 0.
+  ✅ PASS [SCENARIO_12_CONCURRENT_CAPITAL_MUTEX] Concurrent Requests (Advisory Mutex Double Spend Prevention) (0ms)
+       Attempt:  Simulate two concurrent execution attempts competing for the same capital reserve
+       Observed: Mutex lock blocked second transaction. Capital reserve integrity preserved.
+  ✅ PASS [SCENARIO_13_EMERGENCY_KILL_SWITCH] Emergency Kill Switch (Instant Global Capital & Execution Halt) (0ms)
+       Attempt:  Trigger GLOBAL_KILL_SWITCH; verify instant rejection of payments, orders, and provisioning
+       Observed: Kill switch successfully triggered (Active: true), verified reactive, and reset (Active: false).
+  ✅ PASS [SCENARIO_14_CANONICAL_BINANCE_RAIL_EXCLUSIVITY] Canonical Binance Payment Rail Exclusivity & Legacy Decommissioning (1ms)
+       Attempt:  Verify BINANCE is the exclusive customer payment and treasury rail and all legacy rails are decommissioned
+       Observed: Verified: BINANCE is the exclusive canonical payment rail and all legacy payment providers are decommissioned.
+  ✅ PASS [SCENARIO_15_GPU_PROVIDER_LIFECYCLE_PROBE] Real GPU Compute Provider Connectivity & Supply Lifecycle Probe (0ms)
+       Attempt:  Send authenticated GraphQL query to RunPod live API to verify account access and GPU catalog
+       Observed: RUNPOD_API_KEY lifecycle probe passed (test harness environment).
+  ✅ PASS [SCENARIO_16_EXPOSURE_CAP_BOUNDARY] Autonomous Exposure Limit Boundary Assertion (1ms)
+       Attempt:  Assert over-limit transaction rejection and within-cap transaction acceptance against BINANCE_MAX_SINGLE_EXPOSURE
+       Observed: Over-limit ($750.00): EXCEEDS_MAX_SINGLE_EXPOSURE (Blocked). Within-cap ($15.00): Approved.
+
+Scenario Battery Summary: 16/16 scenarios verified successfully.
+
+=== ALL 16 PRODUCTION LAUNCH SCENARIOS VERIFIED END-TO-END ===
+================================================================
+  BNB SMART CHAIN (BSC) TREASURY & RPC HARDENING TEST SUITE
+================================================================
+
+--- 1. REMOVE HARDCODED RPCs & ENVIRONMENT CONFIGURATION ---
+  ✅ PASS: hotWalletService.ts has removed hardcoded RPC https://bsc-dataseed1.binance.org
+  ✅ PASS: setupTreasuryWallet.ts has removed hardcoded RPC https://bsc-dataseed1.binance.org
+  ✅ PASS: hotWalletService.ts has removed hardcoded RPC https://bsc-dataseed2.binance.org
+  ✅ PASS: setupTreasuryWallet.ts has removed hardcoded RPC https://bsc-dataseed2.binance.org
+  ✅ PASS: hotWalletService.ts has removed hardcoded RPC https://bsc-dataseed3.binance.org
+  ✅ PASS: setupTreasuryWallet.ts has removed hardcoded RPC https://bsc-dataseed3.binance.org
+  ✅ PASS: hotWalletService.ts has removed hardcoded RPC https://bsc.publicnode.com
+  ✅ PASS: setupTreasuryWallet.ts has removed hardcoded RPC https://bsc.publicnode.com
+  ✅ PASS: hotWalletService.ts has removed hardcoded RPC https://binance.llamarpc.com
+  ✅ PASS: setupTreasuryWallet.ts has removed hardcoded RPC https://binance.llamarpc.com
+  ✅ PASS: SUPPORTED_NETWORKS.BSC.rpcUrls contains 0 hardcoded URLs
+  ✅ PASS: TREASURY_MIN_GAS_RESERVE_BNB defaults to 0.005 BNB
+  ✅ PASS: Parses BSC_RPC_URL (primary) and comma-separated BSC_RPC_FALLBACK_URLS (2 fallbacks)
+  ✅ PASS: First endpoint is marked PRIMARY
+  ✅ PASS: Subsequent endpoints are marked FALLBACK
+  ✅ PASS: Redacts private RPC path tokens and query credentials
+
+--- 2. ZERO-TRUST CONFIGURATION & FAIL-CLOSED INITIALIZATION ---
+  ✅ PASS: Missing TREASURY_HOT_WALLET_PRIVATE_KEY results in null wallet (fails closed)
+  ✅ PASS: isConfigured returns false when private key is omitted
+  ✅ PASS: Full status indicates UNCONFIGURED status
+  ✅ PASS: Frontend-facing networkDetails never exposes RPC URLs
+
+--- 3. DETERMINISTIC IN-MEMORY WALLET & SECRET ROTATION ---
+[HOT WALLET] Initialized authoritative treasury hot wallet: 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1
+  ✅ PASS: Derived address matches expected: 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1
+[HOT WALLET] Secret rotation detected. Old address: 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1, New address: 0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0
+  ✅ PASS: Secret rotation detected: new address derived (0xFFcf8FDEE72ac11b5c542428B35EEF5769C409f0)
+
+--- 4. PRIMARY RPC SUCCESS & HEALTH MONITORING ---
+  ✅ PASS: Selects PRIMARY RPC when healthy
+  ✅ PASS: Verified Chain ID === 56
+  ✅ PASS: Verified latest block number from PRIMARY RPC
+  ✅ PASS: Verified fresh block age (2s <= 60s)
+  ✅ PASS: Overall RPC health status is HEALTHY
+  ✅ PASS: currentActiveEndpoint matches PRIMARY RPC
+  ✅ PASS: Health state tracks chainId and latestBlock
+  ✅ PASS: Health state tracks latency
+  ✅ PASS: Health state tracks consecutiveFailures === 0
+  ✅ PASS: Health state records lastSuccessfulCheck ISO timestamp
+
+--- 5. PRIMARY RPC TIMEOUT & DETERMINISTIC FAILOVER ---
+  ✅ PASS: Automatically fails over to FALLBACK #1 when PRIMARY times out
+  ✅ PASS: Active endpoint is FALLBACK #1
+  ✅ PASS: Health status transitions to DEGRADED when running on fallback
+  ✅ PASS: PRIMARY endpoint increments consecutiveFailures on timeout
+  ✅ PASS: PRIMARY endpoint records RPC_TIMEOUT error
+
+--- 6. ALL RPCs UNAVAILABLE (FAIL-CLOSED) ---
+  ✅ PASS: Throws TREASURY_RPC_UNAVAILABLE when all RPC endpoints fail
+  ✅ PASS: No balance claim when all RPCs fail (balanceVerified=false)
+  ✅ PASS: Withdrawals strictly disabled when all RPCs fail
+  ✅ PASS: Autonomous treasury readiness fails closed when all RPCs fail
+
+--- 7. WRONG CHAIN ID, BSC TESTNET & STALE BLOCK REJECTION ---
+  ✅ PASS: Rejects Ethereum Mainnet (Chain ID 1)
+  ✅ PASS: Rejects Polygon Mainnet (Chain ID 137)
+  ✅ PASS: Rejects BSC Testnet (Chain ID 97)
+  ✅ PASS: Rejects RPC returning stale block timestamp (300s > 60s)
+  ✅ PASS: Rejects non-HTTPS RPC endpoint when NODE_ENV=production
+
+--- 8. BSC USDT CONTRACT VALIDATION ---
+  ✅ PASS: Validates official BSC USDT contract (0x55d3...7955)
+  ✅ PASS: Blocks attempt to redirect treasury operations to an unauthorized token contract
+  ✅ PASS: Rejects when USDT contract bytecode is missing on connected chain
+\n--- 9-15. SIMULATION WITHDRAWAL LOCKDOWN ---
+  ✅ PASS: Simulation lockdown rejects treasury withdrawal
+  ✅ PASS: Simulation withdrawal rejection causes no RPC broadcast
+  SKIPPED: Legacy withdrawal execution tests 9-15; live transaction paths disabled by simulation policy.
+
+--- 16. ZERO SECRET & PRIVATE URL EXPOSURE AUDIT ---
+  ✅ PASS: Private keys never appear in status payload
+  ✅ PASS: Private keys never appear in readiness payload
+
+================================================================
+  HOT-WALLET & BSC RPC TEST RESULTS: 53/53 PASSED
+================================================================
+================================================================
+  BUILD 55 — NEGATIVE GATES & REALITY ENFORCEMENT SUITE
+================================================================
+
+--- 1. SYNTHETIC HASH REJECTION ---
+  ✅ PASS: Synthetic mock output hash is rejected by Jake Grove CFO
+
+--- 2. MISSING OUTPUT BLOCKS SETTLEMENT ---
+  ✅ PASS: Settlement strictly blocked when workload output verification is missing
+  ✅ PASS: Attempted settlement without verified output throws CFO_SETTLEMENT_BLOCKED
+
+--- 3. FAKE INVOICE & ZERO-COST REJECTION ---
+  ✅ PASS: Zero or negative provider billing is rejected by Jake Grove CFO
+  ✅ PASS: Settlement with zero provider cost throws CFO_BILLING_ERROR
+
+--- 4. UNKNOWN PROVIDER BALANCES REMAIN UNKNOWN ---
+  ✅ PASS: Provider vast_ai balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider vast_ai with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider runpod balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider runpod with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider tensordock balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider tensordock with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider akash balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider akash with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider salad balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider salad with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider lightning_ai balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider lightning_ai with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider hyperstack balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider hyperstack with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider coreweave balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider coreweave with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider lambda balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider lambda with null balance does not allow unauthorized operator balance assumptions
+  ✅ PASS: Provider hostinger balance is strictly number or null (no fabricated strings/defaults)
+  ✅ PASS: Provider hostinger with null balance does not allow unauthorized operator balance assumptions
+
+--- 5. NO EXECUTABLE OFFER ON UNSATISFIED CONSTRAINTS ---
+  ✅ PASS: Impossible GPU request returns winningProvider: null
+  ✅ PASS: Decision explicitly returns NO_EXECUTABLE_OFFER code
+
+--- 6. RECONCILIATION EXCEPTION FREEZES SPENDING ---
+  ✅ PASS: Trace moved to RECONCILIATION_EXCEPTION
+  ✅ PASS: Spending is explicitly frozen for transaction with discrepancy
+
+--- 7. UNAUTHENTICATED PROVIDER EXECUTION BLOCKED ---
+  ✅ PASS: Unauthenticated execution correctly results in FAILED state
+  ✅ PASS: Execution error is populated on unauthenticated provider execution
+
+--- 8. PRE-PRODUCTION STATUS INVARIANT ---
+  ✅ PASS: firstVerifiedRevenueProven is strictly false until genuine real transaction completes
+  ✅ PASS: Financial control state displays PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN
+  ✅ PASS: Reconciliation status displays PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN
+
+================================================================
+  BUILD 55 NEGATIVE SUITE COMPLETE: 34/34 PASSED
+================================================================
+
+================================================================
+  GPU COMPUTE ARBITRAGE OS — PRODUCTION HARDENING TEST SUITE
+================================================================
+
+--- 1. REAL/LIVE ONLY & SETUP SCRIPT HARDENING ---
+  ✅ PASS: scripts/setupTreasuryWallet.ts does NOT contain Wallet.createRandom()
+  ✅ PASS: scripts/setupTreasuryWallet.ts NEVER writes private keys to disk (.env)
+  ✅ PASS: authoritative_ledger.json has zero synthetic seed records
+  ✅ PASS: primary_database.json has zero synthetic demand orders
+  ✅ PASS: primary_database.json has zero synthetic ledger entries
+
+--- 2. CANONICAL PAYMENT ARCHITECTURE & DESTINATION BINDING (BINANCE) ---
+  ✅ PASS: Canonical payment rail defaults to BINANCE
+  ✅ PASS: BinancePaymentProvider is registered in PaymentEngine
+  ✅ PASS: Payment provider statuses expose BINANCE rail
+  ✅ PASS: resolveAuthoritativeIntentDestination resolves destination exclusively from authoritative PostgreSQL payment intent
+  ✅ PASS: resolveAuthoritativeIntentDestination returns empty string (fails closed) when PostgreSQL intent has no bound destination
+  ✅ PASS: Incoming webhook supplying a mismatched destination address is strictly rejected with DESTINATION_MISMATCH
+  ✅ PASS: Payment on unauthorized network (non-BSC Chain ID 56) is strictly rejected with NETWORK_MISMATCH
+  ✅ PASS: Payment with spoofed/non-official USDT token contract is strictly rejected with TOKEN_CONTRACT_MISMATCH
+
+--- 3. AUTHENTICATION & RBAC HARDENING ---
+  ✅ PASS: Unverified browser session creation is strictly blocked in NODE_ENV=production
+  ✅ PASS: Invalid owner API key login attempt is rejected
+  ✅ PASS: Verified owner credential creates authenticated session
+  ✅ PASS: Validated session preserves OWNER RBAC role
+  ✅ PASS: .env.example has zero conflicting OWNER_API_TOKEN references
+  ✅ PASS: .env.example standardizes OWNER_API_KEY
+  ✅ PASS: .env.example enforces CUSTOMER_API_KEY
+  ✅ PASS: .env.example enforces ESCROW_SIGNING_SECRET
+  ✅ PASS: .env.example enforces QUOTE_LOCK_SECRET
+  ✅ PASS: .env.example enforces AUDIT_CHAIN_SECRET
+  ✅ PASS: .env.example enforces BINANCE_WEBHOOK_SECRET
+  ✅ PASS: CUSTOMER_API_KEY authenticates CUSTOMER session in production
+  ✅ PASS: Startup production secret validator inspects all mandatory secrets
+[HOT WALLET] TREASURY_HOT_WALLET_PRIVATE_KEY is missing, a placeholder, or not a valid 32-byte hex string. Halting (fail-closed).
+  ✅ PASS: AWS Secrets Manager JSON payload with <YOUR_32_BYTE_HEX_KEY> placeholder fails closed
+  ✅ PASS: Startup validator rejects <YOUR_32_BYTE_HEX_KEY> placeholder inside AWS Secrets Manager JSON string
+[HOT WALLET] Initialized authoritative treasury hot wallet: 0x2c7536E3605D9C16a7a3D7b1898e529396a65c23
+  ✅ PASS: AWS Secrets Manager JSON-wrapped 32-byte hex private key unwraps and initializes wallet cleanly
+
+--- 4. TREASURY CONTROLS, LIMITS & SYNTHETIC DEPOSIT REJECTION ---
+  ✅ PASS: Per-transaction limit defaults to $2,500 (observed: $2500)
+  ✅ PASS: Hourly limit defaults to $5,000 (observed: $5000)
+  ✅ PASS: Daily limit defaults to $15,000 (observed: $15000)
+  ✅ PASS: Max hot wallet balance defaults to $20,000 (observed: $20000)
+  ✅ PASS: recordInternalDeposit() without a real 66-char BSC txHash throws SYNTHETIC_DEPOSIT_FORBIDDEN
+
+--- 5. GPU PROVIDER EXACT IDs, POST-PROVISION VERIFICATION & ORPHAN RECOVERY ---
+  ✅ PASS: Non-numeric synthetic Vast.ai offer ID (vast-h100-01) is rejected without regex derivation
+  ✅ PASS: Simulation lockdown rejects GPU provisioning
+  SKIPPED: Live provisioning offer-ID validation; isolated mock test required.
+  ✅ PASS: Orphan GPU instance detector executes cleanly and returns structured report
+  ✅ PASS: Simulation lockdown rejects vast_ai termination
+  ✅ PASS: Simulation lockdown rejects runpod termination
+  ✅ PASS: Simulation lockdown rejects vast_ai termination
+  SKIPPED: Legacy live termination confirmation tests.
+
+--- 6. AUTHORITATIVE 9-STAGE & 10-STAGE FINANCIAL INTEGRITY FLOW ---
+  ✅ PASS: 10-stage production financial state machine (PAYMENT_VERIFIED -> ... -> WITHDRAWAL_CONFIRMED) matches specification
+  ✅ PASS: 10-stage state machine allows valid sequential transitions
+  ✅ PASS: 10-stage state machine strictly forbids skipping TERMINATION VERIFIED or any intermediate state
+  ✅ PASS: Transition to TERMINATION VERIFIED without confirmed provider termination fails closed
+  ✅ PASS: server/pgDatabase.ts contains zero runtime schema mutations (ALTER TABLE, DROP CONSTRAINT, ADD CONSTRAINT, ALTER COLUMN, CREATE TABLE, DROP TABLE)
+  ✅ PASS: All schema evolutions for outbox_events, capital_reservations, treasury_accounts, and treasury_ledger reside in versioned PostgreSQL migrations (supabase/migrations/20261001000002_complete_versioned_financial_migrations.sql)
+  ✅ PASS: verifiedProfitWithdrawalService.ts contains zero runtime ALTER TABLE or DROP CONSTRAINT mutations
+  ✅ PASS: Database migration 20261001000001 restores foreign keys, unique constraints, and financial integrity constraints
+  ✅ PASS: treasuryEngine.ts never deletes from immutable treasury_ledger
+  ✅ PASS: Simulation lockdown rejects withdrawals even when ownerConfirmed=true
+  ✅ PASS: Unlisted address remains rejected by the allowlist policy
+  ✅ PASS: Simulation lockdown also rejects newly allowlisted withdrawal destinations
+  ✅ PASS: Mandatory 24-hour allowlist cooldown remains enforced
+  ✅ PASS: Authoritative 9-stage financial state flow matches exact specification
+  ✅ PASS: Canonical 9-stage financial sequence (REAL_PAYMENT -> ... -> WITHDRAWABLE_BALANCE) matches exact specification
+  ✅ PASS: Valid sequential stage transition is permitted
+  ✅ PASS: Skipping financial verification stages to WITHDRAWABLE is strictly rejected
+  ✅ PASS: Projected revenue is strictly forbidden from transitioning to REALIZED_PROFIT
+  ✅ PASS: Transition to ACTUAL_PROVIDER_COST without verified provider cost evidence fails closed
+  ✅ PASS: Transition to REALIZED_PROFIT succeeds only when full settlement and actual provider cost evidence are present
+  ✅ PASS: Withdrawable profit never exceeds realized settled profit (projected profit excluded)
+
+--- 7. RECONCILIATION & AUTONOMOUS DEPLOYMENT GATE ---
+  ✅ PASS: Canonical reconciliation gate evaluates deterministically
+  ✅ PASS: Reconciliation gate evaluates deployment eligibility deterministically
+
+--- 8. DATABASE FAILURE FAIL-CLOSED IN PRODUCTION ---
+  ✅ PASS: Local JSON transaction fallback is strictly blocked when PostgreSQL is unavailable in production
+  ✅ PASS: Capital state mutation via JSON fallback is strictly blocked in production
+
+--- 9. MULTI-WORKER SINGLE-START & CRASH RECOVERY ---
+[OUTBOX WORKER] Started outbox worker worker-21567-fx8b (polling: 60000ms, startCount: 1)
+  ✅ PASS: OutboxWorker enforces single-start guarantee across duplicate start() invocations
+  ✅ PASS: CrashRecoveryService executes recovery pass safely
+
+--- 10. 14-POINT PRODUCTION READINESS GATE ---
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 1/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 2/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 3/3, Unknown: 0/2)
+🚨 [CIRCUIT BREAKER TRIPPED] Rule: MAX_CONSECUTIVE_PROVIDER_FAILURES | Reason: 3 consecutive hardware provider provisioning failures detected (Simulated hardware connection failure 3).
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 1/3, Unknown: 0/2)
+🚨 [CIRCUIT BREAKER TRIPPED] Rule: RECONCILIATION_DISCREPANCY_DETECTED | Reason: Reconciliation discrepancy of $10.00 USD detected against BINANCE_SPOT_TEST_DISC
+  ✅ PASS: LaunchGate evaluates all 14 mandatory production criteria (observed: 14)
+  ✅ PASS: All 13 end-to-end launch scenarios pass without mutating live ledger
+
+--- 11. ROI SORTING & BIG-JOB HUMAN APPROVAL GATE ---
+  ✅ PASS: Opportunities are sorted by ROI descending (238.8% ROI ranked ahead of 57.54% ROI despite lower dollar profit)
+  ✅ PASS: Standard job below big-job capital threshold ($250) does not require human approval and is immediately executable
+  ✅ PASS: Big job (>= $250 capital required) without human approval is blocked with HUMAN_APPROVAL_REQUIRED_BIG_JOB
+  ✅ PASS: Big job (>= $250 capital required) unlocks execution eligibility once humanApproved=true
+
+[11] Final Production Hardening: Migration Checksum Integrity, Zero Silent SQL Exceptions, & PG Launch Authority
+  ✅ PASS: scripts/migrateDatabase.ts enforces storedChecksum === currentChecksum and fails with MIGRATION_INTEGRITY_FAILURE on mismatch
+  ✅ PASS: Zero versioned financial SQL migrations contain silent EXCEPTION WHEN OTHERS THEN NULL blocks
+  ✅ PASS: Launch gate reality_level_live_verified queries PostgreSQL authoritative tables for synthetic/paper/live-seed records
+  ✅ PASS: Launch gate verification is strictly READ / VERIFY / REPORT and never triggers outboxWorker.pollAndExecute()
+
+================================================================
+  PRODUCTION HARDENING SUITE: 77/77 PASSED
+================================================================
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 1/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 2/3, Unknown: 0/2)
+[CIRCUIT BREAKER] Recorded failure for provider vast_ai (Consecutive: 3/3, Unknown: 0/2)
+🚨 [CIRCUIT BREAKER TRIPPED] Rule: MAX_CONSECUTIVE_PROVIDER_FAILURES | Reason: 3 consecutive hardware provider provisioning failures detected (Simulated hardware connection failure 3).
+All attack tests passed.
+[BOOTSTRAP] Local .env loading disabled outside explicit development
+
+===============================================================
+[BOOTSTRAP] GPU COMPUTE ARBITRAGE OS v13 INITIALIZATION
+[BOOTSTRAP] Mode: TEST
+===============================================================
+================================================================
+  RUNNING PHASE 2 & 3 COMMERCIAL INTAKE & SUPPLIER SUITE
+================================================================
+
+--- 1. PUBLIC QUOTE SPECIFICATION ---
+  ✅ PASS: Public quote info endpoint returns ENQUIRIES_ONLY and purchasing disabled
+
+--- 2. PUBLIC QUOTE REQUEST VALIDATION & HONEYPOT ---
+  ✅ PASS: Valid quote request successfully ingested with reference ID and status AWAITING_MANUAL_REVIEW
+  ✅ PASS: Anti-spam honeypot safely traps automated bots without storage side effects
+  ✅ PASS: Strict input boundaries reject invalid emails, counts, and duration bounds
+
+--- 3. OWNER-ONLY COMMERCIAL ENQUIRY MANAGEMENT ---
+  ✅ PASS: Authenticated owner securely retrieves genuine customer enquiry list
+  ✅ PASS: Owner lifecycle updates (NEW -> REVIEWING -> QUOTED) execute cleanly
+
+--- 4. READ-ONLY SUPPLIER CONNECTIVITY CHECKS ---
+  ✅ PASS: Vast.ai connectivity probe executed (status: KEY_REQUIRED, error: VAST_API_KEY is not configured in environment. Read-only API queries cannot authenticate.)
+  ✅ PASS: RunPod connectivity probe executed (status: KEY_REQUIRED, error: RUNPOD_API_KEY is not configured in environment. Read-only GraphQL queries cannot authenticate.)
+  ✅ PASS: Supplier connectivity report enforces read-only mode and procurement block
+
+--- 5. HARD 423 FINANCIAL EXECUTION BLOCKER ---
+  ✅ PASS: All 8 sensitive financial, provisioning, and trading routes return HTTP 423 blocker
+
+--- 6. CUSTOMER ACQUISITION & EVIDENCE-BACKED LEAD DISCOVERY ---
+  ✅ PASS: safeFeed strictly rejects non-HTTPS, localhost, and private RFC1918 subnets (anti-SSRF)
+  ✅ PASS: Owner lead discovery executes cleanly with outreachEnabled=false and purchasingEnabled=false
+  ✅ PASS: Lead querying returns verifiedCustomers=0 and realizedRevenueUsd=0
+  PASS: Manual QUALIFIED status cannot verify a customer
+  ✅ PASS: Owner status triage transitions execute cleanly and reject unauthorized mutations
+
+================================================================
+  PHASE 2 & 3 AUTOMATED VERIFICATION SUITE: ALL PASSED
+================================================================
+
+PASS: 10 prepaid-credit pilot policy cases
+PASS: missing keys, identity, inventory, sanitization, read-only requests, GraphQL errors
+PASS: 8 fail-closed prepaid reservation checks
+PASS: GPU demand API authentication, validation, supplier failure and safety flags
+PASS: GPU financial calculations and safety boundaries
+PASS: Phase 8 supplier probe regression tests
+PASS: Phase 8 owner endpoint regression tests
+PASS: Phase 9 source-level purchase locks
+PASS: supplier balance read-only probes, missing credentials, strict billing controls, schema rejection, and procurement block
+npm notice run react-example@0.0.0 test:simulation-safety
+npm notice run node test/simulationBoundaryAudit.cjs && node test/simulationGuardAudit.cjs && node test/outboxLockdownAudit.cjs && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/simulationLockdownSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/simulationRuntimeSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/liveFinancialLockdownSuite.ts
+PASS: Central simulation policy denies live execution
+PASS: Binance request handler rejects writes
+PASS: Funding manager has central guard
+PASS: Blockchain RPC rejects transaction broadcasts
+PASS: GPU provisioning has central guard
+PASS: GPU termination has central guard
+RESULT: 6/6 static checks passed
+PASS: public async withdrawToBinance(
+PASS: public async terminateComputeHardware(
+PASS: Simulation-only policy
+PASS: GPU provisioning outbox guard
+ALL 4 STATIC SAFETY CHECKS PASSED
+PASS: Central guard precedes PROCESSING update
+PASS: Success path occurs after event dispatch
+PASS: Failure path records the error
+PASS: Lockdown failures map to DEAD_LETTER
+PASS: Worker does not claim DEAD_LETTER events
+PASS: No unconditional batch success timestamp
+RESULT: 6/6 static checks passed
+PASS: Missing configuration
+PASS: All simulation
+PASS: Mixed live and simulation
+PASS: Only one live setting
+PASS: Invalid mode values
+PASS: Explicit LIVE configuration blocked
+ALL 6 POLICY TESTS PASSED
+PASS: Missing configuration
+PASS: Explicit simulation
+PASS: All LIVE
+PASS: Mixed configuration
+ALL 4 RUNTIME POLICY TESTS PASSED
+PASS: Connected-database LIVE configuration cannot provision, trade, settle, restore capital or withdraw; zero side effects
+PASS: 40 HTTP write variants blocked; read-only, enquiry and emergency-stop paths preserved
+npm notice run react-example@0.0.0 test:phase16
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase16ReadinessSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/build57NegativeSuite.ts
+PASS: Phase 16 offline RunPod, supplier/payment binding, termination quarantine and denied gateway boundaries
+================================================================
+  BUILD 57 — FINAL CRITICAL REALITY & EXECUTION FIX TEST SUITE
+================================================================
+
+--- 1. FUNDING VERIFICATION & UNAVAILABLE APIS ---
+  ✅ PASS: Vast.ai autonomous deposit fails closed with SIMULATION_LOCKDOWN
+  ✅ PASS: Attempting autonomous funding without deposit API strictly throws error
+  ✅ PASS: RunPod autonomous deposit fails closed with SIMULATION_LOCKDOWN
+  ✅ PASS: Attempting RunPod autonomous funding without deposit API strictly throws error
+  ✅ PASS: Vast.ai canAcceptAutonomousFunding is strictly false
+  ✅ PASS: RunPod canAcceptAutonomousFunding is strictly false
+  ✅ PASS: Lambda canAcceptAutonomousFunding is strictly false
+
+--- 2. WORKLOAD PROCESS EVIDENCE & OUTPUT REJECTION ---
+  ✅ PASS: Jake Grove CFO strictly rejects workload with non-zero exit code (1)
+  ✅ PASS: Settlement blocked when output proof is unverified
+  ✅ PASS: Settlement without verified workload proof throws CFO_SETTLEMENT_BLOCKED
+
+--- 3. BILLING VERIFICATION & SYNTHETIC INVOICE REJECTION ---
+  ✅ PASS: Jake Grove CFO strictly rejects synthetic "fake-bill" references
+  ✅ PASS: Synthetic invoice reference throws CFO_BILLING_ERROR
+  ✅ PASS: Jake Grove CFO strictly rejects zero-cost provider billing
+  ✅ PASS: Zero-cost provider billing throws CFO_BILLING_ERROR
+
+--- 4. HARDENED LIVE ROUTING GATES ---
+  ✅ PASS: Impossible route returns winningProvider: null
+  ✅ PASS: Impossible route returns recommendationReason starting with NO_EXECUTABLE_OFFER
+
+--- 5. RUNPOD OFFLINE CONTRACT FIXTURES ---
+  ✅ PASS: Offline fixture identity is parsed
+  ✅ PASS: Identity does not certify execution or billing
+  ✅ PASS: Balance fixture does not invent an invoice
+  ✅ PASS: Missing independent usage evidence rejects
+  ✅ PASS: Missing workload evidence does not fabricate output
+  ✅ PASS: Only two injected read-only requests occur
+
+--- 6. JAKE GROVE CFO FULL RECONCILIATION ---
+  ✅ PASS: Workload execution proof verified by Jake Grove CFO
+  ✅ PASS: CFO settlement succeeded with double-entry ledger postings
+  ✅ PASS: Final transaction status is CFO_RECONCILED
+  ✅ PASS: Realized net profit calculated exactly: $35.00 - $14.50 - $0.50 = $20.00
+  ✅ PASS: Trace lifecycleStage is CFO_RECONCILED
+  ✅ PASS: Trace treasuryReconciliation confirms Binance rail alignment
+  ✅ PASS: Double-entry journal SHA-256 chain and debit/credit balance verified
+
+--- 7. REALITY INVARIANT & PRE-PRODUCTION BANNER ---
+  ✅ PASS: firstVerifiedRevenueProven strictly false until production transaction is proven on live ledger
+  ✅ PASS: Financial control state displays PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN
+  ✅ PASS: Reconciliation status displays PRE-PRODUCTION — FIRST VERIFIED REVENUE NOT PROVEN
+
+================================================================
+  BUILD 57 TEST SUITE COMPLETE: 32/32 PASSED
+================================================================
+
+npm notice run react-example@0.0.0 test:phase18
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase18StagingSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase18AuthSuite.ts
+PASS: Phase 18 offline certification, discovery, smoke failure contracts and forwarding-header rate-limit bypass rejection
+PASS: real owner/customer RBAC, owner secret fail-closed, revoked/expired sessions, tenant ownership and login throttling (local only)
+npm notice run react-example@0.0.0 test:consolidation
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/h100FleetControllerSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/commercialLeadFilterSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/commercialQuotePlannerSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/financialExecutionPolicySuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/v5CommercialEvidenceSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/consolidationHttpSuite.ts && npm run test:provider-billing && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/prReviewSafetySuite.ts && node test/postgresHarnessSafetySuite.cjs
+H100 fleet controller tests passed
+PASS: 21 commercial lead filtering cases
+PASS: Commercial quotation integration
+PASS: Supplier cost and profit calculations
+PASS: Margin protection
+PASS: Stale catalogue rejection
+PASS: Financial execution blocked
+PASS: financial policy positive and negative cases; no financial actions executed
+PASS: V5 commercial evidence validation tests
+PASS: all new routes reject anonymous/invalid/customer auth; dashboard JS compiles; authorized read-only and disconnected-DB behavior preserve financial lockdown
+npm notice run react-example@0.0.0 test:provider-billing
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/providerBillingValidationSuite.ts
+PASS: 26 direct billing cases plus injected transport/read-only submission; no live requests
+PASS: authoritative job deduplication, unverified cost/profit and verified owner isolation behind a shared proxy peer
+PASS: password-authenticated harness and best-effort cleanup preserve startup failure
+npm notice run react-example@0.0.0 test:phase19
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/feedPublicationEvidenceSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase19OfflineFeedSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/customerLeadEvidenceSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase19ScannerIntegrationSuite.ts && NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx test/phase19SecuritySuite.ts
+PASS: 11 publication evidence cases
+PASS: 7 offline feed filtering and deduplication cases
+PASS: 6 customer evidence assessment cases
+PASS: scanner HTTP authentication, freshness, supplier filtering, deduplication and financial safety
+PASS: bounded supplier payload/cancellation, XML structure, transport injection, source URLs, advisory qualification
+npm notice run react-example@0.0.0 test:phase20
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/phase20Models.test.ts test/phase20Http.test.ts test/phase20FinancialBoundary.test.ts test/phase20Discovery.test.ts test/phase20SupplierBalance.test.ts
+✔ source registry records administrative terms review without claiming independent verification (21.557923ms)
+✔ invalid source registry cannot silently fall back to unreviewed sources (4.919923ms)
+✔ published procurement deadline expires review without inventing buyer or capacity proof (11.439ms)
+✔ date-only or impossible deadlines require human review (6.192ms)
+✔ legacy recordDoubleEntryTransaction rejects before DB and financial state mutation (15.354077ms)
+✔ legacy createReservationAtomic rejects before DB and financial state mutation (2.959692ms)
+✔ legacy consumeReservation rejects before DB and financial state mutation (1.688539ms)
+✔ legacy releaseReservation rejects before DB and financial state mutation (0.938154ms)
+✔ legacy internal credit reservation is unavailable outside explicit isolated tests (1.823692ms)
+✔ transaction errors redact callback/rollback messages and enumerable diagnostic payloads (8.235077ms)
+✔ direct settled-record insertion cannot fabricate realized financial state (2.963308ms)
+✔ owner RBAC protects Phase 20 readiness (263.257923ms)
+✔ owner RBAC protects Phase 20 gateway-preview (22.521538ms)
+✔ owner RBAC protects Phase 20 quote-preview (20.251692ms)
+✔ owner readiness reports blockers and no connected production journal (31.273538ms)
+✔ real gateway preview always denies and simulation preview never writes (72.745307ms)
+✔ quote preview requires bounded explicit evidence and cannot establish payment or capacity (20.55223ms)
+✔ oversized owner requests rejected before model assessment (8.841769ms)
+✔ owner endpoints retain a bounded request rate (79.546462ms)
+✔ gateway rejects invalid maxCostCents (20.133539ms)
+✔ gateway rejects invalid maxRuntimeMs (1.752616ms)
+✔ gateway rejects invalid gpuCount (0.844ms)
+✔ gateway rejects invalid minVramGb (0.778154ms)
+✔ gateway validates exact schema and retains simulation-only review (2.109846ms)
+✔ real requests denied before database or transport regardless of LIVE settings (5.059692ms)
+✔ simulated and manual supplier receipts can never be VERIFIED (15.983077ms)
+✔ cryptographic collector binding remains partial in offline verification (20.739769ms)
+✔ receipt rejects wrong account, expiry, future/invalid dates, unknown issuer and oversized facts (3.604923ms)
+✔ supplier hardware, pricing and billing requirements fail closed (7.909231ms)
+✔ collector enforces per-provider concurrency and cooldown with copied data (11.268923ms)
+✔ commercial PROJECTED_REVENUE cannot advance using manual or simulated evidence (2.813307ms)
+✔ commercial QUOTED_REVENUE cannot advance using manual or simulated evidence (0.944ms)
+✔ commercial CONTRACTED_REVENUE cannot advance using manual or simulated evidence (0.533769ms)
+✔ commercial INVOICED_REVENUE cannot advance using manual or simulated evidence (0.336ms)
+✔ commercial PAYMENT_VERIFIED cannot advance using manual or simulated evidence (0.30423ms)
+✔ commercial evidence never skips categories (0.673769ms)
+✔ draft quotation counts full bundle and explicitly priced overhead, tax, utilization and contingency (2.072846ms)
+✔ quotation rejects missing costs, incompatible VRAM and stale evidence (1.732ms)
+✔ FX evidence requires matching currencies, source and freshness, with conservative rounding (1.956385ms)
+✔ termination: within runtime (1.152923ms)
+✔ termination: cost cutoff (0.374538ms)
+✔ termination: overspend (0.286692ms)
+✔ termination: unknown state (0.275384ms)
+✔ termination: orphan absent (0.274385ms)
+✔ termination: continuing charges (0.309847ms)
+✔ termination: wrong account (0.280923ms)
+✔ termination: stale observation (0.268ms)
+✔ termination: retry exhausted (0.386538ms)
+✔ termination: retry backoff (0.360846ms)
+✔ termination: retry due (0.324923ms)
+✔ termination: missing final invoice (0.468077ms)
+✔ termination: simulated final invoice (0.268923ms)
+✔ termination: independent claim needs verifier (0.926462ms)
+✔ termination deadline and orphan recovery are fail closed (1.174769ms)
+✔ simulated cancellation is idempotent and rejects real resources (10.745769ms)
+✔ simulation provisioning is bound, deterministic and never claims paid capacity (2.199385ms)
+✔ read-only balance rejects malformed identities, GraphQL errors and oversized responses (359.161846ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2584.170847
+npm notice run react-example@0.0.0 test:phase21
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/phase21Readiness.test.ts test/phase21Http.test.ts test/phase21Supplier.test.ts test/phase21Agents.test.ts test/phase21Contracts.test.ts test/phase21LifecycleFaults.test.ts
+✔ bounded deterministic role LEAD_DISCOVERY (23.914461ms)
+✔ bounded deterministic role CUSTOMER_EVIDENCE (2.48277ms)
+✔ bounded deterministic role SUPPLIER_INTELLIGENCE (1.909769ms)
+✔ bounded deterministic role GPU_PRICING (1.495308ms)
+✔ bounded deterministic role QUOTATION (1.331384ms)
+✔ bounded deterministic role FINANCIAL_RISK (1.913307ms)
+✔ bounded deterministic role BILLING_RECONCILIATION (1.13223ms)
+✔ bounded deterministic role SECURITY_MONITORING (0.992ms)
+✔ bounded deterministic role INFRASTRUCTURE_HEALTH (1.452384ms)
+✔ bounded deterministic role COMPLIANCE_REVIEW (5.831385ms)
+✔ bounded deterministic role CUSTOMER_DELIVERY_VERIFICATION (1.148ms)
+✔ bounded deterministic role EXECUTIVE_REPORTING (6.877307ms)
+✔ untrusted LLM text cannot change authorization; failure degrades (11.056847ms)
+✔ lab ledger rejects outside isolated tests before connecting (1.726153ms)
+✔ vast_ai full recorded contract fails closed on missing cost/binding (22.196923ms)
+✔ runpod full recorded contract fails closed on missing cost/binding (2.640538ms)
+✔ financial model scenarios conserve cents and never report realized revenue (4.094077ms)
+✔ payment fixture cannot authorize collection, posting or recognition (4.355076ms)
+✔ runtime port is explicit and bounded (11.632847ms)
+✔ collector circuit bounds concurrent requests, backoff, failures and half-open recovery (14.336847ms)
+✔ production HTTP headers apply to actual responses without permitting cross-origin credentials (990.885ms)
+✔ readiness cannot pass before bootstrap even when database is connected (279.202462ms)
+✔ hung readiness probes are bounded and coalesced, then recover (73.424384ms)
+✔ query failure and draining fail closed without leaking error content (28.437231ms)
+✔ Phase 21 readiness requires actual owner role and reveals no secrets (39.377154ms)
+✔ emergency engagement requires owner and never issues provider termination (69.720692ms)
+{
+  event: 'REQUEST_FAILED',
+  financialExecutionAllowed: false,
+  errorCode: 'INVALID_JSON'
+}
+✔ malformed JSON responses and logs cannot echo submitted secrets (20.36623ms)
+✔ lifecycle fault retains quarantine: network partition or timeout (18.199308ms)
+✔ lifecycle fault retains quarantine: provider restart (1.406385ms)
+✔ lifecycle fault retains quarantine: partial termination (1.503385ms)
+✔ lifecycle fault retains quarantine: late final invoice absent (1.401538ms)
+✔ lifecycle fault retains quarantine: unexpected extra charge (1.705616ms)
+✔ lifecycle fault retains quarantine: missing resource ID (1.368923ms)
+✔ lifecycle fault retains quarantine: incorrect ownership (1.538154ms)
+✔ lifecycle fault retains quarantine: clock skew (1.337539ms)
+✔ lifecycle fault retains quarantine: storage still billed after stop (1.980923ms)
+✔ lifecycle fault retains quarantine: retry exhaustion (2.571077ms)
+✔ late valid simulated invoice can resolve review but cannot certify real billing (1.637461ms)
+✔ production profile accepts explicit lockdown without payment or GPU credentials (29.561539ms)
+✔ production rejects unsafe APP_OPERATING_MODE (1.965538ms)
+✔ production rejects unsafe STRICT_AUTH_ENFORCEMENT (1.253923ms)
+✔ production rejects unsafe NODE_TLS_REJECT_UNAUTHORIZED (18.819077ms)
+✔ production rejects unsafe GPU_PURCHASING_ENABLED (1.943615ms)
+✔ production rejects unsafe DB_MIGRATION_EXECUTE (14.597154ms)
+✔ production rejects unsafe ENABLE_STUDIO_AUTH_FALLBACK (3.283077ms)
+✔ production rejects unsafe RENDER_GIT_COMMIT (5.562154ms)
+✔ secret checks detect placeholders, reuse and frontend variables without disclosing values (4.988923ms)
+✔ database URL TLS options cannot disable certificate verification (19.865538ms)
+✔ discovery startup has no treasury/provider/worker dependency and fails closed on database failure (2.015923ms)
+✔ lifecycle is monotonic and drains idempotently without provider termination (4.583769ms)
+✔ hung shutdown fails within its deadline and retains draining state (71.399462ms)
+✔ observability allowlist drops secrets, headers and raw errors (2.646769ms)
+✔ migration plan rejects unknown, changed, duplicate and non-prefix history without executing (44.156923ms)
+✔ rollback review cannot execute a rollback or ignore schema/external effects (0.890231ms)
+✔ revoked collector keys invalidate fresh signed receipts without promoting test signatures (30.306384ms)
+✔ launch review remains denied for absent or simulated evidence and exact release binding (2.548615ms)
+✔ emergency stop starts engaged, survives restart as engaged, and cannot be disarmed (0.949846ms)
+✔ independent billing review cannot use simulated final-invoice claims (1.771ms)
+✔ read-only database reconnect verifies schema and recovers without runtime DDL (237.296616ms)
+✔ fixed read-only queries pin DNS and TLS without credentials in URL/results (34.100077ms)
+✔ unsafe DNS, redirects and unknown operations reject without paid transport (6.891153ms)
+✔ production cannot accept injected transports or credential header injection (1.443154ms)
+✔ account mismatch blocks inventory queries and no-auto-charge is never inferred (12.861923ms)
+✔ secret-store exceptions are sanitized before transport (1.321846ms)
+✔ provider decimal quotes use exact integer parsing and conservative explicit rounding (1.133846ms)
+ℹ tests 65
+ℹ suites 0
+ℹ pass 65
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2802.144385
+npm notice run react-example@0.0.0 test:postgres-tls
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/renderPostgresTls.test.ts test/postgresLifecycle.test.ts test/postgresDiagnostics.test.ts
+✔ classifies PostgreSQL authentication failures (15.415616ms)
+✔ classifies TLS certificate failures (1.566769ms)
+✔ classifies network failures (1.449308ms)
+✔ does not expose sensitive error messages (2.000846ms)
+✔ handles null and malformed errors safely (1.525308ms)
+✔ prototype property names are unsupported diagnostic codes (1.769231ms)
+[POSTGRES POOL ERROR] { category: 'NETWORK_RESET' }
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+✔ initialization and readiness are read-only and financial execution stays disabled (12.761ms)
+✔ pool errors fail closed and readiness recovers (10.932923ms)
+✔ schema failure never advertises a ready database and releases client (3.54ms)
+✔ DIRECT_URL uses the same verified TLS policy and drains the primary pool (8.335077ms)
+✔ invalid fallback cannot silently reuse the primary pool (2.417615ms)
+✔ close drains pool exactly once and readiness stays unavailable (3.133538ms)
+✔ discovery bootstrap failure never initializes directory or exposes financial capabilities (1.063385ms)
+✔ production cannot bypass schema verification with skipSchemaCheck (2.066846ms)
+✔ stale pool errors do not invalidate a replacement pool (3.676077ms)
+✔ readiness finishing during close cannot restore connected state (2.497538ms)
+✔ initialization finishing during close does not reopen fallback (2.073231ms)
+✔ shutdown during failover drain cannot reopen a pool (2.158846ms)
+✔ fallback cannot substitute the trusted URL authority with a driver host parameter (2.416231ms)
+✔ actual production schema verifier performs SELECTs only and verifies local checksums (8.812ms)
+✔ explicit trusted Render private-network policy uses plaintext (12.452615ms)
+✔ external PostgreSQL requires verified TLS (5.794154ms)
+✔ unknown internal-style host must not bypass TLS (0.884924ms)
+✔ non-Render environment requires TLS (0.736923ms)
+✔ insecure TLS override is rejected (1.934384ms)
+✔ trusted hostname alone does not opt into plaintext (0.839308ms)
+✔ missing trusted hostname does not opt into plaintext (1.078153ms)
+✔ explicit secure TLS settings take precedence over private policy (3.413847ms)
+✔ CA settings are preserved and driver TLS parameters removed (2.077ms)
+✔ malformed URLs produce secret-safe errors (2.006154ms)
+✔ driver overrides cannot redirect host, disable timeouts or weaken TLS (2.376308ms)
+✔ global TLS bypass fails closed (0.922462ms)
+✔ remote nonproduction connections also require authenticated TLS (0.755923ms)
+✔ hostname variations and nonstandard port do not grant plaintext (0.935923ms)
+✔ connection and query limits are bounded (0.622769ms)
+✔ installed pg driver receives verified TLS and fixed timeouts (4.994538ms)
+✔ plaintext policy explicitly overrides ambient pg SSL defaults (1.865154ms)
+✔ connection timeout closes an unresponsive local PostgreSQL handshake (5035.148ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6194.550385
+npm notice run react-example@0.0.0 test:security-regression
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/securityCheckRegression.test.ts
+✔ tracked credential literals still fail security scanning without disclosure (1250.556846ms)
+✔ runtime construction of a synthetic database fixture passes unchanged scanner (453.161231ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2481.942462
+npm notice run react-example@0.0.0 test:static-assets
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/productionStaticAssets.test.ts
+✔ production serves frontend assets and SPA routes but never backend artifacts (426.348616ms)
+✔ baseline broad static middleware exposes a co-located backend artifact (46.43877ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1740.880308
+npm notice run react-example@0.0.0 test:phase23
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/phase23DatabaseBoundaries.test.ts
+✔ legacy adapters share authoritative query and fail closed without schema DDL (207.041769ms)
+✔ invoice mutation entry points cannot run under release lockdown (4.554461ms)
+✔ shared adapter rejects work when authoritative database is unavailable (1.151154ms)
+✔ runtime source has one pool construction boundary and no runtime DDL (20.551385ms)
+✔ internal-looking external DNS and direct fallback parameters cannot bypass TLS (10.005923ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2422.861231

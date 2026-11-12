@@ -1,0 +1,24 @@
+[
+  {
+    "path": "/server.cjs",
+    "method": "HEAD",
+    "http": 200,
+    "seconds": 0.49,
+    "headers": {
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "1280298",
+      "Cache-Control": "public, max-age=0"
+    }
+  },
+  {
+    "path": "/server.cjs.map",
+    "method": "HEAD",
+    "http": 200,
+    "seconds": 0.9,
+    "headers": {
+      "Content-Type": "application/json; charset=UTF-8",
+      "Content-Length": null,
+      "Cache-Control": "public, max-age=0"
+    }
+  }
+]

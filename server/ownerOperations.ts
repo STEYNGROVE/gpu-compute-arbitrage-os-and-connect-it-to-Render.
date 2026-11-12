@@ -1,12 +1,8 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
 
 type Auth = (req: Request, res: Response, next: NextFunction) => void;
-const url = process.env.DATABASE_URL;
-const host = url ? new URL(url).hostname : '';
-const internal = host === 'localhost' || /^dpg-[a-z0-9-]+-a$/.test(host);
-const pool = url ? new Pool({ connectionString: url, ssl: internal ? undefined : { rejectUnauthorized: true }, max: 2 }) : null;
-
+const pool=configuredApplicationDatabase();
 // Read-only owner operations snapshot. Counts are not sales, signed contracts, or revenue.
 export function registerOwnerOperations(app: Express, requireOwnerAuth: Auth) {
   app.get('/api/owner/operations-summary', requireOwnerAuth, async (_req, res) => {

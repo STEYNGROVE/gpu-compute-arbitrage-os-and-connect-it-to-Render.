@@ -1,0 +1,80 @@
+npm notice run react-example@0.0.0 test:phase21
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/phase21Readiness.test.ts test/phase21Http.test.ts test/phase21Supplier.test.ts test/phase21Agents.test.ts test/phase21Contracts.test.ts test/phase21LifecycleFaults.test.ts
+✔ bounded deterministic role LEAD_DISCOVERY (22.154846ms)
+✔ bounded deterministic role CUSTOMER_EVIDENCE (1.964ms)
+✔ bounded deterministic role SUPPLIER_INTELLIGENCE (3.033538ms)
+✔ bounded deterministic role GPU_PRICING (2.81477ms)
+✔ bounded deterministic role QUOTATION (3.306384ms)
+✔ bounded deterministic role FINANCIAL_RISK (1.469231ms)
+✔ bounded deterministic role BILLING_RECONCILIATION (1.028ms)
+✔ bounded deterministic role SECURITY_MONITORING (1.706846ms)
+✔ bounded deterministic role INFRASTRUCTURE_HEALTH (4.390384ms)
+✔ bounded deterministic role COMPLIANCE_REVIEW (1.570154ms)
+✔ bounded deterministic role CUSTOMER_DELIVERY_VERIFICATION (1.243077ms)
+✔ bounded deterministic role EXECUTIVE_REPORTING (2.308847ms)
+✔ untrusted LLM text cannot change authorization; failure degrades (7.34ms)
+✔ lab ledger rejects outside isolated tests before connecting (1.812231ms)
+✔ vast_ai full recorded contract fails closed on missing cost/binding (18.347ms)
+✔ runpod full recorded contract fails closed on missing cost/binding (1.139385ms)
+✔ financial model scenarios conserve cents and never report realized revenue (2.439385ms)
+✔ payment fixture cannot authorize collection, posting or recognition (4.323ms)
+✔ runtime port is explicit and bounded (13.259462ms)
+✔ collector circuit bounds concurrent requests, backoff, failures and half-open recovery (15.284846ms)
+✔ production HTTP headers apply to actual responses without permitting cross-origin credentials (1057.384615ms)
+✔ readiness cannot pass before bootstrap even when database is connected (280.607307ms)
+✔ hung readiness probes are bounded and coalesced, then recover (78.751385ms)
+✔ query failure and draining fail closed without leaking error content (45.764846ms)
+✔ Phase 21 readiness requires actual owner role and reveals no secrets (51.444923ms)
+✔ emergency engagement requires owner and never issues provider termination (64.310461ms)
+{
+  event: 'REQUEST_FAILED',
+  financialExecutionAllowed: false,
+  errorCode: 'INVALID_JSON'
+}
+✔ malformed JSON responses and logs cannot echo submitted secrets (21.194077ms)
+✔ lifecycle fault retains quarantine: network partition or timeout (26.008307ms)
+✔ lifecycle fault retains quarantine: provider restart (0.93723ms)
+✔ lifecycle fault retains quarantine: partial termination (0.933308ms)
+✔ lifecycle fault retains quarantine: late final invoice absent (0.853ms)
+✔ lifecycle fault retains quarantine: unexpected extra charge (0.933539ms)
+✔ lifecycle fault retains quarantine: missing resource ID (2.44277ms)
+✔ lifecycle fault retains quarantine: incorrect ownership (2.662692ms)
+✔ lifecycle fault retains quarantine: clock skew (0.802077ms)
+✔ lifecycle fault retains quarantine: storage still billed after stop (1.158154ms)
+✔ lifecycle fault retains quarantine: retry exhaustion (1.021154ms)
+✔ late valid simulated invoice can resolve review but cannot certify real billing (5.300692ms)
+✔ production profile accepts explicit lockdown without payment or GPU credentials (28.580231ms)
+✔ production rejects unsafe APP_OPERATING_MODE (5.760231ms)
+✔ production rejects unsafe STRICT_AUTH_ENFORCEMENT (4.600846ms)
+✔ production rejects unsafe NODE_TLS_REJECT_UNAUTHORIZED (7.230154ms)
+✔ production rejects unsafe GPU_PURCHASING_ENABLED (3.010154ms)
+✔ production rejects unsafe DB_MIGRATION_EXECUTE (4.892616ms)
+✔ production rejects unsafe ENABLE_STUDIO_AUTH_FALLBACK (1.362693ms)
+✔ production rejects unsafe RENDER_GIT_COMMIT (1.327769ms)
+✔ secret checks detect placeholders, reuse and frontend variables without disclosing values (10.641231ms)
+✔ database URL TLS options cannot disable certificate verification (16.574692ms)
+✔ discovery startup has no treasury/provider/worker dependency and fails closed on database failure (2.72577ms)
+✔ lifecycle is monotonic and drains idempotently without provider termination (10.556308ms)
+✔ hung shutdown fails within its deadline and retains draining state (100.753923ms)
+✔ observability allowlist drops secrets, headers and raw errors (5.402231ms)
+✔ migration plan rejects unknown, changed, duplicate and non-prefix history without executing (44.045846ms)
+✔ rollback review cannot execute a rollback or ignore schema/external effects (2.209615ms)
+✔ revoked collector keys invalidate fresh signed receipts without promoting test signatures (21.949154ms)
+✔ launch review remains denied for absent or simulated evidence and exact release binding (2.712539ms)
+✔ emergency stop starts engaged, survives restart as engaged, and cannot be disarmed (1.345ms)
+✔ independent billing review cannot use simulated final-invoice claims (1.634846ms)
+✔ read-only database reconnect verifies schema and recovers without runtime DDL (260.748077ms)
+✔ fixed read-only queries pin DNS and TLS without credentials in URL/results (43.473846ms)
+✔ unsafe DNS, redirects and unknown operations reject without paid transport (9.414461ms)
+✔ production cannot accept injected transports or credential header injection (2.167769ms)
+✔ account mismatch blocks inventory queries and no-auto-charge is never inferred (16.232693ms)
+✔ secret-store exceptions are sanitized before transport (4.151461ms)
+✔ provider decimal quotes use exact integer parsing and conservative explicit rounding (4.29823ms)
+ℹ tests 65
+ℹ suites 0
+ℹ pass 65
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2859.728616

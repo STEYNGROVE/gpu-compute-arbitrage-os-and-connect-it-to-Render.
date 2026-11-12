@@ -1,0 +1,31 @@
+{
+  "attempts": [
+    {
+      "command": "npm run test:launch-recovery-postgres",
+      "result": "FAIL",
+      "evidence": "/data/data/com.termux/files/usr/tmp/recovery-postgres.log",
+      "cause": "Historical Phase23 fixture included future acquisition migration history, causing expected prefix preflight rejection before its proposal.",
+      "repair": "Historical fixture now copies only the prefix before its proposal; complete current fresh installation independently tested.",
+      "recheck": "recovery-postgres-recheck.log and recovery-postgres-final.log passed."
+    },
+    {
+      "command": "npm run audit:gpu-execution",
+      "commit": "c679f43 and a0a2428 candidates",
+      "result": "FAIL",
+      "exitCode": 1,
+      "cause": "Strict audit correctly retains five financial-execution certification blockers despite 13 passing safety controls.",
+      "repair": "Not waived. Modes B/C stay NO-GO. Full runner preserves nonzero aggregate result.",
+      "evidence": "tests-c679f43.json / tests-a0a2428.json"
+    },
+    {
+      "command": "npm test",
+      "commit": "d621b9c supplier hardening candidate",
+      "result": "FAIL",
+      "cause": "Provider readiness suite expected a human-readable payment authorization reason; the stricter guard returned only machine codes.",
+      "repair": "Retained all hard-stop reason codes and added explicit human-readable independent payment authorization explanation. No test or financial guard weakened.",
+      "evidence": "tests-d621b9c.json and combined-suite log digest"
+    }
+  ],
+  "publicRuntimeChecks": "Initial six GET attempts timed out. Later IPv4-first bounded requests returned readiness200, anonymous owner403 and backend/source-map206. See both public-runtime manifests.",
+  "hostedStagingSmoke": "Not triggered; existing workflow is manual-only and deployment is unauthorized."
+}

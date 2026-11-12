@@ -1,0 +1,45 @@
+npm notice run react-example@0.0.0 test:postgres-tls
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/renderPostgresTls.test.ts test/postgresLifecycle.test.ts
+[POSTGRES POOL ERROR] { category: 'NETWORK_RESET' }
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+✔ initialization and readiness are read-only and financial execution stays disabled (12.712615ms)
+✔ pool errors fail closed and readiness recovers (19.815769ms)
+✔ schema failure never advertises a ready database and releases client (3.026154ms)
+✔ DIRECT_URL uses the same verified TLS policy and drains the primary pool (9.831923ms)
+✔ invalid fallback cannot silently reuse the primary pool (4.467615ms)
+✔ close drains pool exactly once and readiness stays unavailable (3.205616ms)
+✔ discovery bootstrap failure never initializes directory or exposes financial capabilities (1.342385ms)
+✔ production cannot bypass schema verification with skipSchemaCheck (2.835923ms)
+✔ stale pool errors do not invalidate a replacement pool (4.445231ms)
+✔ readiness finishing during close cannot restore connected state (2.570231ms)
+✔ initialization finishing during close does not reopen fallback (2.171693ms)
+✔ explicit trusted Render private-network policy uses plaintext (16.062692ms)
+✔ external PostgreSQL requires verified TLS (6.644231ms)
+✔ unknown internal-style host must not bypass TLS (2.367615ms)
+✔ non-Render environment requires TLS (1.396692ms)
+✔ insecure TLS override is rejected (2.288077ms)
+✔ trusted hostname alone does not opt into plaintext (0.939ms)
+✔ missing trusted hostname does not opt into plaintext (1.107ms)
+✔ explicit secure TLS settings take precedence over private policy (5.949461ms)
+✔ CA settings are preserved and driver TLS parameters removed (2.448692ms)
+✔ malformed URLs produce secret-safe errors (2.088615ms)
+✔ driver overrides cannot redirect host, disable timeouts or weaken TLS (2.648308ms)
+✔ global TLS bypass fails closed (0.950154ms)
+✔ remote nonproduction connections also require authenticated TLS (0.785ms)
+✔ hostname variations and nonstandard port do not grant plaintext (2.369231ms)
+✔ connection and query limits are bounded (2.200077ms)
+✔ installed pg driver receives verified TLS and fixed timeouts (7.790077ms)
+✔ plaintext policy explicitly overrides ambient pg SSL defaults (2.097923ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1726.708616

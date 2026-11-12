@@ -1,3 +1,4 @@
+import type { ProviderPriceRecord } from "./types.js";
 import {
   GPUProvider,
   ProviderId,
@@ -6,14 +7,19 @@ import {
   HealthColor,
   CostEstimateRequest,
   CostEstimateResult,
-  ProviderTelemetryResult
-} from './types.js';
+  ProviderTelemetryResult,
+} from "./types.js";
 
 export abstract class BaseProvider implements GPUProvider {
   abstract readonly id: ProviderId;
   abstract readonly name: string;
   abstract readonly website: string;
-  abstract readonly tier: 'MARKETPLACE' | 'DECENTRALIZED' | 'DISTRIBUTED_EDGE' | 'NEOCLOUD' | 'ENTERPRISE_HYPERSCALER';
+  abstract readonly tier:
+    | "MARKETPLACE"
+    | "DECENTRALIZED"
+    | "DISTRIBUTED_EDGE"
+    | "NEOCLOUD"
+    | "ENTERPRISE_HYPERSCALER";
 
   abstract discoverGPUs(): Promise<any>;
   abstract getLivePricing(): Promise<any>;
@@ -36,48 +42,75 @@ export abstract class BaseProvider implements GPUProvider {
   /**
    * Safe fetch with strict timeout and no credential leakage
    */
-  protected async safeFetch(url: string, options: RequestInit = {}, timeoutMs = 8000): Promise<Response> {
+  protected async safeFetch(
+    url: string,
+    options: RequestInit = {},
+    timeoutMs = 8000,
+  ): Promise<Response> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const res = await fetch(url, {
         ...options,
-        signal: controller.signal
+        signal: controller.signal,
       });
       return res;
     } catch (err: any) {
-      if (err.name === 'AbortError') {
-        throw new Error(`Connection to ${this.name} timed out after ${timeoutMs}ms`);
+      if (err.name === "AbortError") {
+        throw new Error(
+          `Connection to ${this.name} timed out after ${timeoutMs}ms`,
+        );
       }
-      // Sanitize message to strip API keys or query params
-      const sanitized = (err.message || 'Unknown network error').replace(/([?&][a-zA-Z0-9_]*=)[^&]*/g, '$1[REDACTED]');
-      throw new Error(`Network failure connecting to ${this.name}: ${sanitized}`);
+      // Upstream error strings can embed authorization headers, URLs or response bodies.
+      throw new Error(`SUPPLIER_NETWORK_UNAVAILABLE: ${this.name}`);
     } finally {
       clearTimeout(timeout);
     }
+  }
+
+  /** Catalog reads do not establish all-in costs or eligibility. Unknown charges never become free charges. */
+  protected catalogOnly(records: ProviderPriceRecord[]): ProviderPriceRecord[] {
+    return records
+      .filter((row) => Number.isFinite(row.hourlyPrice) && row.hourlyPrice > 0)
+      .map((row) => ({
+        ...row,
+        evidenceLevel: "CATALOG_ONLY",
+        bindingQuote: false,
+        availabilityVerified: false,
+        additionalChargesVerified: false,
+        providerEligibilityVerified: false,
+        cpuPriceHourly: null,
+        ramPricePerGbHourly: null,
+        storagePricePerGbHourly: null,
+        networkEgressPricePerGb: null,
+        startupCost: null,
+      }));
   }
 
   /**
    * Mask credentials for display
    */
   protected maskSecret(secret?: string): string {
-    if (!secret || secret.trim().length === 0) return 'NOT_CONFIGURED';
+    if (!secret || secret.trim().length === 0) return "NOT_CONFIGURED";
     const clean = secret.trim();
-    if (clean.length <= 8) return '****';
+    if (clean.length <= 8) return "****";
     return `${clean.substring(0, 4)}...${clean.substring(clean.length - 4)}`;
   }
 
   /**
    * Generate an unknown telemetry response (Fail closed: No fake telemetry)
    */
-  protected createUnknownTelemetry(instanceId: string, reason = 'Telemetry unavailable from provider'): ProviderTelemetryResult {
+  protected createUnknownTelemetry(
+    instanceId: string,
+    reason = "Telemetry unavailable from provider",
+  ): ProviderTelemetryResult {
     return {
       providerId: this.id,
       instanceId,
       timestamp: new Date().toISOString(),
       isVerified: false,
-      source: 'UNKNOWN',
+      source: "UNKNOWN",
       gpuUtilizationPct: null,
       gpuTemperatureC: null,
       vramUsedGb: null,
@@ -90,44 +123,59 @@ export abstract class BaseProvider implements GPUProvider {
       networkOutMbps: null,
       accruedCostUsd: null,
       errorCount: 0,
-      rawTelemetry: { error: reason }
+      rawTelemetry: { error: reason },
     };
   }
 
   /**
    * Standardized health color evaluation
    */
-  protected determineHealthColor(status: ProviderStatus, authenticated: boolean): HealthColor {
-    if (status === 'LIVE') return 'GREEN';
-    if (status === 'AUTHENTICATED' || status === 'PARTIAL' || status === 'DISCOVERY_ONLY') return 'YELLOW';
-    if (status === 'CONFIGURATION_REQUIRED' || status === 'UNVERIFIED') return 'GREY';
-    return 'RED';
+  protected determineHealthColor(
+    status: ProviderStatus,
+    authenticated: boolean,
+  ): HealthColor {
+    if (status === "LIVE") return "GREEN";
+    if (
+      status === "AUTHENTICATED" ||
+      status === "PARTIAL" ||
+      status === "DISCOVERY_ONLY"
+    )
+      return "YELLOW";
+    if (status === "CONFIGURATION_REQUIRED" || status === "UNVERIFIED")
+      return "GREY";
+    return "RED";
   }
 
   /**
    * Fail closed workload response when provider API does not natively support direct workload submission
    */
-  protected createUnavailableWorkload(workloadId: string, reason = 'Workload submission API not natively supported by provider'): any {
+  protected createUnavailableWorkload(
+    workloadId: string,
+    reason = "Workload submission API not natively supported by provider",
+  ): any {
     return {
       success: false,
       workloadId,
       providerId: this.id,
-      status: 'UNAVAILABLE',
+      status: "UNAVAILABLE",
       submittedAtIso: new Date().toISOString(),
-      error: reason
+      error: reason,
     };
   }
 
   /**
    * Fail closed output response when provider API does not natively support direct artifact retrieval
    */
-  protected createUnavailableOutput(workloadId: string, reason = 'Workload output API not natively supported by provider'): any {
+  protected createUnavailableOutput(
+    workloadId: string,
+    reason = "Workload output API not natively supported by provider",
+  ): any {
     return {
       workloadId,
       providerId: this.id,
-      status: 'UNAVAILABLE',
+      status: "UNAVAILABLE",
       outputArtifactUrls: [],
-      error: reason
+      error: reason,
     };
   }
 }

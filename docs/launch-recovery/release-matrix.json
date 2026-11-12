@@ -1,0 +1,88 @@
+{
+  "decisions": {
+    "PUBLIC_COMMERCIAL_LAUNCH": "NO-GO",
+    "VERIFIED_ORDER_OPERATIONS": "NO-GO",
+    "AUTOMATED_FINANCIAL_EXECUTION": "NO-GO"
+  },
+  "historicalRevenueRequiredForPublicLaunch": false,
+  "gates": [
+    {
+      "gate": "codeQuality",
+      "status": "PASS_SOURCE",
+      "evidence": "Lint, typecheck and production build: tests.json",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "tests",
+      "status": "PASS_SOURCE",
+      "evidence": "Combined and disposable PostgreSQL suites: tests.json; supplemental-tests.json",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "security",
+      "status": "FAIL_RUNTIME_EXPOSURE",
+      "evidence": "public-runtime.json; source repair tested, draft PR57 not deployed",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    },
+    {
+      "gate": "database",
+      "status": "BLOCKED_CONTINUITY",
+      "evidence": "Isolated migrations/restore passed; actual expiry/recovery unknown",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    },
+    {
+      "gate": "github",
+      "status": "PASS_ISOLATED_INTEGRATION",
+      "evidence": "PR55/56 merged locally and tested; published separate repair branch, no main merge",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "render",
+      "status": "BLOCKED_CANDIDATE_NOT_DEPLOYED",
+      "evidence": "Self-reported live c9d9033; no control-plane audit; exposure confirmed",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    },
+    {
+      "gate": "authentication",
+      "status": "PARTIAL_RUNTIME_VERIFICATION",
+      "evidence": "Local auth suites pass; live anonymous owner paths403; authenticated runtime audit pending",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    },
+    {
+      "gate": "gpuDiscovery",
+      "status": "PASS_READ_ONLY_CATALOG",
+      "evidence": "12 RunPod priced rows;48 unverified Akash candidates; no funded demand verified",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "customerAcquisition",
+      "status": "PASS_SOURCE_NOT_COMMERCIAL_VALIDATION",
+      "evidence": "Source-backed discovery and expiry tests; no paying customer/qualified contract verified",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "quotation",
+      "status": "PASS_INDICATIVE_ONLY",
+      "evidence": "Profitability and cost unknown rejection tested; binding quote disabled",
+      "minimumRemainingAction": "Review source evidence; verify actual deployed behavior before release."
+    },
+    {
+      "gate": "financialSafeguards",
+      "status": "PASS_DISABLED_FINANCIAL_CERTIFICATION_BLOCKED",
+      "evidence": "Purchase boundaries pass; strict execution audit exits1 with5 certification blockers",
+      "minimumRemainingAction": "Maintain disabled execution and obtain independent evidence/owner authorization for any financial mode."
+    },
+    {
+      "gate": "monitoring",
+      "status": "BLOCKED_RUNTIME_AUDIT",
+      "evidence": "Readiness observation only; logs/restart/metrics unknown",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    },
+    {
+      "gate": "operations",
+      "status": "BLOCKED_CONTINUITY_AND_DEPLOYMENT",
+      "evidence": "OPERATIONS.md procedures prepared; actual recovery/approved deployment pending",
+      "minimumRemainingAction": "Complete owner-approved runtime/security/database continuity verification; see blocker register."
+    }
+  ]
+}

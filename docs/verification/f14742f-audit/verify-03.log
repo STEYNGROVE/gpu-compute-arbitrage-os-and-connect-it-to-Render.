@@ -1,0 +1,42 @@
+npm notice run react-example@0.0.0 test:postgres-tls
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/renderPostgresTls.test.ts test/postgresLifecycle.test.ts
+[POSTGRES POOL ERROR] { category: 'NETWORK_RESET' }
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+✔ initialization and readiness are read-only and financial execution stays disabled (11.309538ms)
+✔ pool errors fail closed and readiness recovers (11.153461ms)
+✔ schema failure never advertises a ready database and releases client (3.129539ms)
+✔ DIRECT_URL uses the same verified TLS policy and drains the primary pool (7.861154ms)
+✔ invalid fallback cannot silently reuse the primary pool (2.639384ms)
+✔ close drains pool exactly once and readiness stays unavailable (3.054462ms)
+✔ discovery bootstrap failure never initializes directory or exposes financial capabilities (1.243461ms)
+✔ production cannot bypass schema verification with skipSchemaCheck (2.099077ms)
+✔ stale pool errors do not invalidate a replacement pool (2.414385ms)
+✔ readiness finishing during close cannot restore connected state (2.415077ms)
+✔ explicit trusted Render private-network policy uses plaintext (10.056923ms)
+✔ external PostgreSQL requires verified TLS (6.134231ms)
+✔ unknown internal-style host must not bypass TLS (1.008307ms)
+✔ non-Render environment requires TLS (0.90177ms)
+✔ insecure TLS override is rejected (2.077308ms)
+✔ trusted hostname alone does not opt into plaintext (0.925308ms)
+✔ missing trusted hostname does not opt into plaintext (0.886077ms)
+✔ explicit secure TLS settings take precedence over private policy (3.665231ms)
+✔ CA settings are preserved and driver TLS parameters removed (2.328923ms)
+✔ malformed URLs produce secret-safe errors (2.183077ms)
+✔ driver overrides cannot redirect host, disable timeouts or weaken TLS (2.518462ms)
+✔ global TLS bypass fails closed (0.803462ms)
+✔ remote nonproduction connections also require authenticated TLS (0.919385ms)
+✔ hostname variations and nonstandard port do not grant plaintext (1.034539ms)
+✔ connection and query limits are bounded (0.651923ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1439.649231

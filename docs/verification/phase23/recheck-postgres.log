@@ -1,0 +1,106 @@
+npm notice run react-example@0.0.0 test:phase23-postgres
+npm notice run node scripts/test-phase16-postgres.cjs --phase23
+The files belonging to this database system will be owned by user "u0_a522".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C".
+The default text search configuration will be set to "english".
+
+Data page checksums are enabled.
+
+creating directory /data/data/com.termux/files/usr/tmp/phase16-pg-F8Db5x/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... mmap
+selecting default "max_connections" ... 100
+selecting default "shared_buffers" ... 128MB
+selecting default time zone ... Africa/Maseru
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+Success. You can now start the database server using:
+
+    pg_ctl -D /data/data/com.termux/files/usr/tmp/phase16-pg-F8Db5x/data -l logfile start
+
+waiting for server to start.... done
+server started
+PASS: disposable PostgreSQL rejects incorrect TCP password
+PASS: real PostgreSQL exposure query includes active and terminal matches without unrelated terminal jobs
+PASS: isolated commercial evidence migration/replay, unverified defaults, state/cost/unique/FK constraints and rollback
+PASS: acquisition proposal upgrade/reapply, legacy NULL dates, production insert concurrency/idempotency, evidence parity, rollback
+PHASE20_PG_PASS transactional migration rollback and reapply
+PHASE20_SQLSTATE 40001 INSERT INTO phase20_simulation_requests
+PHASE20_SQLSTATE 40001 INSERT INTO phase20_simulation_requests
+PHASE20_SQLSTATE 40001 INSERT INTO phase20_simulation_requests
+PHASE20_PG_PASS same-key concurrency produces one durable reservation
+PHASE20_PG_PASS payload mismatch cannot reuse idempotency key
+PHASE20_PG_PASS restart reconstructs reservation and original evidence digest
+PHASE20_PG_PASS duplicate transition is idempotent and audit-linked
+PHASE20_PG_PASS database blocks authorization, request mutation and audit rewrites
+PHASE20_PG_PASS independent processes serialize active reservations
+PHASE20_PG_PASS process death before COMMIT rolls back reservation and audit atomically
+PHASE20_PG_PASS lost COMMIT acknowledgement returns uncertainty and reload prevents duplication
+PHASE20_SQLSTATE P0001 INSERT INTO phase20_simulation_events(request_id,sequence,event_key,kind,payload_digest,previous_hash,event_hash)
+PHASE20_PG_PASS failed audit insert rolls back state and reservation
+PHASE20_PG_PASS deferred constraint rejects state without matching audit event
+PHASE20_PG_PASS restart persists stop intent, retry backoff and unresolved billing exposure
+PHASE20_PG_PASS expired reservation cannot start after restart
+PHASE20_PG_PASS daily budget retains reconciled exposure without reusing real balances
+PHASE20_POSTGRES_COUNTS {"passed":14,"failed":0,"skipped":0}
+PHASE21_PG_PASS archive proposal rollback, create and reapply
+PHASE21_PG_PASS concurrent receipt ingestion is durable and idempotent without revenue
+PHASE21_PG_PASS conflicting signed event evidence is retained and quarantines both receipts
+PHASE21_PG_PASS restart rechecks receipt expiry instead of trusting collection status
+PHASE21_PG_PASS collector key revocation invalidates archived attestations
+PHASE21_PG_PASS append-only receipts and permanent event conflict reject mutation
+PHASE21_PG_PASS credentials or unknown envelope fields reject before SQL
+PHASE21_PG_PASS event-binding failure rolls back new receipt atomically
+PHASE21_PG_PASS read-only compatibility checks detect wrong column types
+PHASE21_POSTGRES_COUNTS {"passed":9,"failed":0,"skipped":0}
+PHASE21_CONTROL_PG_PASS eight concurrent duplicate events post exactly once
+PHASE21_CONTROL_PG_PASS negative balance, cross-owner, cross-currency and decimal fail atomically
+PHASE21_CONTROL_PG_PASS reversal binds original entries and cannot replay under a new event
+PHASE21_CONTROL_PG_PASS append-only balanced event constraints and transaction rollback
+PHASE21_CONTROL_PG_PASS reconstructed ledger replays persisted event and integer conservation
+PHASE21_CONTROL_PG_PASS concurrent leases, expiration takeover, stale fence and restart
+PHASE21_CONTROL_PG_PASS disposable pg_dump restore preserves integer journal and evidence receipts
+PHASE21_CONTROL_POSTGRES_COUNTS {"passed":7,"failed":0,"skipped":0}
+PASS: isolated PostgreSQL reservation serialization across providers, duplicates, rollback/recovery, per-job/daily caps, UTC accounting and insufficient balance
+PASS: actual PostgreSQL query/statement timeout and subsequent read-only recovery
+PHASE23_PG_PASS validation-only CLI never opens the deliberately invalid database URL
+PHASE23_PG_PASS wrong database identity rejects before DDL
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /MIGRATION_INTEGRITY_FAILURE/. Input:
+
+'[MIGRATE FATAL] {\n' +
+  "  code: 'MIGRATION_TARGET_IDENTITY_MISMATCH',\n" +
+  "  category: 'UNCLASSIFIED'\n" +
+  '}\n'
+
+    at <anonymous> (/data/data/com.termux/files/home/gpu-phase21-final/test/phase23DatabaseRemediation.ts:52:58)
+    at check (/data/data/com.termux/files/home/gpu-phase21-final/test/phase23DatabaseRemediation.ts:24:62)
+    at <anonymous> (/data/data/com.termux/files/home/gpu-phase21-final/test/phase23DatabaseRemediation.ts:50:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '[MIGRATE FATAL] {\n' +
+    "  code: 'MIGRATION_TARGET_IDENTITY_MISMATCH',\n" +
+    "  category: 'UNCLASSIFIED'\n" +
+    '}\n',
+  expected: /MIGRATION_INTEGRITY_FAILURE/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v24.22.2
+waiting for server to shut down.... done
+server stopped
+Local test artifacts retained at /data/data/com.termux/files/usr/tmp/phase16-pg-F8Db5x
+Error: /data/data/com.termux/files/usr/bin/node failed: 1
+    at run (/data/data/com.termux/files/home/gpu-phase21-final/scripts/test-phase16-postgres.cjs:10:50)
+    at main (/data/data/com.termux/files/home/gpu-phase21-final/scripts/test-phase16-postgres.cjs:47:45)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

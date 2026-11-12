@@ -1,0 +1,39 @@
+test/phase23DatabaseRemediation.ts:39:const exists=async()=> (await sourceClient!.query("SELECT count(*)::int AS n FROM information_schema.columns WHERE table_schema='public' AND table_name='acquisition_leads' AND column_name='published_at'")).rows[0].n===1;
+test/phase23DatabaseRemediation.ts:55:    await sourceClient!.query('ALTER TABLE acquisition_leads ADD COLUMN published_at text');const r=runner();assert.equal(r.status,1);assert.match(r.stderr,/PHASE23_COLUMN_POLICY_CONFLICT/);
+test/phase23DatabaseRemediation.ts:57:    await sourceClient!.query('ALTER TABLE acquisition_leads DROP COLUMN published_at');
+test/phase23DatabaseRemediation.ts:67:    assert.equal((await sourceClient!.query("SELECT published_at FROM acquisition_leads WHERE id='legacy'")).rows[0].published_at,null);
+test/phase23DatabaseRemediation.ts:71:    const c=(await sourceClient!.query("SELECT data_type,is_nullable,column_default FROM information_schema.columns WHERE table_schema='public' AND table_name='acquisition_leads' AND column_name='published_at'")).rows[0];
+test/phase23DatabaseRemediation.ts:73:    await sourceClient!.query("INSERT INTO acquisition_leads(id,title,source_url,source_feed,published_at) VALUES('dated','Dated fixture','https://example.org/dated','https://example.org/feed','2026-11-12T14:00:00+02:00')");
+test/phase23DatabaseRemediation.ts:75:    const rows=(await sourceClient!.query('SELECT id,published_at FROM acquisition_leads ORDER BY id')).rows;
+test/phase23DatabaseRemediation.ts:76:    assert.equal(rows[0].published_at.toISOString(),'2026-11-12T12:00:00.000Z');assert.equal(rows[1].published_at,null);
+test/phase23DatabaseRemediation.ts:79:    for(const drift of ["ALTER TABLE acquisition_leads ALTER COLUMN published_at SET DEFAULT now()","UPDATE acquisition_leads SET published_at=now() WHERE published_at IS NULL; ALTER TABLE acquisition_leads ALTER COLUMN published_at SET NOT NULL"]){
+test/phase23DatabaseRemediation.ts:89:    assert.deepEqual((await restoreClient.query('SELECT id,title,description,published_at,discovered_at FROM acquisition_leads ORDER BY id')).rows,(await sourceClient!.query('SELECT id,title,description,published_at,discovered_at FROM acquisition_leads ORDER BY id')).rows);
+test/phase23DatabaseRemediation.ts:91:    await restoreClient.query('SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0');
+docs/PHASE19_1_REMEDIATION_20261112.md:22:| Accepted descriptions/dates discarded | Both persistence paths store description and accepted `published_at`; assessments receive that timestamp | Exact accepted URL `https://example.org/jobs/101`, description/date equality and absence of erroneous missing-date reason |
+docs/migration-proposals/20261112_phase23_acquisition_publication.sql:21:      ((column_name='published_at' AND (data_type<>'timestamp with time zone' OR is_nullable<>'YES' OR column_default IS NOT NULL))
+docs/migration-proposals/20261112_phase23_acquisition_publication.sql:28:ALTER TABLE public.acquisition_leads ADD COLUMN IF NOT EXISTS published_at timestamptz;
+docs/migration-proposals/20261112_phase19_1_acquisition_publication.sql:13:ALTER TABLE acquisition_leads ADD COLUMN IF NOT EXISTS published_at timestamptz;
+test/phase21PostgresChecks.ts:64:    const client=await pool.connect();try {await client.query('BEGIN');await client.query('ALTER TABLE acquisition_leads ALTER COLUMN published_at TYPE text');
+test/phase21PostgresChecks.ts:65:      const result=await inspectApplicationSchema(client);assert.equal(result.compatible,false);assert(result.missing.includes('acquisition_leads.published_at'));await client.query('ROLLBACK');
+test/phase20Discovery.test.ts:18:  const result=qualifyPublishedLead({title:'RFQ H100 inference',description:'Company: Example buyer; Need 2 GPUs with 80 GB VRAM. Signed contract required. Deadline: 2026-11-11T12:00:00Z',source_url:'https://example.org/rfq',source_feed:source.feedUrl,published_at:'2026-11-10T12:00:00Z'},new Date(now));
+test/phase20Discovery.test.ts:25:    const result=qualifyPublishedLead({title:'RFQ GPU inference',description:'Deadline: '+deadline,source_url:'https://example.org/rfq',source_feed:source.feedUrl,published_at:'2026-11-10T12:00:00Z'},new Date(now));
+test/phase19SecuritySuite.ts:28:  source_url:'https://example.org/rfq/1', source_feed:'https://example.org/feed', published_at:'2026-11-10T12:00:00Z'
+test/phase19ScannerIntegrationSuite.ts:163:    assert.equal(retained.published_at, new Date(date(1)).toISOString());
+server/leadQualification.ts:7:  published_at?: string | Date | null;
+server/leadQualification.ts:10:  const timestamp = lead.published_at instanceof Date ? lead.published_at.getTime()
+server/leadQualification.ts:11:    : lead.published_at ? strictPublicationTimestamp(lead.published_at) : NaN;
+test/phase19AcquisitionPostgresChecks.ts:20:  assert.equal((await pool.query("SELECT published_at FROM acquisition_leads WHERE id='legacy'")).rows[0].published_at, null);
+test/phase19AcquisitionPostgresChecks.ts:24:    published_at:'2026-11-10T12:00:00.000Z', discovered_at:'2026-11-12T12:00:00Z', status:'CANDIDATE'
+test/phase19AcquisitionPostgresChecks.ts:30:  assert.equal(stored.published_at.toISOString(), lead.published_at);
+test/phase19AcquisitionPostgresChecks.ts:36:  assert.equal(inMemoryLeadsStore[0].published_at, stored.published_at.toISOString());
+test/phase19AcquisitionPostgresChecks.ts:37:  assert.equal(assessCustomerLeadEvidence({title:stored.title,description:stored.description,sourceUrl:stored.source_url,publishedAt:stored.published_at.toISOString()},new Date('2026-11-12T12:00:00Z')).status, 'CANDIDATE');
+server/leadDiscovery.ts:20:  published_at?: string | Date | null;
+server/leadDiscovery.ts:63:        'SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0'
+server/leadDiscovery.ts:88:      `INSERT INTO acquisition_leads (id,title,source_url,source_feed,description,published_at)
+server/leadDiscovery.ts:90:      [lead.id, lead.title, lead.source_url, lead.source_feed, lead.description ?? null, lead.published_at ?? null]
+server/leadDiscovery.ts:143:        if (!qualifyPublishedLead({title,description,source_url:'',source_feed:feed,published_at:publication.publishedAt}).freshForReview) {reject('PROCUREMENT_DEADLINE_PASSED');continue;}
+server/leadDiscovery.ts:154:          id, title, description, published_at: publication.publishedAt,
+server/leadDiscovery.ts:181:      publishedAt: lead.published_at instanceof Date ? lead.published_at.toISOString() : lead.published_at ?? null,
+server/leadDiscovery.ts:227:          'SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads ORDER BY discovered_at DESC LIMIT 100'
+server/pgDatabase.ts:225:    if(process.env.NODE_ENV==='production')await client.query('SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0');
+server/phase21/migrations.ts:28:    acquisition_leads:{id:'text',title:'text',source_url:'text',source_feed:'text',description:'text',published_at:'timestamp with time zone',discovered_at:'timestamp with time zone',status:'text'},

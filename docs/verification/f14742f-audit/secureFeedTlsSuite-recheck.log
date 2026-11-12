@@ -1,0 +1,4 @@
+PASS: Untrusted certificate rejected
+PASS: TLS hostname mismatch rejected
+PASS: Trusted matching certificate accepted
+TLS SECURITY SUITE: ALL PASSED

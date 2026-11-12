@@ -1,0 +1,136 @@
+{
+  "sourceBaseline": "03a30b8862627336209d383614f3b14b305ec9ea",
+  "runtimeSourceUnchangedInPhase24": true,
+  "node": "v24.22.2",
+  "npm": "12.2.1",
+  "platform": "Android-16-aarch64-64bit-ELF",
+  "lockfileVersion": 3,
+  "dependencyRecords": 353,
+  "npmLsExit": 0,
+  "npmLsProblems": [],
+  "files": [
+    {
+      "path": "package-lock.json",
+      "sha256": "5b58152d6e52c754520b66483648e2cb7c0274dc2aa851f1e85ca1fe459fa72e",
+      "bytes": 166582
+    },
+    {
+      "path": "package.json",
+      "sha256": "ee7f0c0eea47b0fdfb3b11eac972cc0f1a16a7a0f5e8afa194a835b23e6bb054",
+      "bytes": 7662
+    },
+    {
+      "path": "dist/assets/index-CDExfTfg.css",
+      "sha256": "29b3703bd1e56859ced9bc0aa5573218b5a74fc0c5505af88fff1ba2cf34c143",
+      "bytes": 91991
+    },
+    {
+      "path": "dist/assets/index-GcEC0zv9.js",
+      "sha256": "3b67190ba3dbb0d0e1b9c1e36802061aaaa151525830b196446a8a2358af2d11",
+      "bytes": 1536041
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "0605710bb9bf274121cf4c21c984b58bb7041ad9c86958ba69d921337fc4a16d",
+      "bytes": 1423
+    },
+    {
+      "path": "dist/server.cjs",
+      "sha256": "c75d6f2b6a8b408d8ae7d17b9c0cd4796d2eebc09d65674320c1af40b831f5b4",
+      "bytes": 1361863
+    },
+    {
+      "path": "dist/server.cjs.map",
+      "sha256": "9dcbe119a72320e8d0478799a49d4e9d5a60862ee05148890e58e803f3882e2a",
+      "bytes": 2447824
+    }
+  ],
+  "provenanceLimit": "LOCAL_BUILD_ONLY_NOT_SIGNED_OR_DEPLOYED_ARTIFACT",
+  "hostedArtifacts": 0,
+  "actionsPinnedToImmutableSha": false,
+  "liveBuildUsesNpmCi": false,
+  "initialMetadataFlags": [
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core",
+      "issue": "NON_SHA512_INTEGRITY"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime",
+      "issue": "NON_SHA512_INTEGRITY"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+      "issue": "NON_SHA512_INTEGRITY"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime",
+      "issue": "NON_SHA512_INTEGRITY"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util",
+      "issue": "NON_SHA512_INTEGRITY"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib",
+      "issue": "NON_NPM_HTTPS_RESOLUTION"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib",
+      "issue": "NON_SHA512_INTEGRITY"
+    }
+  ],
+  "bundledExceptions": [
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/core",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/runtime",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@emnapi/wasi-threads",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@napi-rs/wasm-runtime",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/@tybys/wasm-util",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    },
+    {
+      "package": "node_modules/@tailwindcss/oxide-wasm32-wasi/node_modules/tslib",
+      "reason": "Bundled inside parent archive; parent has npm HTTPS resolution and SHA512 integrity",
+      "parent": "node_modules/@tailwindcss/oxide-wasm32-wasi"
+    }
+  ],
+  "unexplainedLockPolicyIssues": [],
+  "verificationLimit": "Lock metadata and installed dependency graph inspected; no independent rebuild or cryptographic audit of every installed file. npm ci used by passing hosted workflows."
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedIntegrationSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedIntegrationSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedDnsIsolationSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedDnsIsolationSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedTransportSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedTransportSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedDnsPinningSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedDnsPinningSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedDnsEdgeSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedDnsEdgeSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedTlsSuite.ts",
+    "exit_code": 1,
+    "log": "secureFeedTlsSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedSocketSuite.ts",
+    "exit_code": 1,
+    "log": "secureFeedSocketSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedFinalNetworkSuite.ts",
+    "exit_code": 1,
+    "log": "secureFeedFinalNetworkSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedTimeoutSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedTimeoutSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedNode24LookupSuite.ts",
+    "exit_code": 1,
+    "log": "secureFeedNode24LookupSuite.log"
+  },
+  {
+    "command": "NODE_ENV=test DISABLE_JSON_PERSISTENCE=true node --import tsx test/secureFeedNode24ProductionSuite.ts",
+    "exit_code": 0,
+    "log": "secureFeedNode24ProductionSuite.log"
+  }
+]

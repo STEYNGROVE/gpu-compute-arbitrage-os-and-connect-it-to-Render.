@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-12T18:50:00.124Z",
+  "results": [
+    {
+      "adapter": "akash",
+      "status": "rejected",
+      "error": "SOURCE_HTTP_501"
+    },
+    {
+      "adapter": "runpod",
+      "status": "fulfilled",
+      "candidates": 0,
+      "offers": 14,
+      "sourceUrl": "https://api.runpod.io/graphql",
+      "responseDigest": "54ce017ac25ab800a35a28401a9164c49eb1bac12b977b3a764bee9dddb60ce2"
+    }
+  ]
+}

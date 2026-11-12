@@ -1,0 +1,69 @@
+{
+  "checkedAt": "2026-11-12T22:04:33.529Z",
+  "status": "READ_ONLY_COLLECTION_SUCCEEDED",
+  "candidates": 48,
+  "fundingVerified": false,
+  "financialExecutionAllowed": false,
+  "evidence": {
+    "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+    "retrievedAt": "2026-11-12T22:04:32.404Z",
+    "responseDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+    "notes": "Open chain orders only. Deployment/escrow, per-block pricing, duration, SDL, provider registration and award require independent review. Deployment source: https://api.akashnet.net/akash/deployment/v1beta4/deployments/list. Deployment response digest: 17553b13cde4855165966c5eb1ffec35063c420717df8f3c830187539cf6697b"
+  },
+  "samples": [
+    {
+      "id": "akash:akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805457:1:1",
+      "source": "akash",
+      "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+      "retrievedAt": "2026-11-12T22:04:32.404Z",
+      "expiresAt": "2026-11-12T22:05:32.404Z",
+      "evidenceDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+      "title": "Akash open GPU order akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805457:1:1",
+      "discoveredRequirements": [
+        {
+          "gpuUnits": 1,
+          "replicas": 1,
+          "pricePerBlock": "10000.000000000000000000",
+          "currencyDenom": "ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1"
+        }
+      ],
+      "funding": "UNVERIFIED"
+    },
+    {
+      "id": "akash:akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805471:1:1",
+      "source": "akash",
+      "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+      "retrievedAt": "2026-11-12T22:04:32.404Z",
+      "expiresAt": "2026-11-12T22:05:32.404Z",
+      "evidenceDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+      "title": "Akash open GPU order akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805471:1:1",
+      "discoveredRequirements": [
+        {
+          "gpuUnits": 1,
+          "replicas": 1,
+          "pricePerBlock": "10000.000000000000000000",
+          "currencyDenom": "ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1"
+        }
+      ],
+      "funding": "UNVERIFIED"
+    },
+    {
+      "id": "akash:akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805486:1:1",
+      "source": "akash",
+      "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+      "retrievedAt": "2026-11-12T22:04:32.404Z",
+      "expiresAt": "2026-11-12T22:05:32.404Z",
+      "evidenceDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+      "title": "Akash open GPU order akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805486:1:1",
+      "discoveredRequirements": [
+        {
+          "gpuUnits": 1,
+          "replicas": 1,
+          "pricePerBlock": "10000.000000000000000000",
+          "currencyDenom": "ibc/170C677610AC31DF0904FFE09CD3B5C657492170E7E52372E48756B71E56F2F1"
+        }
+      ],
+      "funding": "UNVERIFIED"
+    }
+  ]
+}

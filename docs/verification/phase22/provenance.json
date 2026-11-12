@@ -1,0 +1,13 @@
+{
+  "repository": "STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render.",
+  "audited_commit": "f14742f5b3ff89e6e6ba9021728e3ef628ca1850",
+  "audit_report_commit": "6f71b7b474650f1747026841769789c4732b87f3",
+  "audit_report_branch": "audit/f14742f-postgres-security",
+  "audit_report_blob": "bf50102e120523b5884fa6b152e3f5fcfcffe5d6",
+  "phase22_code_commit": "fa46aea7a329bc0c2c506a161539a2b853894a9a",
+  "phase22_branch": "remediation/phase22-release-gates",
+  "phase22_pr": 51,
+  "baseline_worktree": "clean",
+  "phase22_production_source_diff": "",
+  "evidence_scope": "local fixtures and GitHub read-only API; no production verification"
+}

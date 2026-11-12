@@ -1,0 +1,39 @@
+{
+  "sourcePRsUnchanged": true,
+  "threadsResolvedRemotely": false,
+  "findings": [
+    {
+      "pr": 55,
+      "files": [
+        "scripts/migrateDatabase.ts",
+        "server/commercialIntake.ts",
+        "server/pgDatabase.ts"
+      ],
+      "disposition": "Repaired on isolated candidate; source threads left truthful/unresolved."
+    },
+    {
+      "pr": 56,
+      "files": [
+        "server/prefunded/adapters.ts",
+        "server/prefunded/matching.ts",
+        "src/components/PrefundedHunterDashboard.tsx"
+      ],
+      "disposition": "All five inline findings repaired on candidate."
+    },
+    {
+      "pr": 55,
+      "files": [
+        "docs/verification/phase22/run-verification.py",
+        "docs/verification/phase22-followup/run-verification.py"
+      ],
+      "disposition": "General review exit-status findings confirmed and fixed across all six related collectors."
+    },
+    {
+      "pr": 56,
+      "files": [
+        "server/prefunded/journal.ts"
+      ],
+      "disposition": "Committed-head optional suggestion investigated and deferred with documented external-anchoring limitation."
+    }
+  ]
+}

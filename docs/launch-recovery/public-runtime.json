@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-11-12T22:41:04.682Z",
+  "base": "https://gpu-arbitrage-simulation-staging.onrender.com",
+  "probe": "IPV4_FIRST_BOUNDED_READ_ONLY_TLS_VERIFIED_DEFAULT",
+  "results": [
+    {
+      "path": "/api/health",
+      "status": "UNREACHABLE",
+      "elapsedMs": 30042
+    },
+    {
+      "path": "/api/ready",
+      "httpStatus": 200,
+      "elapsedMs": 26146,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": "no-store",
+      "bytesRead": 95,
+      "truncated": false,
+      "responsePrefixDigest": "e32f8cfe2a411e6af4d110ee6ad47d57c303e0b5192dc5f0e9ea2eba51ecd71a",
+      "status": "ready",
+      "database": "connected",
+      "revision": "c9d903330db55892ed2d4f18a2e54524917a85b4"
+    },
+    {
+      "path": "/api/owner/phase21/readiness",
+      "httpStatus": 403,
+      "elapsedMs": 26132,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": null,
+      "bytesRead": 160,
+      "truncated": false,
+      "responsePrefixDigest": "129f48e15c692bec1dd7863b9de3d52b535844eaaf47cfd718b56b62cd3d75aa",
+      "status": "forbidden"
+    },
+    {
+      "path": "/api/owner/prefunded-hunter",
+      "httpStatus": 403,
+      "elapsedMs": 26134,
+      "contentType": "application/json; charset=utf-8",
+      "cacheControl": null,
+      "bytesRead": 160,
+      "truncated": false,
+      "responsePrefixDigest": "129f48e15c692bec1dd7863b9de3d52b535844eaaf47cfd718b56b62cd3d75aa",
+      "status": "forbidden"
+    },
+    {
+      "path": "/server.cjs",
+      "httpStatus": 206,
+      "elapsedMs": 26101,
+      "contentType": "application/octet-stream",
+      "cacheControl": "public, max-age=0",
+      "bytesRead": 4096,
+      "truncated": false,
+      "responsePrefixDigest": "8b052bad4b486a1a98f24acc9343f4d93729965da49368074c058170a00164c1"
+    },
+    {
+      "path": "/server.cjs.map",
+      "httpStatus": 206,
+      "elapsedMs": 26128,
+      "contentType": "application/json; charset=UTF-8",
+      "cacheControl": "public, max-age=0",
+      "bytesRead": 4096,
+      "truncated": false,
+      "responsePrefixDigest": "df16d547500d01f2e53c5d0b85364c001bdaecfbe8a3c871d4956fc3e6f5f69e"
+    },
+    {
+      "path": "/dist/server.cjs",
+      "httpStatus": 206,
+      "elapsedMs": 26113,
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": "public, max-age=0",
+      "bytesRead": 1423,
+      "truncated": false,
+      "responsePrefixDigest": "8c3a86d4bd174f05474ce1ec6ef9102a63f510f42642f2f6ba5385452a49eea4"
+    },
+    {
+      "path": "/dist/server.cjs.map",
+      "httpStatus": 206,
+      "elapsedMs": 26133,
+      "contentType": "text/html; charset=UTF-8",
+      "cacheControl": "public, max-age=0",
+      "bytesRead": 1423,
+      "truncated": false,
+      "responsePrefixDigest": "8c3a86d4bd174f05474ce1ec6ef9102a63f510f42642f2f6ba5385452a49eea4"
+    }
+  ]
+}

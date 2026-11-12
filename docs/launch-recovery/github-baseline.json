@@ -1,0 +1,111 @@
+{
+  "defaultBranch": "main",
+  "defaultRevision": "1d450b95e6d1eb79128e407902c53df2818f010e",
+  "prs": [
+    {
+      "baseRefName": "main",
+      "headRefName": "integration/phase25-unified-system",
+      "headRefOid": "4854260a7443da1e81b06944d524c335477f8507",
+      "mergeStateStatus": "CLEAN",
+      "mergeable": "MERGEABLE",
+      "number": 55,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T15:50:39Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43251853979/job/131299469344",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T15:49:00Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T15:49:54Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43251853813/job/131299469569",
+          "name": "offline",
+          "startedAt": "2026-11-12T15:49:00Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T15:48:57Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43251853813/job/131299472176",
+          "name": "staging",
+          "startedAt": "2026-11-12T15:48:57Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T15:59:27Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://app.coderabbit.ai/change-stack/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/55",
+          "name": "CodeRabbit",
+          "startedAt": "2026-11-12T15:50:27Z",
+          "status": "COMPLETED",
+          "workflowName": ""
+        }
+      ]
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "feature/prefunded-gpu-job-hunter",
+      "headRefOid": "17b10ebfcaf4c7c3cbccea84f8fab5d506da0047",
+      "mergeStateStatus": "CLEAN",
+      "mergeable": "MERGEABLE",
+      "number": 56,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T19:14:23Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43287918873/job/131426118641",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T19:13:21Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T19:14:02Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43287918894/job/131426119032",
+          "name": "offline",
+          "startedAt": "2026-11-12T19:13:21Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T19:13:19Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43287918894/job/131426121510",
+          "name": "staging",
+          "startedAt": "2026-11-12T19:13:19Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T19:29:08Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://app.coderabbit.ai/change-stack/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/56",
+          "name": "CodeRabbit",
+          "startedAt": "2026-11-12T19:20:34Z",
+          "status": "COMPLETED",
+          "workflowName": ""
+        }
+      ]
+    }
+  ],
+  "mergeBase55And56": "1d450b95e6d1eb79128e407902c53df2818f010e",
+  "mainProtection": "API_404_BRANCH_NOT_PROTECTED",
+  "writeAccess": "Git/gh authenticated owner path previously verified; connector write endpoints returned 403 while reads succeeded; exact installation grant not exposed."
+}

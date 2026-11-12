@@ -1,4 +1,6 @@
-import {productionHeaders,runtimePort} from './server/phase21/httpSecurity.js';
+import {registerProductionStatic} from './server/phase21/staticAssets.js';
+import { registerPrefundedHunter } from './server/prefunded/routes.js';
+import {productionHeaders,runtimePort,safeHtmlText} from './server/phase21/httpSecurity.js';
 import { registerPhase21Readiness } from './server/phase21/routes.js';
 import { deploymentLifecycle, gracefulShutdown } from './server/phase21/lifecycle.js';
 import { operationalEvent, safeRequestErrorHandler } from './server/phase21/observability.js';
@@ -195,6 +197,7 @@ registerBuyerEvidenceImport(app, requireOwnerAuth);
 registerLeadDiscovery(app, requireOwnerAuth);
 registerPhase20Readiness(app, requireOwnerAuth);
 registerPhase21Readiness(app, requireOwnerAuth);
+registerPrefundedHunter(app, requireOwnerAuth);
 registerSupplierDiagnostics(app, requireOwnerAuth);
 registerSupplierBalanceDiagnostics(app, requireOwnerAuth);
 
@@ -5136,15 +5139,15 @@ app.post('/api/safety/kill-switches/toggle', requireAdminAuth, async (req, res) 
 
 // Payment Customer Return Handlers
 app.get('/api/payments/success', async (req, res) => {
-  const intentId = req.query.intent_id as string;
+  const intentId = safeHtmlText(req.query.intent_id);
 
   res.send(`
     <html>
-      <head><title>Payment Successful</title><style>body{font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;} .card{background:#111827;padding:32px;border-radius:12px;border:1px solid #1f2937;text-align:center;max-width:420px;}</style></head>
+      <head><title>Payment Verification Pending</title><style>body{font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;} .card{background:#111827;padding:32px;border-radius:12px;border:1px solid #1f2937;text-align:center;max-width:420px;}</style></head>
       <body>
         <div class="card">
-          <h2 style="color:#34d399;">Payment Completed</h2>
-          <p style="color:#9ca3af;font-size:14px;">Your GPU compute escrow funding has been confirmed and credited to the PostgreSQL authoritative ledger.</p>
+          <h2 style="color:#34d399;">Payment Verification Pending</h2>
+          <p style="color:#9ca3af;font-size:14px;">Payment status is awaiting verification. Check your account for the confirmed result.</p>
           <p style="font-family:monospace;font-size:12px;color:#38bdf8;">Intent: ${intentId || 'N/A'}</p>
           <a href="/" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#0284c7;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Return to Dashboard</a>
         </div>
@@ -5154,14 +5157,14 @@ app.get('/api/payments/success', async (req, res) => {
 });
 
 app.get('/api/payments/cancel', (req, res) => {
-  const intentId = req.query.intent_id as string;
+  const intentId = safeHtmlText(req.query.intent_id);
   res.send(`
     <html>
-      <head><title>Payment Cancelled</title><style>body{font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;} .card{background:#111827;padding:32px;border-radius:12px;border:1px solid #1f2937;text-align:center;max-width:420px;}</style></head>
+      <head><title>Checkout Closed</title><style>body{font-family:sans-serif;background:#090d16;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;} .card{background:#111827;padding:32px;border-radius:12px;border:1px solid #1f2937;text-align:center;max-width:420px;}</style></head>
       <body>
         <div class="card">
-          <h2 style="color:#f87171;">Payment Cancelled</h2>
-          <p style="color:#9ca3af;font-size:14px;">No funds were charged. You can resume checkout at any time.</p>
+          <h2 style="color:#f87171;">Checkout Closed</h2>
+          <p style="color:#9ca3af;font-size:14px;">Checkout is closed. Check your account for payment or refund status.</p>
           <p style="font-family:monospace;font-size:12px;color:#9ca3af;">Intent: ${intentId || 'N/A'}</p>
           <a href="/" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#374151;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Return to Dashboard</a>
         </div>
@@ -5180,16 +5183,7 @@ async function start() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.use('/api', (_req, res) => {
-      res.status(404).json({
-        status: 'not_found',
-        error: 'API_ROUTE_NOT_FOUND'
-      });
-    });
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
+    registerProductionStatic(app,distPath);
   }
 
   app.use(safeRequestErrorHandler);

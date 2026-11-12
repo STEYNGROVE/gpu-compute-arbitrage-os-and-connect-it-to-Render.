@@ -1,5 +1,5 @@
 /** Creates and stops only its own disposable local PostgreSQL cluster. Never uses DATABASE_URL. */
-const { mkdtempSync, writeFileSync, unlinkSync } = require('node:fs');
+const { mkdtempSync, writeFileSync, unlinkSync, chmodSync } = require('node:fs');
 const { randomBytes } = require('node:crypto');
 const { tmpdir } = require('node:os');
 const { join } = require('node:path');
@@ -20,16 +20,23 @@ async function main() {
   const password = randomBytes(32).toString('hex');
   const passwordFile = join(root, 'password');
   writeFileSync(passwordFile, password, {mode: 0o600});
+  const phase23=process.argv.includes('--phase23');
+  const cert=join(root,'fixture.crt'),key=join(root,'fixture.key');
   let startupAttempted = false;
   let failed = false;
   try {
+    if(phase23){
+      run('openssl',['req','-x509','-newkey','rsa:2048','-nodes','-keyout',key,'-out',cert,'-days','1','-subj','/CN=phase23-fixture','-addext','subjectAltName=IP:127.0.0.1']);
+      chmodSync(key,0o600);
+    }
     run('initdb', ['-D', cluster, '-U', 'phase16_testowner', '--auth-local=trust', '--auth-host=scram-sha-256', '--pwfile', passwordFile, '--no-locale']);
     unlinkSync(passwordFile);
     startupAttempted = true;
     // If the selected port is taken in the meantime, startup fails; never use its occupant.
-    run('pg_ctl', ['-D', cluster, '-l', join(root, 'postgres.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}`, '-w', 'start']);
+    run('pg_ctl', ['-D', cluster, '-l', join(root, 'postgres.log'), '-o', `-h 127.0.0.1 -p ${port} -k ${root}${phase23?' -c ssl=on -c ssl_cert_file='+cert+' -c ssl_key_file='+key:''}`, '-w', 'start']);
     run('createdb', ['-h', root, '-p', String(port), '-U', 'phase16_testowner', 'phase16_test']);
     const env = { ...process.env, NODE_ENV: 'test', DISABLE_JSON_PERSISTENCE: 'true',
+      TEST_DATABASE_SSL_CA:phase23?cert:undefined,
       TEST_DATABASE_URL: `postgresql://phase16_testowner:${password}@127.0.0.1:${port}/phase16_test`, ALLOW_ISOLATED_GPU_DB_TEST: 'YES' };
     delete env.DATABASE_URL;
     run(process.execPath, ['-e', `
@@ -43,6 +50,9 @@ async function main() {
       } finally {await client.end();}})().catch(e=>{console.error(e.message);process.exitCode=1;});
     `], env);
     run(process.execPath, ['--import', 'tsx', 'test/prepaidPostgresIntegrationSuite.ts'], env);
+    run(process.execPath, ['--import', 'tsx', 'test/postgresTimeoutIntegration.ts'], env);
+    if(process.argv.includes('--launch-recovery'))run(process.execPath,['--import','tsx','test/launchRecoveryPostgres.ts'],env);
+    if (process.argv.includes('--phase23')) run(process.execPath, ['--import', 'tsx', 'test/phase23DatabaseRemediation.ts'], env);
     console.log('PASS: disposable local reservation certification; broader financial-system certification remains blocked');
   } catch (error) {
     failed = true;

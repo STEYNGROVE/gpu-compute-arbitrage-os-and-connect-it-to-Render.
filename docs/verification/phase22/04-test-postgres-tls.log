@@ -1,0 +1,58 @@
+npm notice run react-example@0.0.0 test:postgres-tls
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/renderPostgresTls.test.ts test/postgresLifecycle.test.ts test/postgresDiagnostics.test.ts
+✔ classifies PostgreSQL authentication failures (6.490154ms)
+✔ classifies TLS certificate failures (1.337308ms)
+✔ classifies network failures (1.660615ms)
+✔ does not expose sensitive error messages (1.638846ms)
+✔ handles null and malformed errors safely (0.762462ms)
+✔ prototype property names are unsupported diagnostic codes (0.691308ms)
+[POSTGRES POOL ERROR] { category: 'NETWORK_RESET' }
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+✔ initialization and readiness are read-only and financial execution stays disabled (10.228308ms)
+✔ pool errors fail closed and readiness recovers (9.597615ms)
+✔ schema failure never advertises a ready database and releases client (3.204ms)
+✔ DIRECT_URL uses the same verified TLS policy and drains the primary pool (8.165769ms)
+✔ invalid fallback cannot silently reuse the primary pool (2.113538ms)
+✔ close drains pool exactly once and readiness stays unavailable (2.855154ms)
+✔ discovery bootstrap failure never initializes directory or exposes financial capabilities (0.927692ms)
+✔ production cannot bypass schema verification with skipSchemaCheck (2.933769ms)
+✔ stale pool errors do not invalidate a replacement pool (3.188539ms)
+✔ readiness finishing during close cannot restore connected state (2.245769ms)
+✔ initialization finishing during close does not reopen fallback (1.773308ms)
+✔ shutdown during failover drain cannot reopen a pool (2.181461ms)
+✔ fallback cannot substitute the trusted URL authority with a driver host parameter (1.806462ms)
+✔ actual production schema verifier performs SELECTs only and verifies local checksums (11.094154ms)
+✔ explicit trusted Render private-network policy uses plaintext (11.108ms)
+✔ external PostgreSQL requires verified TLS (5.273307ms)
+✔ unknown internal-style host must not bypass TLS (0.770385ms)
+✔ non-Render environment requires TLS (0.878461ms)
+✔ insecure TLS override is rejected (1.808923ms)
+✔ trusted hostname alone does not opt into plaintext (0.742385ms)
+✔ missing trusted hostname does not opt into plaintext (0.931923ms)
+✔ explicit secure TLS settings take precedence over private policy (3.905231ms)
+✔ CA settings are preserved and driver TLS parameters removed (2.087923ms)
+✔ malformed URLs produce secret-safe errors (2.081461ms)
+✔ driver overrides cannot redirect host, disable timeouts or weaken TLS (2.393154ms)
+✔ global TLS bypass fails closed (0.805846ms)
+✔ remote nonproduction connections also require authenticated TLS (0.697616ms)
+✔ hostname variations and nonstandard port do not grant plaintext (0.848693ms)
+✔ connection and query limits are bounded (0.711692ms)
+✔ installed pg driver receives verified TLS and fixed timeouts (4.443077ms)
+✔ plaintext policy explicitly overrides ambient pg SSL defaults (1.677231ms)
+✔ connection timeout closes an unresponsive local PostgreSQL handshake (5033.930077ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6152.282078

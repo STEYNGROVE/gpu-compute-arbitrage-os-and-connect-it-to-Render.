@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-11-12T19:10:56.261Z",
+  "origin": "LIVE_PUBLIC_HTTPS",
+  "financialExecutionAllowed": false,
+  "fundedCustomerOpportunitiesVerified": 0,
+  "escrowFundingVerification": "NOT_IMPLEMENTED_NO_TRUSTED_COLLECTOR",
+  "realizedRevenueVerified": false,
+  "results": [
+    {
+      "operation": "runpodCatalog",
+      "status": "READ_SUCCEEDED",
+      "sourceUrl": "https://api.runpod.io/graphql",
+      "retrievedAt": "2026-11-12T19:10:55.126Z",
+      "responseDigest": "f23ff590c9167f131b466bc80b4ab21c81e17f5a71ed2509601951a6ef280b07",
+      "normalizedOffers": 12,
+      "mappingVerifiedAgainstResponse": true,
+      "samples": [
+        {
+          "id": "runpod:65b34a80ef7c32fea2d41fee6ad031a2",
+          "model": "A100 SXM",
+          "vramGb": 80,
+          "hourlyUsd": 2.19,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T19:11:55.126Z"
+        },
+        {
+          "id": "runpod:5eee021f5b12c20e907422c71cecc74b",
+          "model": "A40",
+          "vramGb": 48,
+          "hourlyUsd": 0.59,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T19:11:55.126Z"
+        },
+        {
+          "id": "runpod:e278c989183b463a449f075ee3540744",
+          "model": "B200",
+          "vramGb": 180,
+          "hourlyUsd": 7.99,
+          "availability": "CATALOG_ONLY",
+          "expiresAt": "2026-11-12T19:11:55.126Z"
+        }
+      ],
+      "note": "Public supplier catalog only. No reserved capacity, customer demand, firm all-in quote, funding or profit verified."
+    },
+    {
+      "operation": "akashOrders",
+      "status": "READ_SUCCEEDED",
+      "sourceUrl": "https://api.akashnet.net/akash/market/v1beta5/orders/list",
+      "retrievedAt": "2026-11-12T19:10:56.256Z",
+      "responseDigest": "744c6d8983ef610f3ec1733a856d8abbe92cf854f7d35dc4a95cce80b68dad22",
+      "observedRecords": 50,
+      "openGpuOrdersUnverified": 48,
+      "orderSamples": [
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805457:1:1",
+          "funding": "UNVERIFIED"
+        },
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805471:1:1",
+          "funding": "UNVERIFIED"
+        },
+        {
+          "id": "akash1000dryw6pj53kxt6fe8admaue5lvjf8jjprqqh:20805486:1:1",
+          "funding": "UNVERIFIED"
+        }
+      ],
+      "note": "Read access alone does not establish escrow funding or award."
+    },
+    {
+      "operation": "akashDeployments",
+      "status": "BLOCKED",
+      "error": "SOURCE_HTTP_501"
+    }
+  ]
+}

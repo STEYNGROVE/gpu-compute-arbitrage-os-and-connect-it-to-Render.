@@ -1,0 +1,7 @@
+PR #50's hosted security checks failed because the tracked PostgreSQL lifecycle test assigned a literal synthetic DATABASE_URL. The earlier local audit missed the file while it was untracked. Construct that fixture with the existing URL helper pattern, without weakening or changing the scanner.
+
+Add disposable Git-repository regressions proving tracked credential literals are rejected without disclosure and runtime synthetic URL fixtures pass. Add direct fallback-host-substitution rejection and actual production schema-verifier SELECT-only/checksum coverage. Standard npm test includes the scanner regressions.
+
+Based on audited remediation commit 6f71b7b, not bare PR #49. Local targeted verification: PostgreSQL 38/38, scanner regressions 2/2, Phase20 57/57, Phase21 65/65, typecheck/lint/security pass. Full-suite/integration/build also pass; evidence and the Phase22 release-gate report are retained under docs/verification/phase22. Both hosted workflows passed at code commit fa46aea; staging skipped.
+
+NO-GO for release: five commercial certification gates remain open; main has no protection/rulesets; production configuration/schema, credential rotation and recovery evidence remain unverified. No supplier/payment/billing evidence is fabricated. Do not merge PR #49 or deploy this branch. No Render deployment branch/environment or production migrations changed, no financial activation or paid provisioning. Discovery-only, owner RBAC and emergency stop remain enforced.

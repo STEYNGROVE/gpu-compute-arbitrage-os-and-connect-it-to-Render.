@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { Pool } from 'pg';
+import {applicationDatabase as pool} from './applicationDatabase.js';
+import {assertLiveOperationsAllowed} from './simulationSafety.js';
 import { ethers } from 'ethers';
 import { verifyEthereumUsdtTransfer } from './usdtChainVerifier.js';
 
@@ -8,22 +9,12 @@ const wallet = () => {
   if (!value || !ethers.isAddress(value)) throw new Error('USDT_WALLET_NOT_CONFIGURED');
   return ethers.getAddress(value);
 };
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 3, connectionTimeoutMillis: 5000, ssl: process.env.USDT_DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined });
-let initialized: Promise<void> | undefined;
-function init() {
-  if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL_NOT_CONFIGURED');
-  return initialized ??= (async () => {
-    await pool.query(`CREATE TABLE IF NOT EXISTS usdt_customer_invoices (
-      id UUID PRIMARY KEY, customer_ref TEXT NOT NULL, amount_units BIGINT NOT NULL CHECK (amount_units > 0),
-      destination TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING','PAID')),
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), expires_at TIMESTAMPTZ NOT NULL,
-      paid_at TIMESTAMPTZ, chain_id INTEGER, tx_hash TEXT, log_index INTEGER,
-      CHECK ((status='PENDING' AND paid_at IS NULL) OR (status='PAID' AND paid_at IS NOT NULL))
-    )`);
-    await pool.query('CREATE UNIQUE INDEX IF NOT EXISTS usdt_payment_unique_event ON usdt_customer_invoices(chain_id, tx_hash, log_index) WHERE tx_hash IS NOT NULL');
-  })().catch(err => { initialized = undefined; throw err; });
+async function init() {
+  if(!process.env.DATABASE_URL)throw Error('DATABASE_URL_NOT_CONFIGURED');
+  await pool.query('SELECT id,customer_ref,amount_units,destination,status,created_at,expires_at,paid_at,chain_id,tx_hash,log_index FROM usdt_customer_invoices LIMIT 0');
 }
 export async function createUsdtInvoice(customerRef: string, amount: string, expiresMinutes: number) {
+  assertLiveOperationsAllowed();
   if (typeof customerRef !== 'string' || !/^[a-zA-Z0-9_:-]{1,100}$/.test(customerRef)) throw new Error('INVALID_CUSTOMER_REF');
   if (typeof amount !== 'string' || !/^(0|[1-9]\d*)(\.\d{1,6})?$/.test(amount)) throw new Error('INVALID_AMOUNT');
   const units = ethers.parseUnits(amount, 6);
@@ -48,6 +39,7 @@ export async function getUsdtInvoice(id: string) {
   return result.rows[0] ? serialize(result.rows[0]) : null;
 }
 export async function reconcileUsdtInvoice(id: string, txHash: string) {
+  assertLiveOperationsAllowed();
   if (!/^[0-9a-f-]{36}$/i.test(id) || !/^0x[0-9a-fA-F]{64}$/.test(txHash)) throw new Error('INVALID_REQUEST');
   await init();
   const invoice = await pool.query('SELECT * FROM usdt_customer_invoices WHERE id=$1', [id]);

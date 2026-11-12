@@ -1,0 +1,291 @@
+{
+  "observedAt": "2026-11-12T12:24:22.883Z",
+  "postgresId": "dpg-dbh2u1l9fdbs73a3qpn0-a",
+  "availability": {
+    "transaction_read_only": "on",
+    "server_version_num": "180006"
+  },
+  "tables": [
+    {
+      "table_name": "audit_events"
+    },
+    {
+      "table_name": "autonomous_profit_allocations"
+    },
+    {
+      "table_name": "capital_reservations"
+    },
+    {
+      "table_name": "circuit_breaker_state"
+    },
+    {
+      "table_name": "compute_jobs"
+    },
+    {
+      "table_name": "customer_api_keys"
+    },
+    {
+      "table_name": "customer_sessions"
+    },
+    {
+      "table_name": "customers"
+    },
+    {
+      "table_name": "demand_orders"
+    },
+    {
+      "table_name": "hot_wallet_emergency_state"
+    },
+    {
+      "table_name": "hot_wallet_idempotency"
+    },
+    {
+      "table_name": "hot_wallet_nonce_state"
+    },
+    {
+      "table_name": "hot_wallet_transactions"
+    },
+    {
+      "table_name": "idempotency_keys"
+    },
+    {
+      "table_name": "kill_switch_state"
+    },
+    {
+      "table_name": "market_opportunities"
+    },
+    {
+      "table_name": "outbox_events"
+    },
+    {
+      "table_name": "payment_intents"
+    },
+    {
+      "table_name": "profit_withdrawals_audit"
+    },
+    {
+      "table_name": "provider_funding_events"
+    },
+    {
+      "table_name": "provider_instances"
+    },
+    {
+      "table_name": "provider_operations"
+    },
+    {
+      "table_name": "provider_transactions"
+    },
+    {
+      "table_name": "quotes"
+    },
+    {
+      "table_name": "reconciliation_runs"
+    },
+    {
+      "table_name": "schema_migrations"
+    },
+    {
+      "table_name": "settlements"
+    },
+    {
+      "table_name": "treasury_accounts"
+    },
+    {
+      "table_name": "treasury_ledger"
+    },
+    {
+      "table_name": "treasury_reconciliations"
+    },
+    {
+      "table_name": "treasury_snapshots"
+    },
+    {
+      "table_name": "treasury_transactions"
+    },
+    {
+      "table_name": "verified_profit_records"
+    },
+    {
+      "table_name": "webhook_events"
+    },
+    {
+      "table_name": "withdrawal_allowlist"
+    },
+    {
+      "table_name": "worker_heartbeats"
+    }
+  ],
+  "columns": [
+    {
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "title",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "source_url",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "source_feed",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "discovered_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "description",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "table_name": "acquisition_leads"
+    },
+    {
+      "column_name": "version",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "table_name": "schema_migrations"
+    },
+    {
+      "column_name": "checksum",
+      "data_type": "character varying",
+      "is_nullable": "NO",
+      "table_name": "schema_migrations"
+    },
+    {
+      "column_name": "applied_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO",
+      "table_name": "schema_migrations"
+    }
+  ],
+  "migrationHistory": [
+    {
+      "checksum": "e13211b870fecd3784902562a1da857eb3e75cf72599fbca726fb9ceeba6e1a2",
+      "version": "20260926000000_gpu_arbitrage_os_schema"
+    },
+    {
+      "checksum": "735750c498843fdb054cd328e4469e68945a74eb933d1bd1aeae25797f17c14f",
+      "version": "20261001000000_production_financial_authority"
+    },
+    {
+      "checksum": "6084069c19186d27d24f9c51765ead5c5d8d45c671753c229a1b4efa73aab683",
+      "version": "20261001000001_restore_financial_integrity_constraints"
+    },
+    {
+      "checksum": "35f32613a0631641a91042db86cef552c5480dcd4f07dcac6d084cbd2635c3f6",
+      "version": "20261001000002_complete_versioned_financial_migrations"
+    },
+    {
+      "checksum": "dbe711b360031dbf81bff71c4a8ed8a5ee400c1aaae4a13e4e898a3f9f7a5ba5",
+      "version": "20261003000000_autonomous_provider_funding_and_profit_rules"
+    },
+    {
+      "checksum": "72a78e835ec93de89647ff9552ed76542277ac3c62a766d059b7e338ac12e976",
+      "version": "20261108000000_gpu_buyer_evidence_review"
+    },
+    {
+      "checksum": "ead2f3fa1233d88cf403200e8db6fb862509c4d1d3e2c8d8d0ce195ccacc3c91",
+      "version": "20261109000000_payment_evidence_observations"
+    },
+    {
+      "checksum": "ec9baa2f890e160818eaecce524db06a44750af78b845fa07828441b593a7823",
+      "version": "20261109000001_payment_evidence_replay"
+    },
+    {
+      "checksum": "d8d1ca8e829115f3055f1daa844055cc8569cd4fb4923bdbe5fbd98799f4a9e9",
+      "version": "20261110_v5_commercial_evidence"
+    }
+  ],
+  "connectorRole": [
+    {
+      "rolbypassrls": false,
+      "rolcreatedb": true,
+      "rolcreaterole": true,
+      "rolsuper": false
+    }
+  ],
+  "connectorTls": [
+    {
+      "bits": 256,
+      "ssl": true,
+      "version": "TLSv1.3"
+    }
+  ],
+  "comparison": {
+    "actualMigrations": 9,
+    "applicationDatabaseBinding": "NOT_VERIFIED",
+    "checksumMismatches": [],
+    "expectedMigrations": 9,
+    "missingMigrations": [],
+    "missingTables": [],
+    "presentRequiredTables": 36,
+    "requiredTables": 36,
+    "runtimeColumnCheck": {
+      "category": "MISSING_COLUMN",
+      "check": "candidate runtime acquisition column SELECT LIMIT 0",
+      "isError": true,
+      "missingPublishedAt": true,
+      "returnsCustomerRows": false
+    },
+    "unknownAppliedMigrations": []
+  },
+  "sessionScope": "connector session only; app endpoint/role/TLS not verified",
+  "queries": [
+    {
+      "name": "availability",
+      "sql": "SELECT current_setting('transaction_read_only') AS transaction_read_only, current_setting('server_version_num') AS server_version_num;"
+    },
+    {
+      "name": "tables",
+      "sql": "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('schema_migrations','customers','customer_api_keys','customer_sessions','demand_orders','webhook_events','treasury_accounts','treasury_ledger','treasury_transactions','treasury_snapshots','treasury_reconciliations','quotes','capital_reservations','provider_operations','provider_instances','compute_jobs','settlements','outbox_events','audit_events','idempotency_keys','reconciliation_runs','kill_switch_state','payment_intents','provider_transactions','worker_heartbeats','circuit_breaker_state','profit_withdrawals_audit','verified_profit_records','withdrawal_allowlist','provider_funding_events','autonomous_profit_allocations','hot_wallet_transactions','hot_wallet_idempotency','hot_wallet_nonce_state','hot_wallet_emergency_state','market_opportunities') ORDER BY table_name;"
+    },
+    {
+      "name": "columns",
+      "sql": "SELECT table_name,column_name,data_type,is_nullable FROM information_schema.columns WHERE table_schema='public' AND table_name IN ('schema_migrations','acquisition_leads','phase20_simulation_requests','phase20_simulation_events') ORDER BY table_name,ordinal_position;"
+    },
+    {
+      "name": "role",
+      "sql": "SELECT rolsuper,rolcreatedb,rolcreaterole,rolbypassrls FROM pg_roles WHERE rolname=current_user;"
+    },
+    {
+      "name": "tls",
+      "sql": "SELECT ssl,version,bits FROM pg_stat_ssl WHERE pid=pg_backend_pid();"
+    },
+    {
+      "name": "migration_history",
+      "sql": "SELECT version, checksum FROM schema_migrations ORDER BY version;"
+    },
+    {
+      "name": "runtime_compatibility",
+      "sql": "SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0;",
+      "result": {
+        "category": "MISSING_COLUMN",
+        "check": "candidate runtime acquisition column SELECT LIMIT 0",
+        "isError": true,
+        "missingPublishedAt": true,
+        "returnsCustomerRows": false
+      }
+    }
+  ],
+  "customerOrFinancialRowsRead": false,
+  "ddlExecuted": false
+}

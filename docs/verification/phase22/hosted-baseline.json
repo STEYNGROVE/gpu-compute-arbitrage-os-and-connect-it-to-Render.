@@ -1,0 +1,614 @@
+{
+  "observedAt": "2026-11-12T11:03:04.022Z",
+  "repository": "STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render.",
+  "auditCommit": "6f71b7b474650f1747026841769789c4732b87f3",
+  "auditBranch": "audit/f14742f-postgres-security",
+  "prs": [
+    {
+      "number": 49,
+      "head": "fix/render-postgres-tls",
+      "headSha": "f14742f5b3ff89e6e6ba9021728e3ef628ca1850",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/49"
+    },
+    {
+      "number": 50,
+      "head": "audit/f14742f-postgres-security",
+      "headSha": "6f71b7b474650f1747026841769789c4732b87f3",
+      "draft": true,
+      "state": "open",
+      "merged": false,
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/50"
+    }
+  ],
+  "runs": [
+    {
+      "conclusion": "success",
+      "id": 43201275399,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275399/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275399/logs",
+      "name": "Phase 18 staging verification",
+      "run_number": 23,
+      "status": "completed",
+      "workflow_id": 414622670
+    },
+    {
+      "conclusion": "success",
+      "id": 43201275612,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275612/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275612/logs",
+      "name": "CI / Automated Verification Pipeline",
+      "run_number": 169,
+      "status": "completed",
+      "workflow_id": 406654307
+    },
+    {
+      "conclusion": "failure",
+      "id": 43204543407,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43204543407/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43204543407/logs",
+      "name": "Phase 18 staging verification",
+      "run_number": 24,
+      "status": "completed",
+      "workflow_id": 414622670
+    },
+    {
+      "conclusion": "failure",
+      "id": 43204543449,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43204543449/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43204543449/logs",
+      "name": "CI / Automated Verification Pipeline",
+      "run_number": 170,
+      "status": "completed",
+      "workflow_id": 406654307
+    }
+  ],
+  "jobs": [
+    {
+      "conclusion": "failure",
+      "id": 131136261773,
+      "logs_url": null,
+      "name": "offline",
+      "run_id": 43204543407,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v4",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm ci --no-audit --no-fund",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run typecheck",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "failure",
+          "name": "Run npm run security:check",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run npm test",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run npm run test:purchase-boundary",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Isolated PostgreSQL reservation integration",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Run npm run build",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Post Run actions/setup-node@v4",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "conclusion": "skipped",
+      "id": 131136264375,
+      "logs_url": null,
+      "name": "staging",
+      "run_id": 43204543407,
+      "status": "completed",
+      "steps": null
+    },
+    {
+      "conclusion": "failure",
+      "id": 131136262591,
+      "logs_url": null,
+      "name": "Lint, Test & Production Build",
+      "run_id": 43204543449,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout repository",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Typecheck & Static Analysis",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Execute Automated Regression Tests",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Validate supplier billing safety",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Secure Feed Regression Tests",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Isolation Tests",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "HTTPS Transport Security Tests",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Pinning Security Tests",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Edge Security Tests",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Generate Temporary TLS Test Certificate",
+          "number": 13,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "TLS Certificate Security Tests",
+          "number": 14,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Socket Security Tests",
+          "number": 15,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Final Network Security Tests",
+          "number": 16,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Feed Timeout Security Tests",
+          "number": 17,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 HTTPS Socket Lookup Tests",
+          "number": 18,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 Production DNS Lookup Tests",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Phase 6 GPU Evidence and Owner Authentication",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "failure",
+          "name": "Security check",
+          "number": 21,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "TypeScript validation",
+          "number": 22,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Compile Production Bundle",
+          "number": 23,
+          "status": "completed"
+        },
+        {
+          "conclusion": "skipped",
+          "name": "Post Setup Node.js",
+          "number": 45,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout repository",
+          "number": 46,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 47,
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "conclusion": "success",
+      "id": 131125031026,
+      "logs_url": null,
+      "name": "offline",
+      "run_id": 43201275399,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v4",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm ci --no-audit --no-fund",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run typecheck",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run security:check",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm test",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run test:purchase-boundary",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Isolated PostgreSQL reservation integration",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run build",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v4",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "conclusion": "skipped",
+      "id": 131125033194,
+      "logs_url": null,
+      "name": "staging",
+      "run_id": 43201275399,
+      "status": "completed",
+      "steps": null
+    },
+    {
+      "conclusion": "success",
+      "id": 131125030347,
+      "logs_url": null,
+      "name": "Lint, Test & Production Build",
+      "run_id": 43201275612,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout repository",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Typecheck & Static Analysis",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Execute Automated Regression Tests",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Validate supplier billing safety",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Secure Feed Regression Tests",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Isolation Tests",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "HTTPS Transport Security Tests",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Pinning Security Tests",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Edge Security Tests",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Generate Temporary TLS Test Certificate",
+          "number": 13,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "TLS Certificate Security Tests",
+          "number": 14,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Socket Security Tests",
+          "number": 15,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Final Network Security Tests",
+          "number": 16,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Feed Timeout Security Tests",
+          "number": 17,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 HTTPS Socket Lookup Tests",
+          "number": 18,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 Production DNS Lookup Tests",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Phase 6 GPU Evidence and Owner Authentication",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Security check",
+          "number": 21,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "TypeScript validation",
+          "number": 22,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Compile Production Bundle",
+          "number": 23,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 45,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout repository",
+          "number": 46,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 47,
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "failureLines": [
+    {
+      "jobId": 131136261773,
+      "lines": [
+        "2026-11-12T10:55:20.2426588Z FAIL: Possible hardcoded credential: test/postgresLifecycle.test.ts",
+        "2026-11-12T10:55:20.2435807Z Security check failed: 1",
+        "2026-11-12T10:55:20.2548442Z ##[error]Process completed with exit code 1."
+      ]
+    },
+    {
+      "jobId": 131136262591,
+      "lines": [
+        "2026-11-12T10:55:58.5745561Z FAIL: Possible hardcoded credential: test/postgresLifecycle.test.ts",
+        "2026-11-12T10:55:58.5755596Z Security check failed: 1",
+        "2026-11-12T10:55:58.5828589Z ##[error]Process completed with exit code 1."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1297 @@
+[
+  {
+    "file": "server/buyerEvidenceImport.ts",
+    "method": "POST",
+    "path": "/api/owner/gpu-hunter-x/import-evidence",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/buyerEvidenceImport.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-hunter-x/evidence-review",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialEvidence.ts",
+    "method": "GET",
+    "path": "/api/owner/commercial-evidence/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialEvidence.ts",
+    "method": "POST",
+    "path": "/api/owner/commercial-evidence/:id/verification",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialEvidence.ts",
+    "method": "POST",
+    "path": "/api/owner/commercial-evidence/:id/quotes",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialEvidence.ts",
+    "method": "POST",
+    "path": "/api/owner/commercial-evidence/:id/quotes/:quoteId/state",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialIntake.ts",
+    "method": "GET",
+    "path": "/api/public/quote-info",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialIntake.ts",
+    "method": "POST",
+    "path": "/api/public/quote-request",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialIntake.ts",
+    "method": "GET",
+    "path": "/api/commercial/requests",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/commercialIntake.ts",
+    "method": "PATCH",
+    "path": "/api/commercial/requests/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/customerIntelligence.ts",
+    "method": "GET",
+    "path": "/api/owner/customer-intelligence",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/customerIntelligence.ts",
+    "method": "POST",
+    "path": "/api/owner/customer-intelligence",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/customerIntelligence.ts",
+    "method": "PATCH",
+    "path": "/api/owner/customer-intelligence/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuArbitrageDiscovery.ts",
+    "method": "POST",
+    "path": "/api/owner/gpu-arbitrage/discover",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuAuthIsolation.test.ts",
+    "method": "GET",
+    "path": "/auth-test",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-hunter-x/qualified",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-hunter-x/unified",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-hunter-x",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "POST",
+    "path": "/api/owner/gpu-hunter-x",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "PATCH",
+    "path": "/api/owner/gpu-hunter-x/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/gpuHunterX.ts",
+    "method": "GET",
+    "path": "/owner/gpu-hunter-x",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/h100FleetController.ts",
+    "method": "POST",
+    "path": "/api/owner/h100-fleet/analyze",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/leadDiscovery.ts",
+    "method": "POST",
+    "path": "/api/acquisition/discover",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/leadDiscovery.ts",
+    "method": "GET",
+    "path": "/api/acquisition/leads",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/leadDiscovery.ts",
+    "method": "PATCH",
+    "path": "/api/acquisition/leads/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/ownerCommandCentre.ts",
+    "method": "GET",
+    "path": "/owner/command-centre",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/ownerOperations.ts",
+    "method": "GET",
+    "path": "/api/owner/operations-summary",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/ownerSalesWorkspace.ts",
+    "method": "GET",
+    "path": "/owner/sales",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/preapprovedWorkloads.ts",
+    "method": "POST",
+    "path": "/api/approvals/evidence",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/preapprovedWorkloads.ts",
+    "method": "GET",
+    "path": "/api/approvals/workloads",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/preapprovedWorkloads.ts",
+    "method": "POST",
+    "path": "/api/approvals/workloads/:id/decision",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/readinessHealth.ts",
+    "method": "GET",
+    "path": "/api/ready",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/spaceStationOne.ts",
+    "method": "GET",
+    "path": "/owner/space-station",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierBalanceDiagnosticsRoute.ts",
+    "method": "GET",
+    "path": "/api/owner/supplier-balances",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierReadOnlyDiagnostics.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-price-comparison",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierReadOnlyDiagnostics.ts",
+    "method": "GET",
+    "path": "/api/owner/gpu-price-comparison-normalized",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierReadOnlyDiagnostics.ts",
+    "method": "POST",
+    "path": "/api/owner/gpu-demand-match",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierReadOnlyDiagnostics.ts",
+    "method": "POST",
+    "path": "/api/owner/commercial-quote-plan",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/supplierReadOnlyDiagnostics.ts",
+    "method": "GET",
+    "path": "/api/owner/supplier-diagnostics",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase20/routes.ts",
+    "method": "GET",
+    "path": "/api/owner/phase20/readiness",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase20/routes.ts",
+    "method": "POST",
+    "path": "/api/owner/phase20/gateway-preview",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase20/routes.ts",
+    "method": "POST",
+    "path": "/api/owner/phase20/quote-preview",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase21/routes.ts",
+    "method": "GET",
+    "path": "/api/owner/phase21/readiness",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase21/routes.ts",
+    "method": "POST",
+    "path": "/api/owner/phase21/emergency-stop",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/phase21/staticAssets.ts",
+    "method": "GET",
+    "path": "*",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/prefunded/routes.ts",
+    "method": "GET",
+    "path": "/",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/prefunded/routes.ts",
+    "method": "POST",
+    "path": "/discover",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/prefunded/routes.ts",
+    "method": "POST",
+    "path": "/proposals",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/prefunded/routes.ts",
+    "method": "POST",
+    "path": "/review",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server/prefunded/routes.ts",
+    "method": "POST",
+    "path": "/stop",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/request-quote",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/status",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/vast/offers",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/runpod/offers",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/lambda/offers",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/router/prices",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/router/providers",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/router/offers",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/router/route",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/router/register",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/lightning/status",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/lightning/ssh-keys",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/health",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/readiness",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/matrix",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/providers/credentials",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/providers/credentials",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/providers/credentials/test",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/providers/custom",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "DELETE",
+    "path": "/api/providers/custom/:id",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/workloads/classify",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/zero-funded/config",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/zero-funded/owner-mode",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/zero-funded/spending-gate",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/zero-funded/gpu-feasibility",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/zero-funded/route-check",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/cfo/command-center",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/cfo/traces",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/cfo/traces/:id",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/cfo/journal",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/cfo/exceptions",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/cfo/gate/evaluate",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/finance/binance-pay/verify-order",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/finance/usdt-invoices",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/finance/usdt-invoices/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/finance/usdt-invoices/:id/reconcile",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/finance/usdt-chain/verify",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/cfo/acid-test",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/workloads/route",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/provisioning/preflight",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/settlements/proofs",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/settlements/revenue-summary",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/command-center/summary",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/autonomous/status",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/autonomous/discover",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/autonomous/deploy",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/autonomous/toggle",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/demand",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/opportunities/summary",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/opportunities/queue",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/opportunities/approved-big-jobs",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/opportunities/approve-big-job",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/demand/create",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/webhooks/escrow",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/compute/quote",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/capital/fund-tranche",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/webhooks/treasury/bank-deposit",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/database/status",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/auth/login",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/auth/logout",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/auth/session",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/auth/session-token",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/auth/customers/keys/create",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/auth/customers",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/summary",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/reconcile",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/vault/send-to-binance",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/vault/restore",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/profit-withdrawals/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/profit-withdrawals/sync-realized",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/profit-withdrawals/audit-log",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/profit-withdrawals/allowlist",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/profit-withdrawals/allowlist",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/profit-withdrawals/execute",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/profit-withdrawals/send-to-internal-hot",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/hot-wallet",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/hot-wallet/readiness",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/hot-wallet/transactions",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/verify-deposit",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/withdraw-to-binance",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/reconcile",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/emergency-stop",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/import-key",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/hot-wallet/set-address",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/binance/deposit-address",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/binance/deposit-networks",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/binance/deposit-history",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/providers",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/ledger",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/external-balance",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/kill-switch/engage",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/kill-switch/disengage",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/kill-switch/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/webhooks/binance",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/system/readiness",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/system/attack-test",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/system/attack-test/results",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/audit/anchor",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/demand/verify-signature",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/capital/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/compute/capital",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/capital/treasury-status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/ledger/anchor",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/compute/execute-deal",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/compute/settle-deal",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/compute/active-jobs",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/compute/job-telemetry/:id",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/compute/abort-job",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/ledger",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/ledger/sql-schema",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/audit/logs",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/owner/config",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/owner/config",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/ledger/verify-chain",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/aeos/cycle",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/aeos/killswitch",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/aeos/currency",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/payments/intent",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/payments/verify",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/reconciliation/run",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/gpu/evaluate",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/aeos/experiment",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/aeos/reset",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/aeos/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/aeos/experiments",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/reconciliation/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/payments/providers",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/payments/intent/:id",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/gateways/status",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/treasury/floats",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/treasury/floats/rebalance",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/safety/kill-switches",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "POST",
+    "path": "/api/safety/kill-switches/toggle",
+    "localAuthMarker": true,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/payments/success",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  },
+  {
+    "file": "server.ts",
+    "method": "GET",
+    "path": "/api/payments/cancel",
+    "localAuthMarker": false,
+    "note": "Static declaration inventory; mounted/global middleware requires runtime tests."
+  }
+]

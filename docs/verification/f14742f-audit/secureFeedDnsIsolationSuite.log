@@ -1,0 +1,2 @@
+PASS: Controlled private DNS rejected
+PASS: DNS resolver called exactly once

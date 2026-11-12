@@ -1,0 +1,4 @@
+PASS: HTTPS response accepted
+PASS: Redirect rejected
+PASS: Oversized response rejected
+TRANSPORT SECURITY SUITE: ALL PASSED

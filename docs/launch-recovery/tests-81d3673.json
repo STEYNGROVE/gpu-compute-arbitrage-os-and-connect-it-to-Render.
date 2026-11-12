@@ -1,0 +1,195 @@
+{
+  "recordedAt": "2026-11-12T22:43:30.659596+00:00",
+  "tests": [
+    {
+      "testName": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 29.524,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/lint.txt",
+        "sha256": "453b04c1dfdac3db79189c160bf86d3bb0859f5dae95107a86683cce92c3d2e4",
+        "bytes": 68
+      },
+      "note": ""
+    },
+    {
+      "testName": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 29.897,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/typecheck.txt",
+        "sha256": "d447de5aafa6deac00967d5e82b8148353b2cf128223a0645b91d30608273478",
+        "bytes": 73
+      },
+      "note": ""
+    },
+    {
+      "testName": "security",
+      "command": [
+        "npm",
+        "run",
+        "security:check"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.136,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/security.txt",
+        "sha256": "5e6a3e24e02a0949a6ad69cde090f4a569414245d0bfc0454bbd8513af29687b",
+        "bytes": 138
+      },
+      "note": ""
+    },
+    {
+      "testName": "dependencies",
+      "command": [
+        "npm",
+        "audit",
+        "--audit-level=low"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 2.604,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/dependencies.txt",
+        "sha256": "6d8c5c8f3d7684adb070417bd608d01ae90aa3dc26a65af03ffda4955f38d9a3",
+        "bytes": 24
+      },
+      "note": ""
+    },
+    {
+      "testName": "combined-suite",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 123.21,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/combined-suite.txt",
+        "sha256": "001efbcccc195334db81960a2f2e3ea4dd1c69231f499754e69ccb9770635d65",
+        "bytes": 91755
+      },
+      "note": ""
+    },
+    {
+      "testName": "purchase-boundary",
+      "command": [
+        "npm",
+        "run",
+        "test:purchase-boundary"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 0.986,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/purchase-boundary.txt",
+        "sha256": "758c7744d89d0a9e6ebadea6c96e874399f80ab4d6ed72289b0e48cb0daa35ea",
+        "bytes": 180
+      },
+      "note": ""
+    },
+    {
+      "testName": "execution-audit",
+      "command": [
+        "npm",
+        "run",
+        "audit:gpu-execution"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "FAIL",
+      "exitCode": 1,
+      "seconds": 0.982,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/execution-audit.txt",
+        "sha256": "8a3497902d20165a1af2816fec27f4962a3352ffcfc091fa7534d7e43c1546a6",
+        "bytes": 3372
+      },
+      "note": "Strict financial audit failure is retained; it is not waived by passing public-mode checks."
+    },
+    {
+      "testName": "production-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 16.834,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/production-build.txt",
+        "sha256": "1e872b4aee556b3ab0336e19bb1564b540e9ba82aa96aec4152323869cbcdd61",
+        "bytes": 941
+      },
+      "note": ""
+    },
+    {
+      "testName": "migration-validation-only",
+      "command": [
+        "npm",
+        "run",
+        "db:migrate"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 1.944,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/migration-validation-only.txt",
+        "sha256": "22700709496707cce879c0f561957406cd944534890b2b5347df4f4065270603",
+        "bytes": 218
+      },
+      "note": ""
+    },
+    {
+      "testName": "postgres-migration-concurrency-restore",
+      "command": [
+        "npm",
+        "run",
+        "test:launch-recovery-postgres"
+      ],
+      "commitSha": "81d3673a46a3e0c6864072b41e5e6b4e88018efb",
+      "environment": "ISOLATED_NODE_TEST_NO_PRODUCTION_CREDENTIALS",
+      "result": "PASS",
+      "exitCode": 0,
+      "seconds": 40.881,
+      "evidence": {
+        "logFile": "/data/data/com.termux/files/usr/tmp/recovery-evidence-81d3673/postgres-migration-concurrency-restore.txt",
+        "sha256": "690cd91a5acebe8179e9f76600117aacf1572f0bc9c0e2cd6517b4e31941a182",
+        "bytes": 9184
+      },
+      "note": ""
+    }
+  ],
+  "complete": true
+}

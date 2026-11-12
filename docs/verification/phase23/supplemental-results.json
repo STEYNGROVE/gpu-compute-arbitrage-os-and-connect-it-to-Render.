@@ -1,0 +1,34 @@
+[
+  {
+    "command": "npm run test:phase23-postgres",
+    "exit_code": 0,
+    "log": "final-integration.log",
+    "counts": {
+      "phase23": 12,
+      "phase20": 14,
+      "phase21_archive": 9,
+      "phase21_controls": 7
+    }
+  },
+  {
+    "command": "npm run typecheck",
+    "exit_code": 0,
+    "log": "final-typecheck.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "log": "final-security.log"
+  },
+  {
+    "command": "npm run test:phase23",
+    "exit_code": 0,
+    "log": "final-unit.log",
+    "count": 5
+  },
+  {
+    "command": "npm audit --json",
+    "exit_code": 0,
+    "log": "dependency-audit.json"
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "module": "server/providers/akashProvider.ts",
+    "declaredApiUrls": [
+      "https://akash.network",
+      "https://rest.cosmos.directory/akash/cosmos/bank/v1beta1/balances/"
+    ],
+    "credentialNames": [
+      "AKASH_API_KEY",
+      "AKASH_WALLET_ADDRESS"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/coreweaveProvider.ts",
+    "declaredApiUrls": [
+      "https://api.coreweave.com/v1/catalog",
+      "https://api.coreweave.com/v1/deployments/",
+      "https://api.coreweave.com/v1/pricing",
+      "https://api.coreweave.com/v1/user",
+      "https://coreweave.com"
+    ],
+    "credentialNames": [
+      "COREWEAVE_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/hostingerProvider.ts",
+    "declaredApiUrls": [
+      "https://api.hostinger.com/v1/vps/",
+      "https://api.hostinger.com/v1/vps/catalog",
+      "https://api.hostinger.com/v1/vps/servers",
+      "https://hostinger.com/vps/gpu"
+    ],
+    "credentialNames": [
+      "HOSTINGER_API_KEY",
+      "HOSTINGER_API_TOKEN"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/hyperstackProvider.ts",
+    "declaredApiUrls": [
+      "https://hyperstack.cloud",
+      "https://infrahub-api.nexgencloud.com/v1/core/clusters",
+      "https://infrahub-api.nexgencloud.com/v1/core/flavors",
+      "https://infrahub-api.nexgencloud.com/v1/core/virtual-machines/"
+    ],
+    "credentialNames": [
+      "HYPERSTACK_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/lambdaProvider.ts",
+    "declaredApiUrls": [
+      "https://cloud.lambdalabs.com/api/v1/instance-types",
+      "https://cloud.lambdalabs.com/api/v1/instances/",
+      "https://lambdalabs.com"
+    ],
+    "credentialNames": [
+      "LAMBDA_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/lightningProvider.ts",
+    "declaredApiUrls": [
+      "https://lightning.ai/api/v1/hardware-types",
+      "https://lightning.ai/api/v1/studios/",
+      "https://lightning.ai/steyngrovesar-org/dashboard/teamspaces",
+      "https://lightning.ai/v1/memberships"
+    ],
+    "credentialNames": [
+      "LIGHTNING_API_KEY",
+      "LIGHTNING_ORG_ID",
+      "LIGHTNING_USER_ID"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/runpodProvider.ts",
+    "declaredApiUrls": [
+      "https://api.runpod.io/graphql",
+      "https://runpod.io"
+    ],
+    "credentialNames": [
+      "RUNPOD_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/saladProvider.ts",
+    "declaredApiUrls": [
+      "https://api.salad.com/api/public/organizations/",
+      "https://salad.com"
+    ],
+    "credentialNames": [
+      "SALAD_API_KEY",
+      "SALAD_ORG_ID"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/tensordockProvider.ts",
+    "declaredApiUrls": [
+      "https://marketplace.tensordock.com/api/v2/client/balance",
+      "https://marketplace.tensordock.com/api/v2/client/deploy/locations",
+      "https://marketplace.tensordock.com/api/v2/client/virtualmachines/",
+      "https://tensordock.com"
+    ],
+    "credentialNames": [
+      "TENSORDOCK_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  },
+  {
+    "module": "server/providers/vastProvider.ts",
+    "declaredApiUrls": [
+      "https://console.vast.ai/api/v0/bundles/",
+      "https://console.vast.ai/api/v0/bundles/?q",
+      "https://console.vast.ai/api/v0/instances/",
+      "https://console.vast.ai/api/v0/users/current/",
+      "https://vast.ai"
+    ],
+    "credentialNames": [
+      "VAST_API_KEY"
+    ],
+    "certification": "NOT_INDEPENDENTLY_LIVE_VERIFIED",
+    "procurement": "DISABLED",
+    "note": "Declared URLs are code inventory, not proof of official compatibility, terms, available capacity or paid fulfillment."
+  }
+]
