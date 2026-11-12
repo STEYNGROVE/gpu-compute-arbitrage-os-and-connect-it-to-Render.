@@ -7,7 +7,7 @@ async function scenario(failStart,phase23=false) {
   const listener={once(){return this;},listen(_port,_host,done){done();},address(){return {port:34567};},close(done){done();}};
   const context={process:fakeProcess,console:{log(){},error(...args){errors.push(args.join(' '));}},require(name){
     if(name==='node:net') return {createServer:()=>listener};
-    if(name==='node:fs') return {mkdtempSync:()=>'/isolated-fixture',writeFileSync(_p,_v,opts){passwordMode=opts.mode;},unlinkSync(){}};
+    if(name==='node:fs') return {mkdtempSync:()=>'/isolated-fixture',writeFileSync(_p,_v,opts){passwordMode=opts.mode;},unlinkSync(){},chmodSync(){}};
     if(name==='node:child_process') return {spawnSync(command,args,options){
       calls.push({command,args,env:options.env});
       if(failStart&&command==='pg_ctl') return {status:1};

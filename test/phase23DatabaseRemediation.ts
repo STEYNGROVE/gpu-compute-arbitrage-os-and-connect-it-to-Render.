@@ -5,6 +5,8 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {createHash,randomBytes} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
+import {setDefaultResultOrder} from 'node:dns';
+import {secureDatabaseOptions} from '../server/phase21/configuration.js';
 
 const raw=process.env.TEST_DATABASE_URL;
 if(!raw||process.env.NODE_ENV!=='test'||process.env.ALLOW_ISOLATED_GPU_DB_TEST!=='YES'||process.env.RENDER||process.env.DATABASE_URL)throw Error('ISOLATED_FIXTURE_REQUIRED');
@@ -12,14 +14,15 @@ const target=new URL(raw);
 if(target.hostname!=='127.0.0.1'||target.username!=='phase16_testowner'||target.pathname!=='/phase16_test'||!target.port||target.search)throw Error('ISOLATED_FIXTURE_REQUIRED');
 const repo=process.cwd();const directory=mkdtempSync(path.join(tmpdir(),'phase23-recovery-'));
 const suffix=randomBytes(5).toString('hex'),source='phase23_source_test_'+suffix,restored='phase23_restore_test_'+suffix;
-const admin=new pg.Client({connectionString:raw});let sourceClient:pg.Client|undefined,restoreClient:pg.Client|undefined;
+const admin=new pg.Client({connectionString:raw});let adminConnected=false;let sourceClient:pg.Client|undefined,restoreClient:pg.Client|undefined;
 const sqlPath='docs/migration-proposals/20261112_phase23_acquisition_publication.sql';
 const sql=readFileSync(sqlPath,'utf8'),version=path.basename(sqlPath,'.sql');
 const digest=(text:string)=>createHash('sha256').update(text.trim()).digest('hex');
 const sqlHash=digest(sql);
-const env={...process.env,PGPASSWORD:decodeURIComponent(target.password)};
+const cert=process.env.TEST_DATABASE_SSL_CA;if(!cert)throw Error('ISOLATED_TLS_FIXTURE_REQUIRED');
+const env={...process.env,PGPASSWORD:decodeURIComponent(target.password),PGSSLMODE:'verify-full',PGSSLROOTCERT:cert};
 const args=['-h',target.hostname,'-p',target.port,'-U',target.username];
-function command(exe:string,argv:string[]) {const r=spawnSync(exe,argv,{env,encoding:'utf8'});assert.equal(r.status,0,exe+' failed in disposable fixture');}
+function command(exe:string,argv:string[]) {const r=spawnSync(exe,argv,{env,encoding:'utf8',timeout:30000});assert.equal(r.status,0,exe+' failed in disposable fixture');}
 let passed=0;
 async function check(name:string,fn:()=>Promise<void>){await fn();passed++;console.log('PHASE23_PG_PASS '+name);}
 const migrationDir=path.join(directory,'supabase','migrations');mkdirSync(migrationDir,{recursive:true});
@@ -31,14 +34,29 @@ function runner(changes:Record<string,string|undefined>={},execute=true){
   const childEnv:NodeJS.ProcessEnv={...process.env,DATABASE_URL:sourceUrl.href,DB_MIGRATION_EXECUTE:execute?'EXPLICITLY_AUTHORIZED':undefined,
     DB_MIGRATION_TARGET:'DISPOSABLE_PHASE23',DB_MIGRATION_TARGET_CONFIRM:'DISPOSABLE_PHASE23',DB_MIGRATION_EXPECT_DATABASE:source,
     DB_MIGRATION_EXPECT_PORT:target.port,DB_MIGRATION_EXPECT_TRANSPORT:'tcp',DB_MIGRATION_EXPECT_SERVER_ADDRESS:'127.0.0.1',...changes};
-  for(const key of ['DIRECT_URL','SUPABASE_DB_URL','POSTGRES_URL','RENDER','DATABASE_SSL_CA'])delete childEnv[key];
+  for(const key of ['DIRECT_URL','SUPABASE_DB_URL','POSTGRES_URL','RENDER'])delete childEnv[key];
+  if(!Object.hasOwn(changes,'DATABASE_SSL_CA'))delete childEnv.DATABASE_SSL_CA;
   const r=spawnSync(process.execPath,['--import',import.meta.resolve('tsx'),path.join(repo,'scripts/migrateDatabase.ts')],{cwd:directory,env:childEnv,encoding:'utf8',timeout:50000});
   assert.ifError(r.error);assert.ok(!(r.stdout+r.stderr).includes(decodeURIComponent(target.password)),'migration logs must not disclose password');
   return r;
 }
 const exists=async()=> (await sourceClient!.query("SELECT count(*)::int AS n FROM information_schema.columns WHERE table_schema='public' AND table_name='acquisition_leads' AND column_name='published_at'")).rows[0].n===1;
 try {
-  await admin.connect();await admin.query('CREATE DATABASE "'+source+'"');
+  await admin.connect();adminConnected=true;
+  await check('actual PostgreSQL accepts trusted CA with verified IP identity',async()=>{
+    const client=new pg.Client(secureDatabaseOptions(raw,{NODE_ENV:'production',DATABASE_SSL_CA:cert},p=>readFileSync(p,'utf8')));
+    try{await client.connect();assert.equal((await client.query('SELECT ssl FROM pg_stat_ssl WHERE pid=pg_backend_pid()')).rows[0].ssl,true);}finally{await client.end();}
+  });
+  await check('actual PostgreSQL rejects untrusted certificate without configured CA',async()=>{
+    const client=new pg.Client(secureDatabaseOptions(raw,{NODE_ENV:'production'},()=>''));
+    try{await assert.rejects(client.connect(),(e:unknown)=>/SELF_SIGNED|UNABLE_TO_VERIFY/.test(String((e as {code?:string}).code)));}finally{await client.end();}
+  });
+  await check('actual PostgreSQL rejects trusted certificate for a mismatching hostname',async()=>{
+    setDefaultResultOrder('ipv4first');const wrongHost=new URL(raw);wrongHost.hostname='localhost';
+    const client=new pg.Client(secureDatabaseOptions(wrongHost.href,{NODE_ENV:'production',DATABASE_SSL_CA:cert},p=>readFileSync(p,'utf8')));
+    try{await assert.rejects(client.connect(),(e:unknown)=>(e as {code?:string}).code==='ERR_TLS_CERT_ALTNAME_INVALID');}finally{await client.end();}
+  });
+  await admin.query('CREATE DATABASE "'+source+'"');
   sourceClient=new pg.Client({connectionString:sourceUrl.href});await sourceClient.connect();
   // Shape recorded in Phase22: seven columns, description present, publication absent.
   await sourceClient.query(`CREATE TABLE public.acquisition_leads (id text PRIMARY KEY,title text NOT NULL,source_url text NOT NULL UNIQUE,source_feed text NOT NULL,discovered_at timestamptz NOT NULL DEFAULT now(),status text NOT NULL DEFAULT 'CANDIDATE',description text,CHECK(status IN ('CANDIDATE','REVIEWING','QUALIFIED','REJECTED')));
@@ -62,7 +80,7 @@ try {
     finally{await blocker.query('ROLLBACK');await blocker.end();}
   });
   await check('authorized isolated CLI applies forward migration and records exact checksum once',async()=>{
-    const r=runner();assert.equal(r.status,0,'isolated migration runner failed: '+r.stderr);assert.equal(await exists(),true);
+    const r=runner({NODE_ENV:'production',DATABASE_SSL_CA:cert});assert.equal(r.status,0,'isolated migration runner failed: '+r.stderr);assert.equal(await exists(),true);
     assert.equal((await sourceClient!.query('SELECT checksum FROM schema_migrations WHERE version=$1',[version])).rows[0].checksum,sqlHash);
     assert.equal((await sourceClient!.query("SELECT published_at FROM acquisition_leads WHERE id='legacy'")).rows[0].published_at,null);
     assert.equal(runner().status,0);assert.equal((await sourceClient!.query('SELECT count(*)::int AS n FROM schema_migrations')).rows[0].n,files.length+1);
@@ -94,6 +112,6 @@ try {
   console.log('PHASE23_POSTGRES_COUNTS '+JSON.stringify({passed,failed:0,skipped:0}));
 } finally {
   await restoreClient?.end();await sourceClient?.end();
-  try {await admin.query('DROP DATABASE IF EXISTS "'+restored+'"');await admin.query('DROP DATABASE IF EXISTS "'+source+'"');}
+  try {if(adminConnected){await admin.query('DROP DATABASE IF EXISTS "'+restored+'"');await admin.query('DROP DATABASE IF EXISTS "'+source+'"');}}
   finally {await admin.end();rmSync(directory,{recursive:true,force:true});}
 }
