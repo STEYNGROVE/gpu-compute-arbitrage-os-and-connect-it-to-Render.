@@ -1,0 +1,145 @@
+[
+  {
+    "command": "npm run typecheck",
+    "exit": 0,
+    "duration_seconds": 23.858,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-0-npm-run-typecheck.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exit": 0,
+    "duration_seconds": 1.228,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 1,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-1-npm-run-security-check.log"
+  },
+  {
+    "command": "node --import tsx --test test/phase21Readiness.test.ts",
+    "exit": 0,
+    "duration_seconds": 1.429,
+    "node_test_counts": {
+      "pass": 21,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-2-node-import-tsx-test-test-phase21Readiness-test-ts.log"
+  },
+  {
+    "command": "npm run test:phase21",
+    "exit": 0,
+    "duration_seconds": 4.012,
+    "node_test_counts": {
+      "pass": 65,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-3-npm-run-test-phase21.log"
+  },
+  {
+    "command": "npm run test:phase25",
+    "exit": 0,
+    "duration_seconds": 7.888,
+    "node_test_counts": {
+      "pass": 66,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-4-npm-run-test-phase25.log"
+  },
+  {
+    "command": "node --import tsx test/readinessRecoverySuite.ts",
+    "exit": 0,
+    "duration_seconds": 1.428,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 4,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-5-node-import-tsx-test-readinessRecoverySuite-ts.log"
+  },
+  {
+    "command": "node --import tsx test/databaseOutageIsolationSuite.ts",
+    "exit": 0,
+    "duration_seconds": 0.726,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 4,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-6-node-import-tsx-test-databaseOutageIsolationSuite-ts.log"
+  },
+  {
+    "command": "npm test",
+    "exit": 0,
+    "duration_seconds": 99.688,
+    "node_test_counts": {
+      "pass": 248,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 615,
+    "legacy_skip_output_records": 3,
+    "evidence": "check-7-npm-test.log"
+  },
+  {
+    "command": "npm run test:purchase-boundary",
+    "exit": 0,
+    "duration_seconds": 0.874,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 1,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-8-npm-run-test-purchase-boundary.log"
+  },
+  {
+    "command": "npm run build",
+    "exit": 0,
+    "duration_seconds": 15.255,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-9-npm-run-build.log"
+  },
+  {
+    "command": "git diff --check",
+    "exit": 0,
+    "duration_seconds": 0.037,
+    "node_test_counts": {
+      "pass": 0,
+      "fail": 0,
+      "skipped": 0
+    },
+    "legacy_pass_output_records": 0,
+    "legacy_skip_output_records": 0,
+    "evidence": "check-10-git-diff-check.log"
+  }
+]

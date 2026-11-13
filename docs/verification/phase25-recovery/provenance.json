@@ -1,0 +1,26 @@
+{
+  "reviewedAt": "2026-11-13T08:41:42.790605+00:00",
+  "branch": "fix/pg-connection-lifecycle-20261113",
+  "baseCommit": "83578e61cd9265629d0fda311b41aa5c0904e27c",
+  "remoteMain": "83578e61cd9265629d0fda311b41aa5c0904e27c",
+  "sourcePatchSha256": "dd7bd68e5a36baa13be53be91b07199ee39dac5ed9aea76d62b802d40901c6ac",
+  "originalPatchStash": "5f96171898f2c791106ef484fcf78c361a92df9b",
+  "authorIdentityConfigured": true,
+  "commitAuthorization": "ONE_LOCAL_COMMIT_AFTER_PASSING_OFFLINE_CHECKS",
+  "pushAuthorized": false,
+  "deployAuthorized": false,
+  "migrationsExecutedDuringCommitFinalization": false,
+  "externalMutationsPerformed": false,
+  "rawLogsCommitted": false,
+  "tlsEvidence": "RENDER_READONLY_EVIDENCE.json",
+  "tlsBlocker": "ENDPOINT_CA_CONFIGURATION_RUNTIME_FILE_AND_EXACT_ERROR_CODE_UNVERIFIED",
+  "priorIsolatedPostgresEvidence": "POSTGRES_TEST_EVIDENCE.json",
+  "currentOfflineChecks": "commit-checks/results.json",
+  "commercialReleaseAudit": {
+    "scope": "PRIOR_DECLARED_ARCHITECTURE_AUDIT",
+    "exit": 1,
+    "safeControlsPassed": 13,
+    "safeControlsFailed": 0,
+    "unresolvedCommercialGates": 5
+  }
+}

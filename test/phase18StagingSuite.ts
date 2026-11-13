@@ -1,3 +1,6 @@
+import {spawnSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 import express from 'express';
 import { rateLimit } from '../server/rateLimit.js';
@@ -5,7 +8,7 @@ import { assessGatewayDrill, assessDatabaseDrill, evidenceDigest, snapshotReview
 import { assessSupplierEvidence, assessPrepaidPayment, reconcileTermination, requestPurchase } from '../server/launchReadiness/boundaries.js';
 import { classifyBuyerEvidence } from '../server/buyerEvidenceImport.js';
 import { evaluateGpuMatches } from '../server/gpuArbitrageDiscovery.js';
-import { smoke, BASELINE, STAGING } from '../scripts/staging-smoke.mjs';
+import { smoke, smokeFailureCode, BASELINE, STAGING } from '../scripts/staging-smoke.mjs';
 
 const now = 1_800_000_000_000;
 const base = { id: 'fixture', subjectId: 'runpod', accountId: 'fixture-account', observedAtMs: now - 1000, expiresAtMs: now + 1000 };
@@ -61,13 +64,42 @@ for (const [title, source, category] of [
 const matches = evaluateGpuMatches([{ provider: 'fixture', offerId: 'offer', gpu: 'H100', gpuCount: 1, hourlyUsd: 1, verified: true, available: true, evidenceUrl: 'https://example.com/supply', observedAt: new Date().toISOString() }], [{ source: 'fixture', orderId: 'order', gpu: 'H100', gpuCount: 1, maxHourlyUsd: 3, durationHours: 1, evidenceUrl: 'https://example.com/demand', observedAt: new Date().toISOString(), customerVerified: true, fundsVerified: true, fulfillmentCompatible: true }], { minimumNetMargin: 0.35, maxHourlyWholesaleUsd: 2, reservePct: 0.15 });
 assert.equal(matches.length, 1); assert.equal(matches[0].executionEligible, false); assert.equal(matches[0].realizedRevenueUsd, 0);
 
+assert.equal(STAGING,'https://gpu-arbitrage-simulation-staging.onrender.com','smoke must target the specified simulation staging service');
+
+const privateFailureMarker='SENSITIVE_RESPONSE_FIXTURE';
+const remoteAssertion=new assert.AssertionError({actual:privateFailureMarker,expected:'ready',operator:'strictEqual'});
+assert.equal(smokeFailureCode(remoteAssertion),'CONTRACT_MISMATCH');
+assert.equal(smokeFailureCode(new Error(privateFailureMarker)),'REQUEST_FAILED');
+assert(!smokeFailureCode(remoteAssertion).includes(privateFailureMarker));
+const smokePath=resolve('scripts/staging-smoke.mjs');
+const cli=spawnSync(process.execPath,['--input-type=module','-e',`
+  globalThis.fetch=async()=>{
+    process.stdout.write('FETCH_FIXTURE_CALLED\\n');
+    return new Response(JSON.stringify({status:${JSON.stringify(privateFailureMarker)}}),{status:200});
+  };
+  process.argv[1]=${JSON.stringify(smokePath)};
+  await import(${JSON.stringify(pathToFileURL(smokePath).href)});
+`],{env:{...process.env,EXPECTED_STAGING_REVISION:BASELINE},encoding:'utf8',timeout:10000});
+assert.ifError(cli.error);
+assert.equal(cli.status,1,'CLI must exit nonzero for a contract failure');
+assert.equal(cli.stdout,'FETCH_FIXTURE_CALLED\n');
+assert(cli.stderr.includes('STAGING_SMOKE_FAILED: CONTRACT_MISMATCH'));
+assert(!cli.stderr.includes(privateFailureMarker),'CLI must not print raw response values');
+
+
 // Exercise the smoke contract offline, including wrong revision and unexpected access.
 const fixtureFetch = async (url: string, init: RequestInit) => {
   assert(url.startsWith(STAGING)); assert.equal(init.method, 'GET'); assert.equal(init.redirect, 'error');
   const path = new URL(url).pathname;
-  return new Response(JSON.stringify(path === '/api/ready' ? { status: 'ready', database: 'connected', revision: BASELINE } : path.includes('healthz') ? { status: 'ok' } : { error: 'OWNER_AUTHENTICATION_REQUIRED' }), { status: path.includes('healthz') || path === '/api/ready' ? 200 : 403, headers: { 'cache-control': 'no-store' } });
+  return new Response(JSON.stringify(path === '/api/ready' ? { status: 'ready', database: 'connected', revision: BASELINE, financialExecutionAllowed: false, commerciallyCertified: false } : path.includes('healthz') ? { status: 'ok' } : { error: 'OWNER_AUTHENTICATION_REQUIRED' }), { status: path.includes('healthz') || path === '/api/ready' ? 200 : 403, headers: { 'cache-control': 'no-store' } });
 };
 assert.equal((await smoke({ request: fixtureFetch as any, expectedRevision: BASELINE })).passed, 13);
+for (const field of ['financialExecutionAllowed','commerciallyCertified']) {
+  await assert.rejects(smoke({expectedRevision:BASELINE,request:async(url,init)=>{
+    const response=await fixtureFetch(String(url),init);if(new URL(String(url)).pathname!=='/api/ready')return response;
+    return new Response(JSON.stringify({...await response.json(),[field]:true}),{status:200,headers:{'cache-control':'no-store'}});
+  }}));
+}
 const currentRevision = 'a'.repeat(40);
 await assert.rejects(smoke({ request: fixtureFetch as any, expectedRevision: currentRevision }), /strictly equal/,
   'a current expected commit must reject a readiness response reporting the old fixture commit');

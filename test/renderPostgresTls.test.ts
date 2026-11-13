@@ -23,10 +23,10 @@ const options = (
   () => { throw Error('Unexpected CA read'); }
 );
 
-test('explicit trusted Render private-network policy uses plaintext', () => {
-  assert.equal(
+test('private-network assertions alone still require authenticated TLS', () => {
+  assert.deepEqual(
     options('dpg-example-a').ssl,
-    false
+    { rejectUnauthorized: true }
   );
 });
 
@@ -115,10 +115,10 @@ test('installed pg driver receives verified TLS and fixed timeouts',()=>{
   assert.deepEqual(params.ssl,{rejectUnauthorized:true,ca:'fixture-ca'});assert.equal(params.host,'external.example');
   assert.equal(params.query_timeout,5000);assert.equal(params.statement_timeout,5000);
 });
-test('plaintext policy explicitly overrides ambient pg SSL defaults',()=>{
+test('private policy cannot weaken pg SSL defaults',()=>{
   const result=options('dpg-example-a');
   const client=new pg.Client(result);
-  assert.equal((client as unknown as {connectionParameters:{ssl:unknown}}).connectionParameters.ssl,false);
+  assert.deepEqual((client as unknown as {connectionParameters:{ssl:unknown}}).connectionParameters.ssl,{rejectUnauthorized:true});
 });
 
 test('connection timeout closes an unresponsive local PostgreSQL handshake',async()=>{

@@ -1,0 +1,293 @@
+{
+  "observedAt": "2026-11-13T08:13:51Z",
+  "scope": "READ_ONLY_RENDER_METADATA_AND_LOGS",
+  "workspaceId": "tea-d71ou663jp1c739fnubg",
+  "service": {
+    "id": "srv-dbmbgrc9v7es739dl3ng",
+    "name": "gpu-arbitrage-simulation-staging",
+    "region": "ohio",
+    "branch": "main",
+    "healthCheckPath": "/api/ready",
+    "autoDeploy": "yes",
+    "autoDeployTrigger": "commit",
+    "plan": "free",
+    "numInstances": 1,
+    "openPorts": [],
+    "runtime": "node",
+    "buildNodeVersion": "24.22.1",
+    "startCommand": "npm start"
+  },
+  "database": {
+    "id": "dpg-dbh2u1l9fdbs73a3qpn0-a",
+    "status": "available",
+    "plan": "free",
+    "region": "ohio",
+    "version": "18",
+    "expiresAt": "2026-11-27T17:21:10.507676Z",
+    "highAvailabilityEnabled": false,
+    "readReplicas": 0,
+    "connectionPool": "none",
+    "externalIpAllowList": [
+      "0.0.0.0/0"
+    ]
+  },
+  "failedDeploy": {
+    "commit": {
+      "createdAt": "2026-11-13T07:10:24Z",
+      "id": "83578e61cd9265629d0fda311b41aa5c0904e27c",
+      "message": "Merge pull request #55 from STEYNGROVE/integration/phase25-unified-system\n\nPhase 25: unified integration verification"
+    },
+    "createdAt": "2026-11-13T07:10:27.16762Z",
+    "finishedAt": "2026-11-13T07:29:03.400233Z",
+    "id": "dep-dbrbfos9v7es73a1gjn0",
+    "startedAt": "2026-11-13T07:10:27.14186Z",
+    "status": "update_failed",
+    "trigger": "new_commit",
+    "updatedAt": "2026-11-13T07:29:03.400937Z"
+  },
+  "liveDeploy": {
+    "commit": {
+      "createdAt": "2026-11-12T06:26:20Z",
+      "id": "c9d903330db55892ed2d4f18a2e54524917a85b4",
+      "message": "Merge pull request #46 from STEYNGROVE/feature/phase20-commercial-readiness\n\nPhase 20 \u2014 Unified GPU Gateway, Supplier Evidence and Commercial Safety"
+    },
+    "createdAt": "2026-11-12T06:26:22.688591Z",
+    "finishedAt": "2026-11-12T06:27:10.809769Z",
+    "id": "dep-dbqlo3nf3r2c73fb1h00",
+    "startedAt": "2026-11-12T06:26:22.665887Z",
+    "status": "live",
+    "trigger": "new_commit",
+    "updatedAt": "2026-11-13T07:29:04.402539Z"
+  },
+  "events": [
+    "[{\"details\":{\"deployId\":\"dep-dbrbfos9v7es73a1gjn0\",\"deployStatus\":\"failed\",\"reason\":{},\"status\":4},\"id\":\"evt-dbrbofpptu5s738ko150\",\"serviceId\":\"srv-dbmbgrc9v7es739dl3ng\",\"timestamp\":\"2026-11-13T07:29:03.443375Z\",\"type\":\"deploy_ended\"},{\"details\":{\"buildId\":\"bld-dbrbfos9v7es73a1gjng\",\"buildStatus\":\"succeeded\",\"reason\":{},\"status\":2},\"id\":\"evt-dbrbg1bcn4hs73cbampg\",\"serviceId\":\"srv-dbmbgrc9v7es739dl3ng\",\"timestamp\":\"2026-11-13T07:11:01.432759Z\",\"type\":\"build_ended\"},{\"details\":{\"buildId\":\"bld-dbrbfos9v7es73a1gjng\",\"trigger\":{\"clearCache\":false,\"deployedByRender\":false,\"envUpdated\":false,\"firstBuild\":false,\"manual\":false,\"newCommit\":\"83578e61cd9265629d0fda311b41aa5c0904e27c\",\"rollback\":false}},\"id\":\"evt-dbrbfqaaujis73cpg42g\",\"serviceId\":\"srv-dbmbgrc9v7es739dl3ng\",\"timestamp\":\"2026-11-13T07:10:32.216413Z\",\"type\":\"build_started\"},{\"details\":{\"deployId\":\"dep-dbrbfos9v7es73a1gjn0\",\"trigger\":{\"clearCache\":false,\"deployedByRender\":false,\"envUpdated\":false,\"firstBuild\":false,\"manual\":false,\"newCommit\":\"83578e61cd9265629d0fda311b41aa5c0904e27c\",\"rollback\":false}},\"id\":\"evt-dbrbfpke7ovs73fah5qg\",\"serviceId\":\"srv-dbmbgrc9v7es739dl3ng\",\"timestamp\":\"2026-11-13T07:10:30.15499Z\",\"type\":\"deploy_started\"}]\n\n cursor: LCcrIMbjITBmcGtlN292czczZmFoNXFn"
+  ],
+  "runtimeBuild": {
+    "hasMore": false,
+    "logs": [
+      {
+        "id": "d49ea12b-80d1-4424-b788-d757f59f2b05",
+        "labels": [
+          {
+            "name": "resource",
+            "value": "srv-dbmbgrc9v7es739dl3ng"
+          },
+          {
+            "name": "level",
+            "value": "info"
+          },
+          {
+            "name": "type",
+            "value": "app"
+          }
+        ],
+        "message": "\u001b[34;1m==>\u001b[0;22m \u001b[1mUsing Node.js version 24.22.1 (default)\u001b[22m",
+        "timestamp": "2026-11-13T07:10:46.949926314Z"
+      },
+      {
+        "id": "065af66f-6b8e-4a1e-810e-897a01cf5a8a",
+        "labels": [
+          {
+            "name": "resource",
+            "value": "srv-dbmbgrc9v7es739dl3ng"
+          },
+          {
+            "name": "level",
+            "value": "info"
+          },
+          {
+            "name": "type",
+            "value": "app"
+          }
+        ],
+        "message": "\u001b[34;1m==>\u001b[0;22m \u001b[1mDocs on specifying a Node.js version: https://render.com/docs/node-version\u001b[22m",
+        "timestamp": "2026-11-13T07:10:46.949931451Z"
+      },
+      {
+        "id": "04e25f48-132f-444d-9517-145653cc0d3b",
+        "labels": [
+          {
+            "name": "resource",
+            "value": "srv-dbmbgrc9v7es739dl3ng"
+          },
+          {
+            "name": "level",
+            "value": "info"
+          },
+          {
+            "name": "type",
+            "value": "app"
+          }
+        ],
+        "message": "> node scripts/security-check.cjs",
+        "timestamp": "2026-11-13T07:10:54.188209908Z"
+      },
+      {
+        "id": "64851ed9-ceb1-4ee1-b465-0b7da0483797",
+        "labels": [
+          {
+            "name": "resource",
+            "value": "srv-dbmbgrc9v7es739dl3ng"
+          },
+          {
+            "name": "level",
+            "value": "info"
+          },
+          {
+            "name": "type",
+            "value": "app"
+          }
+        ],
+        "message": "> vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+        "timestamp": "2026-11-13T07:10:54.352764567Z"
+      }
+    ],
+    "nextEndTime": "2026-11-13T07:30:00Z",
+    "nextStartTime": "2026-11-13T07:10:54.352764568Z"
+  },
+  "incidentLogs": [
+    {
+      "timestamp": "2026-11-13T07:11:16.681988763Z",
+      "id": "225882ba-4c06-478a-bd02-7a86bcbe1afd",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "[BOOTSTRAP] Local .env loading disabled outside explicit development"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:18.278156005Z",
+      "id": "7846867a-aa8c-4f9d-9e4f-c8ef19d0b392",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "[Compute Arbitrage Core] Production-grade backend active on http://0.0.0.0:10000"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:18.483153595Z",
+      "id": "f4121250-32d5-4dd9-875c-d79fb1cd6f52",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "[POSTGRES CONNECTION FAILED] TLS_CERTIFICATE"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:18.483602003Z",
+      "id": "e7ac1204-3f91-48b9-a457-9a87c78f9f90",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "  event: 'BOOTSTRAP_FAILED',"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:18.483605554Z",
+      "id": "f14a918f-4d68-4c01-86a0-87b47cf1b486",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "  financialExecutionAllowed: false,"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:18.483608114Z",
+      "id": "9198d281-b6f0-4666-9f78-3310c441cb58",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "  revision: '83578e61cd9265629d0fda311b41aa5c0904e27c'"
+    },
+    {
+      "timestamp": "2026-11-13T07:11:50.634041052Z",
+      "id": "dbrccrdckfvc73ds6l70",
+      "instance": null,
+      "message": "==> New primary port detected: 10000. Restarting deploy to update network configuration..."
+    },
+    {
+      "timestamp": "2026-11-13T07:12:02.916400619Z",
+      "id": "99c3a195-bb25-421c-8a71-87284ae4b4ad",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "[BOOTSTRAP] Local .env loading disabled outside explicit development"
+    },
+    {
+      "timestamp": "2026-11-13T07:12:04.314391562Z",
+      "id": "97530c8c-2895-4897-8e54-d084026cc379",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "[Compute Arbitrage Core] Production-grade backend active on http://0.0.0.0:10000"
+    },
+    {
+      "timestamp": "2026-11-13T07:12:04.4165233Z",
+      "id": "7fb29810-561c-4ad8-b1cf-5982ecf1255d",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "[POSTGRES CONNECTION FAILED] TLS_CERTIFICATE"
+    },
+    {
+      "timestamp": "2026-11-13T07:12:04.416954621Z",
+      "id": "e1e19c46-f350-4ab8-84e9-2268efbc2930",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "  event: 'BOOTSTRAP_FAILED',"
+    },
+    {
+      "timestamp": "2026-11-13T07:12:04.416958521Z",
+      "id": "97252f9a-93be-4296-8014-16353213a6b9",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "  financialExecutionAllowed: false,"
+    },
+    {
+      "timestamp": "2026-11-13T07:12:04.416961701Z",
+      "id": "7b530919-0c2e-4ff9-804f-4efbb11357f6",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-m6pbl",
+      "message": "  revision: '83578e61cd9265629d0fda311b41aa5c0904e27c'"
+    },
+    {
+      "timestamp": "2026-11-13T07:26:16.231134869Z",
+      "id": "537e35ab-d09c-450c-b89d-924e782dc871",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-9qht6",
+      "message": "[BOOTSTRAP] Local .env loading disabled outside explicit development"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:03.71996314Z",
+      "id": "dbrccrdckfvc73ds6l8g",
+      "instance": null,
+      "message": "==> Timed Out"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:18.165420985Z",
+      "id": "6086f6ba-efbf-49c4-9275-bf1018e76f50",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-6pmg7",
+      "message": "\u25c7 injected env (0) from .env // tip: \u2318 override existing { override: true }"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:19.38434947Z",
+      "id": "838fb1c4-e255-4894-8e88-e482424b6f4b",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-6pmg7",
+      "message": "[Compute Arbitrage Core] Production-grade backend active on http://0.0.0.0:3000"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:19.384994055Z",
+      "id": "12d89270-c3a3-40dc-bdf3-e9851c362dec",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-6pmg7",
+      "message": "[BOOTSTRAP] Production Secret Validation FAIL-CLOSED: Missing: [CUSTOMER_API_KEY, ESCROW_SIGNING_SECRET, QUOTE_LOCK_SECRET, BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_WEBHOOK_SECRET, BSC_RPC_URL, TREASURY_HOT_WALLET_PRIVATE_KEY]"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:19.668387201Z",
+      "id": "62dcb684-8f7f-4615-9974-942c52dd0cea",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-6pmg7",
+      "message": "[BOOTSTRAP] Database Mode: REMOTE_POSTGRES (HEALTHY)"
+    },
+    {
+      "timestamp": "2026-11-13T07:29:20.569442085Z",
+      "id": "539a86b0-41d6-430a-8f58-b072f5b4a6ed",
+      "instance": "srv-dbmbgrc9v7es739dl3ng-6pmg7",
+      "message": "[BOOTSTRAP] System Live Readiness: FAIL-CLOSED (HALTED - LIVE GATES REQUIRED)"
+    }
+  ],
+  "exactTlsCodeSearch": {
+    "startTime": "2026-11-13T07:10:00Z",
+    "endTime": "2026-11-13T07:30:00Z",
+    "terms": [
+      "SELF_SIGNED",
+      "CERT_HAS_EXPIRED",
+      "UNABLE_TO_VERIFY",
+      "ALTNAME",
+      "DIRECT_URL",
+      "CONFIGURATION_REJECTED"
+    ],
+    "matchingLogs": 0,
+    "hasMore": false
+  },
+  "limitations": {
+    "deployedEndpointHost": "NOT_EXPOSED_BY_AVAILABLE_CONNECTOR",
+    "deployedCaConfiguration": "NOT_EXPOSED_BY_AVAILABLE_CONNECTOR",
+    "certificateChain": "NOT_OBSERVED",
+    "healthyInstanceSha": "NOT_DIRECTLY_EXPOSED",
+    "publicReadinessRequest": "WEB_TOOL_UNAVAILABLE_AND_SEPARATE_20_SECOND_REQUEST_TIMED_OUT"
+  },
+  "externalMutationsPerformed": false,
+  "logSelection": "Relevant incident excerpts only; full prior response retained in ignored local archive."
+}

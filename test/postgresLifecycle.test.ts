@@ -1,3 +1,4 @@
+import {commercialColumnTypes} from '../server/commercialSchema.js';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { EventEmitter } from 'node:events';
@@ -98,7 +99,7 @@ test('shutdown during failover drain cannot reopen a pool',()=>fixture(async(s,p
   let enter!:()=>void,finish!:()=>void;
   const entered=new Promise<void>(r=>enter=r);const blocked=new Promise<void>(r=>finish=r);
   p[0].fail=true;p[0].end=async()=>{p[0].ended++;enter();await blocked;};
-  const init=s.initialize();await entered;await s.close();finish();
+  const init=s.initialize();await entered;const closing=s.close();finish();await closing;
   assert.equal((await init).success,false);assert.equal(p.length,1);assert.equal(s.isLiveDatabaseConnected(),false);
 },'postgresql://fixture:fixture@fallback.example/db'));
 
@@ -111,9 +112,94 @@ test('actual production schema verifier performs SELECTs only and verifies local
   const client={query:async(sql:string,params?:string[][])=>{
     sqls.push(sql);assert.match(sql,/^SELECT /);
     if(sql.includes('information_schema.tables'))return {rows:params![0].map(table_name=>({table_name}))};
+    if(sql.includes('information_schema.columns'))return {rows:Object.entries(commercialColumnTypes).flatMap(([table_name,columns])=>Object.entries(columns).map(([column_name,data_type])=>({table_name,column_name,data_type})))};
     if(sql==='SELECT version, checksum FROM schema_migrations')return {rows:fs.readdirSync('supabase/migrations').filter(f=>f.endsWith('.sql')).map(file=>({version:file.slice(0,-4),checksum:createHash('sha256').update(fs.readFileSync(path.join('supabase/migrations',file),'utf8').trim()).digest('hex')}))};
     return {rows:[]};
   }} as unknown as pg.PoolClient;
   await PostgresDatabaseService.prototype.verifySchemaReadiness.call(s,client);
-  assert.equal(sqls.length,3);assert.ok(sqls.some(sql=>sql.includes('schema_migrations')));assert.ok(sqls.some(sql=>sql.includes('acquisition_leads')));
+  assert.equal(sqls.length,8);assert.ok(sqls.some(sql=>sql.includes('schema_migrations')));assert.ok(sqls.some(sql=>sql.includes('acquisition_leads')));
+}));
+
+function barrier() {
+  let release!:()=>void;
+  const wait=new Promise<void>(r=>release=r);
+  return {wait,release};
+}
+test('concurrent initialization shares a single connection attempt',()=>fixture(async(s,p)=>{
+  const gate=barrier();let calls=0;
+  s.verifySchemaReadiness=async()=>{calls++;await gate.wait;};
+  const a=s.initialize(),b=s.initialize();assert.equal(a,b);
+  gate.release();assert((await a).success);assert((await b).success);assert.equal(calls,1);assert.equal(p[0].released,1);
+}));
+test('concurrent probes coalesce and a pool error invalidates an in-flight success',()=>fixture(async(s,p)=>{
+  await s.initialize();const gate=barrier(),entered=barrier();
+  s.verifySchemaReadiness=async()=>{entered.release();await gate.wait;};
+  const a=s.probeReadiness(),b=s.probeReadiness();assert.equal(a,b);await entered.wait;
+  p[0].emit('error',Object.assign(Error('private'),{code:'ECONNRESET'}));gate.release();
+  assert.equal(await a,false);assert.equal(await b,false);assert.equal(s.isLiveDatabaseConnected(),false);
+  assert.equal(p[0].released,2);
+}));
+test('old probe cannot overwrite a replacement pool after fallback',()=>fixture(async(s,p)=>{
+  const gate=barrier(),entered=barrier();let checks=0;
+  s.verifySchemaReadiness=async()=>{if(++checks===1){entered.release();await gate.wait;throw Error('old schema');}};
+  const probe=s.probeReadiness();await entered.wait;p[0].fail=true;
+  assert.equal((await s.initialize()).success,true);gate.release();assert.equal(await probe,false);
+  assert.equal(s.isLiveDatabaseConnected(),true);assert.equal(p[0].ended,1);
+},'postgresql://fixture:fixture@fallback.example/db'));
+test('failed fallback releases its client and remains disconnected',()=>fixture(async(s,p)=>{
+  p[0].fail=true;s.verifySchemaReadiness=async()=>{throw Error('missing schema');};
+  assert.equal((await s.initialize()).success,false);assert.equal(s.isLiveDatabaseConnected(),false);
+  assert.equal(p[1].released,1);await s.close();assert.deepEqual(p.map(x=>x.ended),[1,1]);
+},'postgresql://fixture:fixture@fallback.example/db'));
+test('stale fallback completion cannot disconnect a new initialization',()=>fixture(async(s,p)=>{
+  p[0].fail=true;const entered=barrier(),gate=barrier();let calls=0;
+  s.verifySchemaReadiness=async()=>{if(++calls===1){entered.release();await gate.wait;throw Error('old schema');}};
+  const old=s.initialize();await entered.wait;await s.close();
+  assert.equal((await s.initialize()).success,true);gate.release();assert.equal((await old).success,false);
+  assert.equal(s.isLiveDatabaseConnected(),true);await s.close();assert.deepEqual(p.map(x=>x.ended),[1,1,1]);
+},'postgresql://fixture:fixture@fallback.example/db'));
+test('cleanup rejection is observed and repeated close shares the failure',()=>fixture(async(s,p)=>{
+  p[0].end=async()=>{p[0].ended++;throw Error('private drain failure');};
+  const a=s.close(),b=s.close();assert.equal(a,b);await assert.rejects(a,/private drain failure/);
+  assert.equal(p[0].ended,1);assert.equal((await s.initialize()).success,false);
+  // Fixture teardown must explicitly observe the same failed shutdown.
+  s.close=async()=>{await a.catch(()=>{});};
+}));
+test('repeated initialization reuses pool and initialization invalidates earlier probe',()=>fixture(async(s,p)=>{
+  for(let i=0;i<5;i++)assert.equal((await s.initialize()).success,true);
+  assert.equal(p.length,1);assert.equal(p[0].released,5);
+}));
+test('query failure releases each acquired client',()=>fixture(async(s,p)=>{
+  p[0].connect=async()=>({query:async()=>{throw Error('query failed');},release:()=>{p[0].released++;}});
+  assert.equal((await s.initialize()).success,false);assert.equal(await s.probeReadiness(),false);assert.equal(p[0].released,2);
+}));
+test('client acquisition during shutdown releases the superseded client',()=>fixture(async(s,p)=>{
+  await s.initialize();const gate=barrier(),entered=barrier();const connect=p[0].connect.bind(p[0]);
+  p[0].connect=async()=>{entered.release();await gate.wait;return connect();};
+  const acquisition=s.getClient();await entered.wait;await s.close();gate.release();
+  await assert.rejects(acquisition,/DATABASE_UNAVAILABLE/);assert.equal(p[0].released,2);
+}));
+test('failed retirement blocks additional pools instead of leaking replacements',()=>fixture(async(s,p)=>{
+  p[0].fail=true;p[0].end=async()=>{p[0].ended++;throw Error('drain failed');};
+  assert.equal((await s.initialize()).success,false);assert.equal((await s.initialize()).success,false);
+  assert.equal(p.length,1);assert.equal(p[0].ended,1);
+  await assert.rejects(s.close(),/drain failed/);s.close=async()=>{};
+},'postgresql://fixture:fixture@fallback.example/db'));
+test('primary connection failure stays disconnected without acquiring a client',()=>fixture(async(s,p)=>{
+  p[0].fail=true;assert.equal((await s.initialize()).success,false);
+  assert.equal(s.isLiveDatabaseConnected(),false);assert.equal(p[0].released,0);
+  assert.equal(p.length,1);assert.equal(s.getStatus().liveExecutionAllowed,false);
+}));
+test('shutdown while connect is pending cannot publish success or open fallback',()=>fixture(async(s,p)=>{
+  const entered=barrier(),gate=barrier(),connect=p[0].connect.bind(p[0]);
+  p[0].connect=async()=>{entered.release();await gate.wait;return connect();};
+  const init=s.initialize();await entered.wait;const closing=s.close();gate.release();await closing;
+  assert.equal((await init).success,false);assert.equal(p[0].released,1);assert.equal(p.length,1);
+},'postgresql://fixture:fixture@fallback.example/db'));
+test('programming defects propagate while clients are still released',()=>fixture(async(s,p)=>{
+  await s.initialize();
+  s.verifySchemaReadiness=async()=>{throw new TypeError('fixture programming defect');};
+  await assert.rejects(s.probeReadiness(),TypeError);assert.equal(s.isLiveDatabaseConnected(),false);
+  await assert.rejects(s.initialize(),TypeError);
+  assert.equal(p[0].released,3);assert.equal(s.isLiveDatabaseConnected(),false);
 }));

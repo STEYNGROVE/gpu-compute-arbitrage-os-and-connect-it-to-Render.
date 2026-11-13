@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-11-13T08:43:09.373323+00:00",
+  "status": "PASS",
+  "stagedPatternScan": "PASS",
+  "secretPatternFindings": 0,
+  "privateKeyOrRawLogArtifactsStaged": 0,
+  "localDocumentLinks": "PASS",
+  "existingVersionedMigrationsModified": 0,
+  "newMigrationsPrepared": 2,
+  "migrationsExecutedDuringFinalization": false,
+  "mainAncestry": "83578e61cd9265629d0fda311b41aa5c0904e27c is HEAD and freshly fetched origin/main before local commit",
+  "migrationSafety": "Non-prefix histories fail closed; incompatible existing schemas need separate inventory and recovery review; no runtime DDL",
+  "manualReview": "Synthetic test credentials only; sanitized provider metadata; no unintended source changes found",
+  "authorIdentityConfigured": true,
+  "activeCommitHooks": [],
+  "historicalCommercialAuditExit": 1,
+  "unresolvedCommercialGates": 5
+}

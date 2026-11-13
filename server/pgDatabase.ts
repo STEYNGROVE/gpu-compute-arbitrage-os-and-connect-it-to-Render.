@@ -1,3 +1,4 @@
+import {verifyCommercialColumnTypes} from './commercialSchema.js';
 import { classifyPostgresError } from './diagnostics/postgres.js';
 import { secureDatabaseOptions } from './phase21/configuration.js';
 import { liveOperationsAllowed } from './simulationSafety.js';
@@ -7,6 +8,11 @@ import path from 'path';
 import crypto from 'crypto';
 
 const { Pool } = pg;
+
+function rethrowProgrammingError(error: unknown): void {
+  if (error instanceof TypeError || error instanceof ReferenceError ||
+      error instanceof SyntaxError || error instanceof RangeError) throw error;
+}
 
 export interface PgDatabaseConfig {
   connectionString?: string;
@@ -28,6 +34,13 @@ export interface PgDatabaseConfig {
 export class PostgresDatabaseService {
   private pool: pg.Pool | null = null;
   private poolGeneration = 0;
+  private healthGeneration = 0;
+  private initializing?: Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }>;
+  private probing?: Promise<boolean>;
+  private closing?: Promise<void>;
+  private readonly drains = new WeakMap<pg.Pool, Promise<void>>();
+  private drainFailed = false;
+  private readonly pendingDrains = new Set<Promise<void>>();
   private isConnected: boolean = false;
   private connectionError: string | null = null;
   private isInitialized: boolean = false;
@@ -58,109 +71,139 @@ export class PostgresDatabaseService {
         pool.on('error', (err) => {
           if(this.pool!==pool)return;
           console.error('[POSTGRES POOL ERROR]', {category:classifyPostgresError(err)});
+          this.healthGeneration++;
           this.isConnected = false;
           this.connectionError = 'POSTGRES_UNAVAILABLE';
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
+        rethrowProgrammingError(err);
         console.warn('[POSTGRES INIT ERROR]', 'CONFIGURATION_REJECTED');
         this.connectionError = 'POSTGRES_UNAVAILABLE';
       }
     }
   }
 
-  public async close(): Promise<void> {
+  /** Start each drain once and immediately attach a rejection handler. */
+  private drain(pool: pg.Pool): Promise<void> {
+    const existing = this.drains.get(pool);
+    if (existing) return existing;
+    const ending = Promise.resolve().then(() => pool.end());
+    this.drains.set(pool, ending);
+    this.pendingDrains.add(ending);
+    void ending.then(() => { this.pendingDrains.delete(ending); }, () => {});
+    // The original rejection remains visible to close()/initialization callers.
+    void ending.catch(() => {
+      this.drainFailed = true;
+      console.warn('[POSTGRES CLEANUP FAILED]', 'POOL_DRAIN_FAILED');
+    });
+    return ending;
+  }
+
+  public close(): Promise<void> {
+    if (this.closing) return this.closing;
     const pool = this.pool;
     this.poolGeneration++;
+    this.healthGeneration++;
     this.pool = null;
     this.isConnected = false;
     this.isInitialized = false;
-
-    if (pool) {
-      await pool.end();
-    }
+    this.initializing = undefined;
+    this.probing = undefined;
+    if (pool) this.drain(pool);
+    const closing = Promise.all([...this.pendingDrains]).then(() => undefined);
+    this.closing = closing;
+    void closing.then(() => { if (this.closing === closing) this.closing = undefined; },
+      () => { /* Retain failed shutdown; do not reopen after a failed drain. */ });
+    return closing;
   }
 
-  /** Read-only reconnect probe. No schema initialization, directory seeding or financial workers. */
-  public async probeReadiness():Promise<boolean> {
-    const pool=this.pool;
-    if(!pool)return false;
-    let client:pg.PoolClient|undefined;
-    try {
-      client=await pool.connect();await client.query('SELECT 1');await this.verifySchemaReadiness(client);
-      if(this.pool!==pool)return false;
-      this.isConnected=true;this.connectionError=null;return true;
-    } catch {if(this.pool===pool){this.isConnected=false;this.connectionError='POSTGRES_UNAVAILABLE';}return false;}
-    finally{client?.release();}
-  }
-
-  public async initialize(options?: { skipSchemaCheck?: boolean }): Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }> {
-    if (!this.pool) {
-      this.configurePool();
-    }
-    if (this.pool) {
-      const pool=this.pool;
+  /** Read-only, coalesced probe; a pool error or replacement invalidates its result. */
+  public probeReadiness(): Promise<boolean> {
+    if (this.closing || this.initializing || !this.pool) return Promise.resolve(false);
+    if (this.probing) return this.probing;
+    const pool = this.pool;
+    const health = this.healthGeneration;
+    const current = (async () => {
+      let client: pg.PoolClient | undefined;
       try {
-        const client = await pool.connect();
-        try {
-          await client.query('SELECT 1 as health');
-          // Read-only schema readiness verification (zero runtime DDL mutation)
-          if (process.env.NODE_ENV==='production' || !options?.skipSchemaCheck) {
-            await this.verifySchemaReadiness(client);
-          }
-          if(this.pool!==pool)throw Error('DATABASE_POOL_REPLACED');
-          this.isConnected = true;
-          this.connectionError = null;
-          this.isInitialized = true;
-          return { success: true, mode: 'REMOTE_POSTGRES' };
-        } finally {
-          client.release();
+        client = await pool.connect();
+        await client.query('SELECT 1');
+        await this.verifySchemaReadiness(client);
+        if (this.pool !== pool || this.healthGeneration !== health) return false;
+        this.isConnected = true;
+        this.connectionError = null;
+        return true;
+      } catch (error) {
+        if (this.pool === pool && this.healthGeneration === health) {
+          this.isConnected = false;
+          this.connectionError = 'POSTGRES_UNAVAILABLE';
         }
-      } catch (err: any) {
-        if(this.pool!==pool)return {success:false,mode:'POSTGRES_DISCONNECTED',error:'POSTGRES_UNAVAILABLE'};
-        console.warn('[POSTGRES CONNECTION FAILED]', classifyPostgresError(err));
-        this.isConnected = false;
-        // Attempt failover to DIRECT_URL if distinct from DATABASE_URL
-        const directUrl = process.env.DIRECT_URL?.trim();
-        const primaryUrl = process.env.DATABASE_URL?.trim();
-        if (directUrl && directUrl !== primaryUrl && (directUrl.startsWith('postgres://') || directUrl.startsWith('postgresql://'))) {
-          try {
-            const closingGeneration=this.poolGeneration+1;
-            await this.close();
-            if(this.poolGeneration!==closingGeneration)return {success:false,mode:'POSTGRES_DISCONNECTED',error:'POSTGRES_UNAVAILABLE'};
-            this.configurePool(directUrl);
-            if (this.pool) {
-              const fallbackPool=this.pool;
-              const fallbackClient = await fallbackPool.connect();
-              try {
-                await fallbackClient.query('SELECT 1 as health');
-                if (process.env.NODE_ENV==='production' || !options?.skipSchemaCheck) {
-                  await this.verifySchemaReadiness(fallbackClient);
-                }
-                if(this.pool!==fallbackPool)throw Error('DATABASE_POOL_REPLACED');
-                this.isConnected = true;
-                this.connectionError = null;
-                this.isInitialized = true;
-                return { success: true, mode: 'REMOTE_POSTGRES' };
-              } finally {
-                fallbackClient.release();
-              }
-            }
-          } catch (fallbackErr: any) {
-            console.warn('[POSTGRES DIRECT_URL FAILOVER FAILED]', 'UNAVAILABLE');
-          }
-        }
-        this.isConnected = false;
-        this.connectionError = 'POSTGRES_UNAVAILABLE';
-      }
-    }
+        rethrowProgrammingError(error);
+        return false;
+      } finally { client?.release(); }
+    })();
+    this.probing = current;
+    void current.then(() => { if (this.probing === current) this.probing = undefined; },
+      () => { if (this.probing === current) this.probing = undefined; });
+    return current;
+  }
 
-    this.isInitialized = true;
+  public initialize(options?: { skipSchemaCheck?: boolean }): Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }> {
+    if (this.closing || this.drainFailed) return Promise.resolve({success:false, mode:'POSTGRES_DISCONNECTED', error:'POSTGRES_UNAVAILABLE'});
+    if (this.initializing) return this.initializing;
+    // Invalidate probes already in flight, including probes on the same pool.
+    this.healthGeneration++;
     this.isConnected = false;
-    return {
-      success: false,
-      mode: 'POSTGRES_DISCONNECTED',
-      error: this.connectionError || 'DATABASE_URL is not configured or unreachable. LIVE operations are strictly BLOCKED.'
-    };
+    this.isInitialized = false;
+    this.probing = undefined;
+    const current = this.initializePools(options);
+    this.initializing = current;
+    void current.then(() => { if (this.initializing === current) this.initializing = undefined; },
+      () => { if (this.initializing === current) this.initializing = undefined; });
+    return current;
+  }
+
+  private async initializePools(options?: { skipSchemaCheck?: boolean }): Promise<{ success: boolean; mode: 'REMOTE_POSTGRES' | 'POSTGRES_DISCONNECTED'; error?: string }> {
+    const failed = {success:false as const, mode:'POSTGRES_DISCONNECTED' as const, error:'POSTGRES_UNAVAILABLE'};
+    if (!this.pool) this.configurePool();
+    const generation = this.poolGeneration;
+    let pool = this.pool;
+    const directUrl = process.env.DIRECT_URL?.trim();
+    const primaryUrl = (process.env.DATABASE_URL || process.env.DIRECT_URL || process.env.SUPABASE_DB_URL || process.env.POSTGRES_URL || '').trim();
+    for (let attempt = 0; pool && attempt < 2; attempt++) {
+      const activePool = pool;
+      const health = this.healthGeneration;
+      let client: pg.PoolClient | undefined;
+      let failure: unknown;
+      let verified = false;
+      try {
+        client = await activePool.connect();
+        await client.query('SELECT 1 as health');
+        if (process.env.NODE_ENV === 'production' || !options?.skipSchemaCheck) await this.verifySchemaReadiness(client);
+        verified = true;
+      } catch (error) { rethrowProgrammingError(error); failure = error; }
+      finally { client?.release(); }
+      if (this.pool !== activePool || this.healthGeneration !== health) return failed;
+      if (verified) {
+        this.isConnected = true;
+        this.connectionError = null;
+        this.isInitialized = true;
+        return {success:true, mode:'REMOTE_POSTGRES'};
+      }
+      this.isConnected = false;
+      this.connectionError = 'POSTGRES_UNAVAILABLE';
+      console.warn('[POSTGRES CONNECTION FAILED]', classifyPostgresError(failure));
+      if (attempt || !directUrl || directUrl === primaryUrl) return failed;
+      // Retire the primary before constructing a replacement. Shutdown can invalidate
+      // this attempt while drain waits for outstanding clients to release.
+      this.pool = null;
+      try { await this.drain(activePool); }
+      catch { return failed; }
+      if (this.poolGeneration !== generation || this.closing) return failed;
+      this.configurePool(directUrl);
+      pool = this.pool;
+    }
+    return failed;
   }
 
   /**
@@ -170,6 +213,13 @@ export class PostgresDatabaseService {
    */
   public async verifySchemaReadiness(client: pg.PoolClient): Promise<void> {
     const requiredTables = [
+      'commercial_quote_requests',
+      'customer_intelligence_leads',
+      'gpu_hunter_opportunities',
+      'preapproved_workload_evidence',
+      'commercial_verification',
+      'commercial_quote_evidence',
+      'commercial_evidence_audit',
       'schema_migrations',
       'customers',
       'customer_api_keys',
@@ -222,7 +272,15 @@ export class PostgresDatabaseService {
     }
 
     await this.verifyMigrationChecksums(client);
-    if(process.env.NODE_ENV==='production')await client.query('SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0');
+    if(process.env.NODE_ENV==='production') {
+      await verifyCommercialColumnTypes(client);
+      await client.query('SELECT id,title,source_url,source_feed,description,published_at,discovered_at,status FROM acquisition_leads LIMIT 0');
+      // Verify the same projections the commercial adapters require, before serving traffic.
+      await client.query('SELECT id,created_at,company,contact_name,email,workload,gpu_model,gpu_count,hours,notes,status FROM commercial_quote_requests LIMIT 0');
+      await client.query('SELECT id,company,source_url,evidence,workload,contact_channel,estimated_gpu_count,verified_customer,status,created_at FROM customer_intelligence_leads LIMIT 0');
+      await client.query('SELECT id,company,source_url,evidence,workload,contact_channel,deadline,budget_evidence,score,score_reasons,status,created_at FROM gpu_hunter_opportunities LIMIT 0');
+      await client.query('SELECT id,customer_name,customer_email,workload_description,evidence_type,evidence_sha256,document_reference,issuer_name,issuer_contact,budget_currency,approved_budget,valid_until,state,reviewer,verification_notes,verified_at,created_at FROM preapproved_workload_evidence LIMIT 0');
+    }
   }
 
   /**
@@ -245,6 +303,9 @@ export class PostgresDatabaseService {
       .filter(f => f.endsWith('.sql'))
       .sort();
 
+    if (!files.length) throw new Error('MIGRATION_INTEGRITY_FAILURE: No versioned migration sources.');
+    const sourceVersions = new Set(files.map(file => file.replace(/\.sql$/, '')));
+
     const queryFn = clientOverride
       ? (sql: string, params: any[] = []) => clientOverride.query(sql, params)
       : (sql: string, params: any[] = []) => this.query(sql, params);
@@ -252,7 +313,11 @@ export class PostgresDatabaseService {
     const existingRes = await queryFn('SELECT version, checksum FROM schema_migrations');
     const storedMap = new Map<string, string>();
     for (const row of existingRes.rows) {
-      storedMap.set(String(row.version).trim(), String(row.checksum).trim());
+      const version = String(row.version).trim();
+      if (!sourceVersions.has(version) || storedMap.has(version)) {
+        throw new Error('MIGRATION_INTEGRITY_FAILURE: Unknown or duplicate migration history.');
+      }
+      storedMap.set(version, String(row.checksum).trim());
     }
 
     const verifiedVersions: string[] = [];
@@ -360,7 +425,13 @@ export class PostgresDatabaseService {
     if (!this.pool || !this.isConnected) {
       throw new Error('DATABASE_UNAVAILABLE: Cannot acquire transaction client. PostgreSQL is offline.');
     }
-    return this.pool.connect();
+    const pool = this.pool;
+    const client = await pool.connect();
+    if (this.pool !== pool || !this.isConnected) {
+      client.release();
+      throw new Error('DATABASE_UNAVAILABLE: Transaction client acquisition was superseded.');
+    }
+    return client;
   }
 
   public async recordTreasuryDeposit(deposit: {

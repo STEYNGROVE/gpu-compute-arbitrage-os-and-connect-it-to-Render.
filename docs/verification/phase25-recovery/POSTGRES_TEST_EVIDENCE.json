@@ -1,0 +1,28 @@
+{
+  "scope": "PRIOR_COMPLETED_DISPOSABLE_LOCAL_RUN_NOT_RERUN_FOR_COMMIT",
+  "command": "npm run test:phase25-postgres",
+  "exit": 0,
+  "duration_seconds": 28.593,
+  "countedGroups": {
+    "phase20": 14,
+    "phase21": 9,
+    "controlLab": 7,
+    "phase23": 15,
+    "phase25Commercial": 7
+  },
+  "passed": 52,
+  "failed": 0,
+  "skipped": 0,
+  "otherSummaryOrLegacyPassRecords": 7,
+  "rawLogLocalOnly": "reverification/check-9-npm-run-test-phase25-postgres.log",
+  "currentFileSha256": {
+    "supabase/migrations/20261109000002_commercial_intake_prerequisites.sql": "10cecc9ad55a6ca704a4d7abecd1e3b3e05fb4f84c60f421742454d51df9b606",
+    "supabase/migrations/20261113000000_commercial_evidence_immutability.sql": "b0bb468a77c86c75d05c93b67f52231cf69c6f8ece159081964b527901ba8828",
+    "test/phase25CommercialPostgres.ts": "a63d34be7a9e7288f3c24ab3280807c208c76fbba9aeaa94214cc023e568acca",
+    "test/phase23DatabaseRemediation.ts": "696d25ba5c2bfea6632048a233eb835e4ac001297011eaa2df0ef4592f3089ca",
+    "scripts/test-phase16-postgres.cjs": "d9f7cf89cd0beb34c7c19eb98f51fb37fdb8395501197335b216922e8c8fe716"
+  },
+  "noExternalDatabaseMutations": true,
+  "sourcePatchSha256AtPriorVerification": "dd7bd68e5a36baa13be53be91b07199ee39dac5ed9aea76d62b802d40901c6ac",
+  "sourcePatchUnchanged": true
+}

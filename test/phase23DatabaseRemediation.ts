@@ -16,7 +16,9 @@ const repo=process.cwd();const directory=mkdtempSync(path.join(tmpdir(),'phase23
 const suffix=randomBytes(5).toString('hex'),source='phase23_source_test_'+suffix,restored='phase23_restore_test_'+suffix;
 const admin=new pg.Client({connectionString:raw});let adminConnected=false;let sourceClient:pg.Client|undefined,restoreClient:pg.Client|undefined;
 const sqlPath='docs/migration-proposals/20261112_phase23_acquisition_publication.sql';
-const sql=readFileSync(sqlPath,'utf8'),version=path.basename(sqlPath,'.sql');
+// Fixture-local final version: later source migrations must not make this
+// isolated proposal's deliberately complete history become non-prefix.
+const sql=readFileSync(sqlPath,'utf8'),version='20990101_phase23_acquisition_publication_fixture';
 const digest=(text:string)=>createHash('sha256').update(text.trim()).digest('hex');
 const sqlHash=digest(sql);
 const cert=process.env.TEST_DATABASE_SSL_CA;if(!cert)throw Error('ISOLATED_TLS_FIXTURE_REQUIRED');

@@ -16,3 +16,13 @@ wallet.json
 secrets/
 server/data/wallet
 server/data/secret
+
+__pycache__/
+
+# Local review output and superseded evidence stay out of commits.
+docs/verification/phase25-recovery/initial/
+
+# Vercel frontend output
+dist-client/
+docs/verification/vercel/initial/
+.vercel/
