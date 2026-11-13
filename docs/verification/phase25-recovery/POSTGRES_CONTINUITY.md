@@ -1,6 +1,6 @@
 # PostgreSQL continuity plan — preparation only
 
-Deadline supplied by the operator: **27 November 2026 at 17:21 UTC** (19:21 Johannesburg). Historical API evidence from 12 November records `2026-11-27T17:21:10.507676Z` for `dpg-dbh2u1l9fdbs73a3qpn0-a`. Workspace-confirmed read-only inspection at 2026-11-13 08:13:51 UTC now independently confirms available/free PostgreSQL 18 in Ohio with that exact expiry; see [Render evidence](RENDER_READONLY_EVIDENCE.json). Treat the supplied deadline as binding until independently corrected. On 13 November there are about two weeks; do not rely on any post-expiry grace period. Risk: service outage and potentially irreversible loss of authoritative/audit evidence if preservation is delayed.
+Deadline supplied by the operator: **27 November 2026 at 17:21 UTC** (19:21 Johannesburg). Historical API evidence from 12 November records `2026-11-27T17:21:10.507676Z` for `dpg-dbh2u1l9fdbs73a3qpn0-a`. Workspace-confirmed read-only inspection on 13 November, repeated during the PR #59 verification, independently confirms available/free PostgreSQL 18 in Ohio with that exact expiry; see [Render evidence](RENDER_READONLY_EVIDENCE.json). Treat the supplied deadline as binding until independently corrected. On 13 November there are about two weeks; do not rely on any post-expiry grace period. Risk: service outage and potentially irreversible loss of authoritative/audit evidence if preservation is delayed.
 
 No real export, backup, paid upgrade, new database, migration, restore, cutover or deletion is authorized or executed here. The tests only export/restore synthetic loopback fixtures; that does not prove a real backup exists.
 
@@ -30,6 +30,12 @@ No real export, backup, paid upgrade, new database, migration, restore, cutover 
 - Restore to another approved managed PostgreSQL provider, with reviewed region, compliance, extensions, network, TLS, capacity, operational ownership and cost. A fresh free database with another expiry is not durable continuity.
 
 Selection and spending are not authorized. Render's current docs say free PostgreSQL has no managed recovery or automatic logical backups; independently verified preservation is essential. See [Free instances](https://render.com/docs/free.md) and [Backup/recovery](https://render.com/docs/postgresql-backups.md).
+
+## Target provisioning and recovery objectives (approval required)
+
+Assign a database custodian, independent restore verifier and release approver before execution. Proposed planning targets are RPO no greater than one hour and RTO no greater than four hours; the owner must approve them and the rehearsal must demonstrate them. These are not measured service guarantees or scheduled backup jobs.
+
+After separate provisioning/spending authorization, create an isolated managed target in the approved account/region, preferably matching PostgreSQL major 18 initially. Verify actual source size before sizing, include growth headroom, and match supported extensions, encoding, locale/collation and timezone. Establish separate least-privilege application, migration and backup roles; validate grants and restore ownership without importing unnecessary superuser privileges. Keep public network access restricted to approved clients and require certificate plus hostname verification. Do not attach consumers until restore/integrity review passes. Confirm paid backup retention/PITR and an off-service encrypted export path; do not assume a workspace upgrade changes a database's free plan or expiry. No target is provisioned by this packet.
 
 ## Cutover and rollback after separate authorization
 

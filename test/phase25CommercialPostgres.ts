@@ -1,3 +1,4 @@
+import {commercialColumnTypes} from '../server/commercialSchema.js';
 import assert from 'node:assert/strict';
 import pg from 'pg';
 import {readFileSync} from 'node:fs';
@@ -9,13 +10,29 @@ const url=new URL(raw);
 if(url.hostname!=='127.0.0.1'||url.username!=='phase16_testowner'||url.pathname!=='/phase16_test'||!url.port||url.search)throw Error('ISOLATED_FIXTURE_REQUIRED');
 const client=new pg.Client({connectionString:raw});
 const schema='phase25_'+randomBytes(8).toString('hex');
+let connected=false;
+async function cleanupFixture(connection:Pick<pg.Client,'query'|'end'>,name:string,isConnected:boolean) {
+ try {if(isConnected)await connection.query('DROP SCHEMA IF EXISTS '+name+' CASCADE');}
+ finally {await connection.end();}
+}
 let passed=0;
 async function check(name:string,fn:()=>Promise<void>){await fn();passed++;console.log('PHASE25_PG_PASS '+name);}
 try {
- await client.connect();await client.query('CREATE SCHEMA '+schema);await client.query('SET search_path TO '+schema);
+ await client.connect();connected=true;await client.query('CREATE SCHEMA '+schema);await client.query('SET search_path TO '+schema);
  const files=['20261109000002_commercial_intake_prerequisites.sql','20261110_v5_commercial_evidence.sql','20261113000000_commercial_evidence_immutability.sql'];
  await check('commercial migrations create prerequisites and dependent foreign keys in order',async()=>{
   for(const file of files)await client.query(readFileSync('supabase/migrations/'+file,'utf8'));
+ });
+ await check('all seven commercial table column types match the runtime contract',async()=>{
+  const result=await client.query('SELECT table_name,column_name,data_type FROM information_schema.columns WHERE table_schema=$1',[schema]);
+  const found=new Map(result.rows.map(r=>[r.table_name+'.'+r.column_name,r.data_type]));
+  for(const [table,columns] of Object.entries(commercialColumnTypes))for(const [column,type] of Object.entries(columns))assert.equal(found.get(table+'.'+column),type,table+'.'+column);
+ });
+ await check('fixture cleanup errors propagate and the connection still closes',async()=>{
+  let closed=false;
+  const failing={query:async()=>{throw Error('FIXTURE_CLEANUP_FAILED');},end:async()=>{closed=true;}} as unknown as pg.Client;
+  await assert.rejects(cleanupFixture(failing,'local_fixture',true),/FIXTURE_CLEANUP_FAILED/);
+  assert.equal(closed,true);
  });
  await check('migrations are repeatable without changing data',async()=>{
   for(const file of files)await client.query(readFileSync('supabase/migrations/'+file,'utf8'));
@@ -46,4 +63,4 @@ try {
   await client.query(sql,[randomUUID()]);assert.equal((await client.query(sql,[randomUUID()])).rowCount,0);
  });
  console.log('PHASE25 COMMERCIAL POSTGRES: '+passed+' passed, 0 failed, 0 skipped');
-} finally {await client.query('DROP SCHEMA IF EXISTS '+schema+' CASCADE').catch(()=>{});await client.end();}
+} finally {await cleanupFixture(client,schema,connected);}

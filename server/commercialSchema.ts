@@ -2,6 +2,9 @@ import type pg from 'pg';
 
 /** Read-only contract for the commercial adapters; evidence remains metadata, never capital. */
 export const commercialColumnTypes: Record<string, Record<string,string>> = {
+ commercial_verification:{request_id:'uuid',state:'text',evidence_reference:'text',review_note:'text',reviewed_at:'timestamp with time zone'},
+ commercial_quote_evidence:{id:'uuid',request_id:'uuid',version:'integer',customer_rate_usd_per_gpu_hour:'numeric',provider_rate_usd_per_gpu_hour:'numeric',additional_cost_usd:'numeric',valid_until:'timestamp with time zone',state:'text',external_evidence_reference:'text',created_at:'timestamp with time zone'},
+ commercial_evidence_audit:{id:'bigint',request_id:'uuid',action:'text',before_data:'jsonb',after_data:'jsonb',recorded_at:'timestamp with time zone'},
  commercial_quote_requests:{id:'uuid',created_at:'timestamp with time zone',company:'text',contact_name:'text',email:'text',workload:'text',gpu_model:'text',gpu_count:'integer',hours:'integer',notes:'text',status:'text'},
  customer_intelligence_leads:{id:'uuid',company:'text',source_url:'text',evidence:'text',workload:'text',contact_channel:'text',estimated_gpu_count:'integer',verified_customer:'boolean',status:'text',created_at:'timestamp with time zone'},
  gpu_hunter_opportunities:{id:'uuid',company:'text',source_url:'text',evidence:'text',workload:'text',contact_channel:'text',deadline:'timestamp with time zone',budget_evidence:'text',score:'integer',score_reasons:'jsonb',status:'text',created_at:'timestamp with time zone'},

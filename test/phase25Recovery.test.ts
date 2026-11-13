@@ -25,13 +25,13 @@ test('commercial prerequisite precedes all referencing migrations',()=>{
   const source=readFileSync('supabase/migrations/'+prerequisite,'utf8');
   for(const table of ['commercial_quote_requests','customer_intelligence_leads','gpu_hunter_opportunities','preapproved_workload_evidence'])assert(source.includes('CREATE TABLE IF NOT EXISTS '+table));
 });
-for(const fault of ['missing table','missing column','wrong column type','missing migration','changed migration'])test('schema readiness rejects '+fault,async()=>{
+for(const fault of ['missing table','missing column','wrong column type','missing migration','changed migration','unknown migration','duplicate migration'])test('schema readiness rejects '+fault,async()=>{
   const previous=process.env.NODE_ENV;process.env.NODE_ENV='production';
   const service=new PostgresDatabaseService(()=>{throw Error('NO_REAL_POOL');});
   const client={query:async(sql:string,params?:string[][])=>{
     if(sql.includes('information_schema.tables'))return {rows:params![0].filter(t=>fault!=='missing table'||t!=='commercial_quote_requests').map(table_name=>({table_name}))};
     if(sql.includes('information_schema.columns'))return {rows:Object.entries(commercialColumnTypes).flatMap(([table_name,columns])=>Object.entries(columns).map(([column_name,data_type])=>({table_name,column_name,data_type:fault==='wrong column type'?'text':data_type})))};
-    if(sql==='SELECT version, checksum FROM schema_migrations')return {rows:fault==='missing migration'?history.slice(1):fault==='changed migration'?history.map((r,i)=>i===0?{...r,checksum:'0'.repeat(64)}:r):history};
+    if(sql==='SELECT version, checksum FROM schema_migrations')return {rows:fault==='missing migration'?history.slice(1):fault==='changed migration'?history.map((r,i)=>i===0?{...r,checksum:'0'.repeat(64)}:r):fault==='unknown migration'?[...history,{version:'unreviewed_fixture',checksum:'0'.repeat(64)}]:fault==='duplicate migration'?[...history,history[0]]:history};
     if(fault==='missing column'&&sql.includes('FROM preapproved_workload_evidence'))throw Object.assign(Error('missing column'),{code:'42703'});
     return {rows:[]};
   }} as unknown as pg.PoolClient;
@@ -60,4 +60,17 @@ test('standalone CLI loads development dotenv before the gate and ignores it oth
    if(mode==='development')assert.match(result.stderr,/MIGRATION_BLOCKED/);else assert.match(result.stdout,/VALIDATION ONLY/);
   }
  } finally {rmSync(root,{recursive:true,force:true});}
+});
+
+for(const [table,column] of [['commercial_verification','state'],['commercial_quote_evidence','customer_rate_usd_per_gpu_hour'],['commercial_evidence_audit','after_data']])test('commercial readiness rejects missing v5 column '+table+'.'+column,async()=>{
+ const {verifyCommercialColumnTypes}=await import('../server/commercialSchema.js');
+ const rows=Object.entries(commercialColumnTypes).flatMap(([table_name,columns])=>Object.entries(columns).filter(([column_name])=>table_name!==table||column_name!==column).map(([column_name,data_type])=>({table_name,column_name,data_type})));
+ await assert.rejects(verifyCommercialColumnTypes({query:async()=>({rows})} as unknown as pg.PoolClient),/COMMERCIAL_SCHEMA_INCOMPATIBLE/);
+});
+
+test('migration verification rejects an empty source directory before querying history',async()=>{
+ const {mkdtempSync,rmSync}=await import('node:fs');const {tmpdir}=await import('node:os');const {join}=await import('node:path');
+ const dir=mkdtempSync(join(tmpdir(),'phase25-empty-'));let queries=0;
+ try {await assert.rejects(PostgresDatabaseService.prototype.verifyMigrationChecksums.call({} as PostgresDatabaseService,{query:async()=>{queries++;return {rows:[]};}} as unknown as pg.PoolClient,dir),/MIGRATION_INTEGRITY_FAILURE/);assert.equal(queries,0);}
+ finally {rmSync(dir,{recursive:true,force:true});}
 });

@@ -303,6 +303,9 @@ export class PostgresDatabaseService {
       .filter(f => f.endsWith('.sql'))
       .sort();
 
+    if (!files.length) throw new Error('MIGRATION_INTEGRITY_FAILURE: No versioned migration sources.');
+    const sourceVersions = new Set(files.map(file => file.replace(/\.sql$/, '')));
+
     const queryFn = clientOverride
       ? (sql: string, params: any[] = []) => clientOverride.query(sql, params)
       : (sql: string, params: any[] = []) => this.query(sql, params);
@@ -310,7 +313,11 @@ export class PostgresDatabaseService {
     const existingRes = await queryFn('SELECT version, checksum FROM schema_migrations');
     const storedMap = new Map<string, string>();
     for (const row of existingRes.rows) {
-      storedMap.set(String(row.version).trim(), String(row.checksum).trim());
+      const version = String(row.version).trim();
+      if (!sourceVersions.has(version) || storedMap.has(version)) {
+        throw new Error('MIGRATION_INTEGRITY_FAILURE: Unknown or duplicate migration history.');
+      }
+      storedMap.set(version, String(row.checksum).trim());
     }
 
     const verifiedVersions: string[] = [];
