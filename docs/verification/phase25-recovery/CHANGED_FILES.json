@@ -1,0 +1,130 @@
+{
+  "scope": "complete local repair commit inventory",
+  "totalFiles": 31,
+  "files": [
+    {
+      "status": "M ",
+      "path": ".github/workflows/phase18.yml"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/CHANGED_FILES.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/CURRENT_BLOCKER.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/POSTGRES_CONTINUITY.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/POSTGRES_TEST_EVIDENCE.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/PR_BODY.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/RENDER_READONLY_EVIDENCE.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/RENDER_TLS_INVESTIGATION.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/REPORT.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/TEST_RESULTS.md"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/commit-checks/results.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/provenance.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/review_checks.json"
+    },
+    {
+      "status": "A ",
+      "path": "docs/verification/phase25-recovery/run_checks.py"
+    },
+    {
+      "status": "M ",
+      "path": "package.json"
+    },
+    {
+      "status": "M ",
+      "path": "scripts/migrateDatabase.ts"
+    },
+    {
+      "status": "A ",
+      "path": "scripts/migrationEnvironment.ts"
+    },
+    {
+      "status": "M ",
+      "path": "scripts/test-phase16-postgres.cjs"
+    },
+    {
+      "status": "A ",
+      "path": "server/commercialSchema.ts"
+    },
+    {
+      "status": "M ",
+      "path": "server/pgDatabase.ts"
+    },
+    {
+      "status": "M ",
+      "path": "server/phase21/configuration.ts"
+    },
+    {
+      "status": "M ",
+      "path": "server/readinessHealth.ts"
+    },
+    {
+      "status": "A ",
+      "path": "supabase/migrations/20261109000002_commercial_intake_prerequisites.sql"
+    },
+    {
+      "status": "A ",
+      "path": "supabase/migrations/20261113000000_commercial_evidence_immutability.sql"
+    },
+    {
+      "status": "M ",
+      "path": "test/phase23DatabaseRemediation.ts"
+    },
+    {
+      "status": "A ",
+      "path": "test/phase25CommercialPostgres.ts"
+    },
+    {
+      "status": "A ",
+      "path": "test/phase25Readiness.test.ts"
+    },
+    {
+      "status": "A ",
+      "path": "test/phase25Recovery.test.ts"
+    },
+    {
+      "status": "A ",
+      "path": "test/postgresCertificateExpiry.test.ts"
+    },
+    {
+      "status": "M ",
+      "path": "test/postgresLifecycle.test.ts"
+    },
+    {
+      "status": "M ",
+      "path": "test/renderPostgresTls.test.ts"
+    }
+  ]
+}

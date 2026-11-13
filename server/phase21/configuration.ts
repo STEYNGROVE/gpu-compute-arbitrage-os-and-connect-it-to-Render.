@@ -57,14 +57,10 @@ export function secureDatabaseOptions(raw:string,env:Record<string,string|undefi
   if(urlCa!==null && !urlCa)throw Error('DATABASE_CA_REQUIRED');
   if(urlCa && env.DATABASE_SSL_CA && urlCa!==env.DATABASE_SSL_CA)throw Error('DATABASE_CA_CONFLICT');
   const caPath=env.DATABASE_SSL_CA || urlCa;
-  // This is explicit acceptance of Render private-network trust, NOT server authentication.
-  // Host/DNS/environment integrity remain the operator's trust boundary.
-  const renderInternal=production && env.DATABASE_INTERNAL_TRANSPORT==='render-private-network' &&
-    Boolean(env.RENDER_SERVICE_ID) && /^dpg-[a-z0-9-]+-a$/.test(url.hostname) &&
-    env.RENDER_INTERNAL_DB_HOST===url.hostname && (!url.port || url.port==='5432') &&
-    !mode && !ssl && env.DATABASE_SSL!=='true' && !caPath;
+  // Endpoint names and environment assertions do not authenticate a server.
+  // Keep verified TLS for every production endpoint, including private networks.
   const localFixture=!production && ['localhost','127.0.0.1','[::1]'].includes(url.hostname);
-  const tls=!renderInternal && (!localFixture || env.DATABASE_SSL==='true' || Boolean(caPath) || Boolean(mode) || Boolean(ssl));
+  const tls=(!localFixture || env.DATABASE_SSL==='true' || Boolean(caPath) || Boolean(mode) || Boolean(ssl));
   let ca:string|undefined;
   if(caPath) {
     try {ca=readCa(caPath);if(!ca.trim())throw Error();}

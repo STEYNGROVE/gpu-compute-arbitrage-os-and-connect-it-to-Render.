@@ -1,3 +1,4 @@
+import {validateProductionConfiguration} from './phase21/configuration.js';
 import type { Express } from 'express';
 import { pgDbService } from './pgDatabase.js';
 import { deploymentLifecycle, type ServiceLifecycle } from './phase21/lifecycle.js';
@@ -12,6 +13,7 @@ export function registerReadinessHealth(app: Express, options: {runtime?:Service
     const revision=/^[a-f0-9]{40}$/.test(process.env.RENDER_GIT_COMMIT || '')?process.env.RENDER_GIT_COMMIT:'unknown';
     const runtime=options.runtime ?? (process.env.NODE_ENV==='production'?deploymentLifecycle:undefined);
     const fail=()=>res.status(503).json({status:'not_ready',database:'unavailable',revision});
+    if(process.env.NODE_ENV==='production' && !validateProductionConfiguration(process.env).valid)return fail();
     if(runtime && runtime.snapshot().state!=='READY' || process.env.NODE_ENV!=='production' && !pgDbService.isLiveDatabaseConnected())return fail();
     if(!probe) {
       const current=Promise.resolve().then(async()=>{
@@ -23,8 +25,8 @@ export function registerReadinessHealth(app: Express, options: {runtime?:Service
     let timer:ReturnType<typeof setTimeout>|undefined;
     try {
       const ok=await Promise.race([probe,new Promise<false>(resolve=>{timer=setTimeout(()=>resolve(false),timeout);})]);
-      if(!ok || runtime && runtime.snapshot().state!=='READY')return fail();
-      return res.status(200).json({status:'ready',database:'connected',revision});
+      if(!ok || !pgDbService.isLiveDatabaseConnected() || runtime && runtime.snapshot().state!=='READY' || process.env.NODE_ENV==='production' && !validateProductionConfiguration(process.env).valid)return fail();
+      return res.status(200).json({status:'ready',database:'connected',revision,financialExecutionAllowed:false,commerciallyCertified:false});
     } finally {clearTimeout(timer);}
   });
 }

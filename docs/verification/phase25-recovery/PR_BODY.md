@@ -1,0 +1,5 @@
+Repair PostgreSQL fallback, readiness and shutdown races by coalescing initialization/probes, rejecting stale health updates, draining each pool once and releasing superseded clients. Retain authenticated production TLS for every endpoint and fail readiness closed on missing commercial schema or unsafe discovery settings. Add the missing commercial prerequisite/evidence guards and restore development-only migration configuration loading without application bootstrap side effects.
+
+Validation and exact counts/exits: docs/verification/phase25-recovery/TEST_RESULTS.md. Prior disposable PostgreSQL evidence is retained separately; migrations were not executed during commit finalization. Raw and redundant logs are excluded from the commit.
+
+Release remains STAGING VERIFICATION PENDING. Endpoint/CA/exact TLS-code evidence, live schema/history review and authorized staging verification are outstanding. Existing non-prefix migration histories require separate recovery authorization. Keep DISCOVERY_ONLY and financialExecutionAllowed=false. This local review commit does not authorize push, merge, deployment, settings changes or financial activation.

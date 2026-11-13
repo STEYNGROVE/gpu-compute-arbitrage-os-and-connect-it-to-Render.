@@ -1,9 +1,11 @@
+import {loadMigrationEnvironment} from './migrationEnvironment.js';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import {Client} from 'pg';
 import {secureDatabaseOptions} from '../server/phase21/configuration.js';
 import {classifyPostgresError} from '../server/diagnostics/postgres.js';
+loadMigrationEnvironment(process.env);
 let migrationClient:Client|undefined;
 
 type Migration = {
@@ -122,6 +124,15 @@ async function runVersionedMigrations() {
   // they are preparing. No fallback is permitted for an explicitly authorized target.
   const raw=process.env.DATABASE_URL;
   if(!raw)throw Error('MIGRATION_DATABASE_REQUIRED');
+  if(process.env.NODE_ENV==='test') {
+    let isolated=false;
+    try {
+      const url=new URL(raw);
+      isolated=process.env.ALLOW_ISOLATED_GPU_DB_TEST==='YES' && url.hostname==='127.0.0.1' &&
+        url.username==='phase16_testowner' && /^\/phase23_source_test_[a-f0-9]+$/.test(url.pathname) && Boolean(url.port);
+    } catch { /* Invalid targets fail before opening a client. */ }
+    if(!isolated)throw Error('MIGRATION_BLOCKED');
+  }
   const client=new Client({...secureDatabaseOptions(raw,process.env,p=>fs.readFileSync(p,'utf8')),
     query_timeout:35000,statement_timeout:30000});
   migrationClient=client;
