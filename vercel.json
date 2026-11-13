@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "buildCommand": "npm run test:vercel && npm run build:vercel && npm run verify:vercel",
+  "outputDirectory": "dist-client",
+  "framework": "vite",
+  "cleanUrls": false,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "routes": [
+    {
+      "src": "^/[aA][pP][iI]$",
+      "dest": "https://gpu-arbitrage-simulation-staging.onrender.com/api",
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "src": "^/[aA][pP][iI]/(.*)$",
+      "dest": "https://gpu-arbitrage-simulation-staging.onrender.com/api/$1",
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/(?![aA][pP][iI](?:/|$)|assets(?:/|$)|.*\\.[^/]+$).*$",
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "dest": "/index.html"
+    }
+  ]
+}

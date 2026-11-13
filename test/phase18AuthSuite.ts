@@ -20,8 +20,10 @@ try {
   assert.equal((await fetch(url, { headers: { 'X-Owner-Api-Key': process.env.OWNER_API_KEY } })).status, 200);
   const customer = createBrowserSession('CUSTOMER', 'buyer');
   assert.equal((await fetch(url, { headers: { 'X-Session-Id': customer.sessionId } })).status, 403);
+  assert.equal((await fetch(url, { headers: { Cookie: `gpu_arb_session=${customer.sessionId}` } })).status, 403);
   const owner = createBrowserSession('OWNER');
   assert.equal((await fetch(url, { headers: { 'X-Session-Id': owner.sessionId } })).status, 200);
+  assert.equal((await fetch(url, { headers: { Cookie: `gpu_arb_session=${owner.sessionId}` } })).status, 200);
   assert.equal((await fetch(`${url}?sessionId=${owner.sessionId}`)).status, 403);
   assert.equal((await fetch(`${url}?session_id=${owner.sessionId}`)).status, 403);
   assert.equal((await fetch(url, {headers:{Cookie:'gpu_arb_session=%INVALID'}})).status, 403);
@@ -49,6 +51,7 @@ try {
     else process.env.ENABLE_STUDIO_AUTH_FALLBACK = previousFallback;
   }
   revokeBrowserSession(owner.sessionId);
+  assert.equal((await fetch(url, { headers: { Cookie: `gpu_arb_session=${owner.sessionId}` } })).status, 403);
   assert.equal((await fetch(url, { headers: { 'X-Session-Id': owner.sessionId } })).status, 403);
   const expired = createBrowserSession('OWNER'); expired.expiresAt = Date.now() - 1;
   assert.equal((await fetch(url, { headers: { 'X-Session-Id': expired.sessionId } })).status, 403);
