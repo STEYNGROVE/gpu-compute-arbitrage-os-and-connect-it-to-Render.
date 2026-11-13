@@ -29,10 +29,10 @@ jobs:
       - run: npm run security:check
       - run: npm test
       - run: npm run test:purchase-boundary
-      - name: Isolated PostgreSQL reservation integration
+      - name: Isolated PostgreSQL, Phase 23 migration and recovery
         run: |
           export PATH="$(pg_config --bindir):$PATH"
-          npm run test:phase16-postgres
+          npm run test:phase23-postgres
       - run: npm run build
   staging:
     if: github.event_name == 'workflow_dispatch' && inputs.verify_existing_staging

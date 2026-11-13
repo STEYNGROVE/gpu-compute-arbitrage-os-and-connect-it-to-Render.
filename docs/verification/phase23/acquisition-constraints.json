@@ -1,0 +1,42 @@
+{
+  "sql": "SELECT conname,pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conrelid='public.acquisition_leads'::regclass ORDER BY conname;",
+  "isError": false,
+  "result": [
+    {
+      "conname": "acquisition_leads_discovered_at_not_null",
+      "definition": "NOT NULL discovered_at"
+    },
+    {
+      "conname": "acquisition_leads_id_not_null",
+      "definition": "NOT NULL id"
+    },
+    {
+      "conname": "acquisition_leads_pkey",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "acquisition_leads_source_feed_not_null",
+      "definition": "NOT NULL source_feed"
+    },
+    {
+      "conname": "acquisition_leads_source_url_key",
+      "definition": "UNIQUE (source_url)"
+    },
+    {
+      "conname": "acquisition_leads_source_url_not_null",
+      "definition": "NOT NULL source_url"
+    },
+    {
+      "conname": "acquisition_leads_status_check",
+      "definition": "CHECK ((status = ANY (ARRAY['CANDIDATE'::text, 'REVIEWING'::text, 'QUALIFIED'::text, 'REJECTED'::text])))"
+    },
+    {
+      "conname": "acquisition_leads_status_not_null",
+      "definition": "NOT NULL status"
+    },
+    {
+      "conname": "acquisition_leads_title_not_null",
+      "definition": "NOT NULL title"
+    }
+  ]
+}

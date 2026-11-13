@@ -1,0 +1,37 @@
+npm notice run react-example@0.0.0 test:postgres-tls
+npm notice run NODE_ENV=test DISABLE_JSON_PERSISTENCE=true tsx --test test/renderPostgresTls.test.ts test/postgresLifecycle.test.ts
+[POSTGRES POOL ERROR] { category: 'NETWORK_RESET' }
+[POSTGRES CONNECTION FAILED] UNCLASSIFIED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES CONNECTION FAILED] NETWORK_REFUSED
+[POSTGRES INIT ERROR] CONFIGURATION_REJECTED
+✔ initialization and readiness are read-only and financial execution stays disabled (10.410692ms)
+✔ pool errors fail closed and readiness recovers (13.809154ms)
+✔ schema failure never advertises a ready database and releases client (4.222231ms)
+✔ DIRECT_URL uses the same verified TLS policy and drains the primary pool (8.136077ms)
+✔ invalid fallback cannot silently reuse the primary pool (2.518769ms)
+✔ close drains pool exactly once and readiness stays unavailable (3.148384ms)
+✔ discovery bootstrap failure never initializes directory or exposes financial capabilities (1.036539ms)
+✔ explicit trusted Render private-network policy uses plaintext (8.519923ms)
+✔ external PostgreSQL requires verified TLS (5.848307ms)
+✔ unknown internal-style host must not bypass TLS (0.82ms)
+✔ non-Render environment requires TLS (0.820616ms)
+✔ insecure TLS override is rejected (2.073154ms)
+✔ trusted hostname alone does not opt into plaintext (0.875384ms)
+✔ missing trusted hostname does not opt into plaintext (0.948ms)
+✔ explicit secure TLS settings take precedence over private policy (3.317153ms)
+✔ CA settings are preserved and driver TLS parameters removed (2.363462ms)
+✔ malformed URLs produce secret-safe errors (2.04577ms)
+✔ driver overrides cannot redirect host, disable timeouts or weaken TLS (2.318693ms)
+✔ global TLS bypass fails closed (0.776307ms)
+✔ remote nonproduction connections also require authenticated TLS (1.190769ms)
+✔ hostname variations and nonstandard port do not grant plaintext (0.985308ms)
+✔ connection and query limits are bounded (0.606231ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1371.439

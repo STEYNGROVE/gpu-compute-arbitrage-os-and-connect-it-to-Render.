@@ -1,0 +1,176 @@
+{
+  "observedAt": "2026-11-12T12:24:22.883Z",
+  "authorization": {
+    "workspace": "Steyn's workspace",
+    "workspaceId": "tea-d71ou663jp1c739fnubg",
+    "source": "explicit user confirmation",
+    "scope": "read-only metadata/SELECTs; no changes"
+  },
+  "services": [
+    {
+      "id": "srv-dbmbgrc9v7es739dl3ng",
+      "name": "gpu-arbitrage-simulation-staging",
+      "branch": "main",
+      "repo": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render.",
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "region": "ohio",
+      "runtime": "node",
+      "plan": "free",
+      "instanceCount": 1,
+      "publicUrl": "https://gpu-arbitrage-simulation-staging.onrender.com",
+      "healthCheckPath": "/api/ready",
+      "buildCommand": "npm install && npm run typecheck && npm run security:check && npm run build",
+      "startCommand": "npm start",
+      "pullRequestPreviewsEnabled": "no",
+      "previewGeneration": "off"
+    },
+    {
+      "id": "srv-dbjif7nlk1mc739bi260",
+      "name": "gpu-compute-arbitrage-os-and-connect-it-to-Render.",
+      "branch": "security/phase18-staging-verification",
+      "repo": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render.",
+      "autoDeploy": "yes",
+      "autoDeployTrigger": "commit",
+      "region": "ohio",
+      "runtime": "node",
+      "plan": "free",
+      "instanceCount": 1,
+      "publicUrl": "https://gpu-compute-arbitrage-os-and-connect-it.onrender.com",
+      "healthCheckPath": "",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npm start",
+      "pullRequestPreviewsEnabled": "yes",
+      "previewGeneration": "automatic"
+    }
+  ],
+  "deployments": {
+    "staging": [
+      {
+        "id": "dep-dbqp0rk9v7es73du5rcg",
+        "status": "update_failed",
+        "commit": "1d450b95e6d1eb79128e407902c53df2818f010e",
+        "createdAt": "2026-11-12T10:09:50.899561Z",
+        "finishedAt": "2026-11-12T10:28:17.892997Z",
+        "trigger": "new_commit"
+      },
+      {
+        "id": "dep-dbqokbu7bikc73anc8jg",
+        "status": "update_failed",
+        "commit": "ad9b396453a3dc4b7025f025167298cbdc9afa52",
+        "createdAt": "2026-11-12T09:43:11.22859Z",
+        "finishedAt": "2026-11-12T10:01:39.229206Z",
+        "trigger": "service_updated"
+      },
+      {
+        "id": "dep-dbqo9g3rjlhs73a06rkg",
+        "status": "update_failed",
+        "commit": "ad9b396453a3dc4b7025f025167298cbdc9afa52",
+        "createdAt": "2026-11-12T09:20:01.043713Z",
+        "finishedAt": "2026-11-12T09:38:33.597545Z",
+        "trigger": "service_updated"
+      },
+      {
+        "id": "dep-dbqncf7f3r2c73fcsj6g",
+        "status": "update_failed",
+        "commit": "ad9b396453a3dc4b7025f025167298cbdc9afa52",
+        "createdAt": "2026-11-12T08:18:04.242189Z",
+        "finishedAt": "2026-11-12T08:34:24.304157Z",
+        "trigger": "new_commit"
+      },
+      {
+        "id": "dep-dbqlo3nf3r2c73fb1h00",
+        "status": "live",
+        "commit": "c9d903330db55892ed2d4f18a2e54524917a85b4",
+        "createdAt": "2026-11-12T06:26:22.688591Z",
+        "finishedAt": "2026-11-12T06:27:10.809769Z",
+        "trigger": "new_commit"
+      }
+    ],
+    "protected": [
+      {
+        "id": "dep-dbq5ksjl550s739l4mmg",
+        "status": "live",
+        "commit": "2482877c3a2221a7eabc5c8da42db67c440268ca",
+        "createdAt": "2026-11-11T12:07:14.646165Z",
+        "finishedAt": "2026-11-11T12:08:08.013619Z",
+        "trigger": "service_updated"
+      },
+      {
+        "id": "dep-dbq58ugn74is739ovgjg",
+        "status": "deactivated",
+        "commit": "32321cbece4ccd7c1481466c3f416adf79749e26",
+        "createdAt": "2026-11-11T11:41:46.343481Z",
+        "finishedAt": "2026-11-11T11:42:23.743835Z",
+        "trigger": "service_updated"
+      },
+      {
+        "id": "dep-dbpvc7m7bikc738cmi90",
+        "status": "deactivated",
+        "commit": "c487b90106057a894d2bd55af0a5a541a67e7553",
+        "createdAt": "2026-11-11T04:59:10.606038Z",
+        "finishedAt": "2026-11-11T04:59:51.704442Z",
+        "trigger": "new_commit"
+      },
+      {
+        "id": "dep-dbpv4v67bikc738ceum0",
+        "status": "deactivated",
+        "commit": "35ca6afa3386ca7fb15e34752a36672d0f4aaed7",
+        "createdAt": "2026-11-11T04:43:41.003921Z",
+        "finishedAt": "2026-11-11T04:44:21.838898Z",
+        "trigger": "new_commit"
+      },
+      {
+        "id": "dep-dbpusl59el5s738vcv00",
+        "status": "deactivated",
+        "commit": "c2d92e4e556791433c71dd799bb945adde7b9f46",
+        "createdAt": "2026-11-11T04:25:56.500701Z",
+        "finishedAt": "2026-11-11T04:26:32.548423Z",
+        "trigger": "new_commit"
+      }
+    ]
+  },
+  "database": {
+    "id": "dpg-dbh2u1l9fdbs73a3qpn0-a",
+    "status": "available",
+    "region": "ohio",
+    "plan": "free",
+    "majorVersion": "18",
+    "highAvailabilityEnabled": false,
+    "replicaCount": 0,
+    "expiresAt": "2026-11-27T17:21:10.507676Z",
+    "publicIPv4IngressAllowed": true,
+    "pooling": "none",
+    "appBinding": "NOT_VERIFIED",
+    "detailToolResult": "SERVER_ERROR; list metadata and SELECT queries succeeded"
+  },
+  "previewInventory": {
+    "projectServiceCount": 4,
+    "existingPreviewPRs": [
+      2,
+      5
+    ],
+    "previewForAuditPR49To52": false
+  },
+  "stagingLogs": {
+    "connectionFailure": true,
+    "identifiers": [
+      "TLS_CERTIFICATE",
+      "REMOTE_POSTGRES"
+    ],
+    "poolError": false,
+    "rawPersisted": false,
+    "timeWindow": "2026-11-12T10:00:00Z/2026-11-12T10:35:00Z",
+    "bootstrap": {
+      "bootstrapFailed": true,
+      "bootstrapRejected": false,
+      "databaseNotReady": false,
+      "migrationIntegrityFailure": false,
+      "missingPublishedAt": false,
+      "rawLogsPersisted": false
+    },
+    "attribution": "service logs during latest failed attempt window, not deploy-exclusive",
+    "rawLogsPersisted": false
+  },
+  "forbiddenActionsPerformed": false
+}

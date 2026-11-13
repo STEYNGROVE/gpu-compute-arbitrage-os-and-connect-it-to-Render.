@@ -1,0 +1,3 @@
+PASS: DNS address pinned
+PASS: TLS hostname preserved
+DNS PINNING SUITE: ALL PASSED

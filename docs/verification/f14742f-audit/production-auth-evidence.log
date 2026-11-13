@@ -1,0 +1,36 @@
+ISOLATION_RESULT 403 {
+  status: 'forbidden',
+  error: 'OWNER_AUTHENTICATION_REQUIRED',
+  message: 'Owner authentication required. Provide valid Owner session or header X-Owner-Api-Key.'
+}
+✔ owner authentication rejects invalid requests (315.858769ms)
+▶ normalized GPU endpoint enforces Phase 6 safety
+  ✔ unauthorized requests return 403 (271.695154ms)
+  ✔ authenticated catalog responses fail closed (65.752231ms)
+  ✔ invalid pricing is rejected (13.233846ms)
+VAST_INVENTORY_UNAVAILABLE
+  ✔ partial supplier failure remains read-only (23.138384ms)
+VAST_INVENTORY_UNAVAILABLE
+RUNPOD_INVENTORY_UNAVAILABLE
+  ✔ all supplier failures return safe 503 (19.02ms)
+✔ normalized GPU endpoint enforces Phase 6 safety (453.072924ms)
+✔ catalog pricing is never capacity verified (10.561769ms)
+✔ expired supplier evidence fails closed (0.805769ms)
+✔ all supplier catalog offers remain non-purchasable (1.843308ms)
+✔ invalid GPU pricing is excluded (0.610692ms)
+✔ catalog offer never proves capacity (7.244923ms)
+✔ expired evidence becomes stale (1.324308ms)
+✔ unavailable capacity is rejected (1.581231ms)
+✔ capacity evidence allows review, not purchase (1.407769ms)
+✔ future timestamps fail closed (1.490154ms)
+✔ invalid prices fail closed (1.354154ms)
+AUTH_DIAGNOSTIC 403 {"status":"forbidden","error":"OWNER_AUTHENTICATION_REQUIRED","message":"Owner authentication required. Provide valid Owner session or header X-Owner-Api-Key."}
+✔ real owner middleware protects GPU comparison (286.877615ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2380.037

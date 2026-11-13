@@ -1,0 +1,126 @@
+{
+  "observedAt": "2026-11-12T12:43:14.962Z",
+  "scope": "READ_ONLY_METADATA_ONLY",
+  "workspace": "Steyn's workspace",
+  "service": {
+    "id": "srv-dbjif7nlk1mc739bi260",
+    "branch": "security/phase18-staging-verification",
+    "region": "ohio",
+    "runtime": "node",
+    "publicUrl": "https://gpu-compute-arbitrage-os-and-connect-it.onrender.com",
+    "healthCheckPath": ""
+  },
+  "latestDeploy": [
+    {
+      "id": "dep-dbq5ksjl550s739l4mmg",
+      "status": "live",
+      "commit": "2482877c3a2221a7eabc5c8da42db67c440268ca"
+    }
+  ],
+  "database": {
+    "id": "dpg-dbh2u1l9fdbs73a3qpn0-a",
+    "plan": "free",
+    "status": "available",
+    "region": "ohio",
+    "expiresAt": "2026-11-27T17:21:10.507676Z",
+    "ha": false,
+    "replicaCount": 0
+  },
+  "columns": [
+    {
+      "column_default": null,
+      "column_name": "id",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": null,
+      "column_name": "title",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_url",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": null,
+      "column_name": "source_feed",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": "now()",
+      "column_name": "discovered_at",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": "'CANDIDATE'::text",
+      "column_name": "status",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_default": null,
+      "column_name": "description",
+      "data_type": "text",
+      "is_nullable": "YES"
+    }
+  ],
+  "indexes": [
+    {
+      "indexdef": "CREATE UNIQUE INDEX acquisition_leads_pkey ON public.acquisition_leads USING btree (id)",
+      "indexname": "acquisition_leads_pkey"
+    },
+    {
+      "indexdef": "CREATE UNIQUE INDEX acquisition_leads_source_url_key ON public.acquisition_leads USING btree (source_url)",
+      "indexname": "acquisition_leads_source_url_key"
+    }
+  ],
+  "history": [
+    {
+      "checksum": "e13211b870fecd3784902562a1da857eb3e75cf72599fbca726fb9ceeba6e1a2",
+      "version": "20260926000000_gpu_arbitrage_os_schema"
+    },
+    {
+      "checksum": "735750c498843fdb054cd328e4469e68945a74eb933d1bd1aeae25797f17c14f",
+      "version": "20261001000000_production_financial_authority"
+    },
+    {
+      "checksum": "6084069c19186d27d24f9c51765ead5c5d8d45c671753c229a1b4efa73aab683",
+      "version": "20261001000001_restore_financial_integrity_constraints"
+    },
+    {
+      "checksum": "35f32613a0631641a91042db86cef552c5480dcd4f07dcac6d084cbd2635c3f6",
+      "version": "20261001000002_complete_versioned_financial_migrations"
+    },
+    {
+      "checksum": "dbe711b360031dbf81bff71c4a8ed8a5ee400c1aaae4a13e4e898a3f9f7a5ba5",
+      "version": "20261003000000_autonomous_provider_funding_and_profit_rules"
+    },
+    {
+      "checksum": "72a78e835ec93de89647ff9552ed76542277ac3c62a766d059b7e338ac12e976",
+      "version": "20261108000000_gpu_buyer_evidence_review"
+    },
+    {
+      "checksum": "ead2f3fa1233d88cf403200e8db6fb862509c4d1d3e2c8d8d0ce195ccacc3c91",
+      "version": "20261109000000_payment_evidence_observations"
+    },
+    {
+      "checksum": "ec9baa2f890e160818eaecce524db06a44750af78b845fa07828441b593a7823",
+      "version": "20261109000001_payment_evidence_replay"
+    },
+    {
+      "checksum": "d8d1ca8e829115f3055f1daa844055cc8569cd4fb4923bdbe5fbd98799f4a9e9",
+      "version": "20261110_v5_commercial_evidence"
+    }
+  ],
+  "applicationDatabaseBinding": "NOT_VERIFIED",
+  "managedBackupInventoryToolAvailable": false,
+  "credentialRotation": "NOT_VERIFIED",
+  "externalBackupAvailability": "NOT_VERIFIED",
+  "productionMutations": false
+}

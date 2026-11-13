@@ -1,0 +1,187 @@
+{
+  "capturedAt": "2026-11-12T14:40:06Z",
+  "prs": [
+    {
+      "baseRefName": "main",
+      "headRefName": "fix/render-postgres-tls",
+      "headRefOid": "f14742f5b3ff89e6e6ba9021728e3ef628ca1850",
+      "isDraft": true,
+      "number": 49,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T10:33:54Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275612/job/131125030347",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T10:32:34Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T10:33:24Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275399/job/131125031026",
+          "name": "offline",
+          "startedAt": "2026-11-12T10:32:34Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T10:32:31Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43201275399/job/131125033194",
+          "name": "staging",
+          "startedAt": "2026-11-12T10:32:32Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        }
+      ],
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/49"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "remediation/phase22-readonly-followup",
+      "headRefOid": "378f5ece74b5a5567cb63e71b6c12af4dde55bda",
+      "isDraft": true,
+      "number": 52,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T12:29:17Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43218083603/job/131182339108",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T12:27:44Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T12:28:32Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43218083614/job/131182339326",
+          "name": "offline",
+          "startedAt": "2026-11-12T12:27:44Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T12:27:41Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43218083614/job/131182341983",
+          "name": "staging",
+          "startedAt": "2026-11-12T12:27:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        }
+      ],
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/52"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "remediation/phase23-database-readiness",
+      "headRefOid": "03a30b8862627336209d383614f3b14b305ec9ea",
+      "isDraft": true,
+      "number": 53,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T13:08:16Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43224151478/job/131202885640",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T13:06:42Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T13:07:37Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43224151621/job/131202886329",
+          "name": "offline",
+          "startedAt": "2026-11-12T13:06:42Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T13:06:39Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43224151621/job/131202889163",
+          "name": "staging",
+          "startedAt": "2026-11-12T13:06:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        }
+      ],
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/53"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "certification/phase24-predeployment",
+      "headRefOid": "9fea3e3167586424c44db39180d2419888340b7d",
+      "isDraft": true,
+      "number": 54,
+      "state": "OPEN",
+      "statusCheckRollup": [
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T14:34:58Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444100/job/131252021603",
+          "name": "Lint, Test & Production Build",
+          "startedAt": "2026-11-12T14:33:39Z",
+          "status": "COMPLETED",
+          "workflowName": "CI / Automated Verification Pipeline"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T14:34:53Z",
+          "conclusion": "SUCCESS",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444104/job/131252021857",
+          "name": "offline",
+          "startedAt": "2026-11-12T14:33:40Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        },
+        {
+          "__typename": "CheckRun",
+          "completedAt": "2026-11-12T14:33:37Z",
+          "conclusion": "SKIPPED",
+          "detailsUrl": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43238444104/job/131252025006",
+          "name": "staging",
+          "startedAt": "2026-11-12T14:33:37Z",
+          "status": "COMPLETED",
+          "workflowName": "Phase 18 staging verification"
+        }
+      ],
+      "url": "https://github.com/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./pull/54"
+    }
+  ],
+  "main": {
+    "name": "main",
+    "protected": false,
+    "sha": "1d450b95e6d1eb79128e407902c53df2818f010e"
+  },
+  "rulesets": [],
+  "protectedDeploymentBranch": {
+    "name": "security/phase18-staging-verification",
+    "sha": "2482877c3a2221a7eabc5c8da42db67c440268ca"
+  },
+  "baseline": "03a30b8862627336209d383614f3b14b305ec9ea",
+  "testCommit": "9fea3e3167586424c44db39180d2419888340b7d",
+  "divergenceAtBaseline": {
+    "deployedOnly": 0,
+    "baselineOnlyFromDeployed": 81,
+    "mainOnly": 0,
+    "baselineOnlyFromMain": 10
+  }
+}

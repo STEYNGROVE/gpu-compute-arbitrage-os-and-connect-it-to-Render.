@@ -1,0 +1,7 @@
+Production served the whole dist directory anonymously while esbuild put server.cjs and server.cjs.map in that directory. Anonymous HEAD checks against the existing public service returned 200 for both artifact URLs, with binary/JSON content types. Response bodies were not downloaded; no credential disclosure is claimed.
+
+Restrict static serving to the Vite assets directory plus the SPA entry point; reject backend CommonJS artifacts and source maps, including encoded paths. Preserve API fallback, frontend assets and SPA navigation. Add deterministic HTTP regressions demonstrating the baseline exposure and the fixed policy, and wire them into npm test.
+
+Based on Phase22 commit 62553ad; separate review branch. Typecheck/lint/security and static/TLS regressions pass locally; full test/integration/build also pass and results are retained in docs/verification/phase22-followup. No deployment, Render branch/env change, production migration, financial execution or paid provisioning. Discovery-only, owner RBAC and engaged emergency stop are unchanged. Do not merge or deploy automatically.
+
+Both hosted workflows passed at code commit 3c291da; staging skipped. Release remains NO-GO. Live artifact exposure is not fixed until a separately authorized deployment. Render tools became available, but they require explicit workspace confirmation before resource reads; that confirmation is pending. Bounded Drive metadata searches established no relevant independent commercial evidence. All five commercial certification gates remain open.

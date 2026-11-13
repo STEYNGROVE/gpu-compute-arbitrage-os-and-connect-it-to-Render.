@@ -1,36 +1,9 @@
 import type { Express, Request, Response, NextFunction } from 'express';
-import { Pool } from 'pg';
+import {applicationDatabase} from './applicationDatabase.js';
 import crypto from 'node:crypto';
 
 type Owner = (req: Request, res: Response, next: NextFunction) => void;
-let pool: Pool | null = null;
-
-function getEvidencePool(): Pool {
-  if (pool) return pool;
-
-  const connection = process.env.DATABASE_URL;
-  if (!connection) {
-    throw new Error('DATABASE_URL_NOT_CONFIGURED');
-  }
-
-  const nextPool = new Pool({
-    connectionString: connection,
-    ssl: { rejectUnauthorized: true },
-    max: 2,
-    connectionTimeoutMillis: 20000,
-    idleTimeoutMillis: 10000
-  });
-
-  nextPool.on('error', (err: Error) => {
-    console.error('[GPU EVIDENCE POOL]', {
-      name: err.name,
-      code: (err as NodeJS.ErrnoException).code || 'UNKNOWN'
-    });
-  });
-
-  pool = nextPool;
-  return pool;
-}
+function getEvidencePool() {return applicationDatabase;}
 const limited = (x:unknown,n:number) => typeof x === 'string' ? x.trim().slice(0,n) : '';
 function safeUrl(x:string):boolean {
   try {const u=new URL(x); return u.protocol==='https:' && !u.username && !u.password && (!u.port || u.port==='443') && /^[a-z0-9.-]+$/i.test(u.hostname) && u.hostname.includes('.') && !u.hostname.endsWith('.local') && !u.hostname.endsWith('.internal') && !/^\d+\.\d+\.\d+\.\d+$/.test(u.hostname);} catch{return false;}

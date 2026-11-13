@@ -1,0 +1,292 @@
+{
+  "observedAt": "2026-11-12T13:01:49.311Z",
+  "checkedCommit": "17545c82430ed8e714bd71de3bf0055ff36d8d7d",
+  "pr": 53,
+  "runs": [
+    {
+      "conclusion": "success",
+      "id": 43222949577,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43222949577/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43222949577/logs",
+      "name": "Phase 18 staging verification",
+      "run_number": 31,
+      "status": "completed",
+      "workflow_id": 414622670
+    },
+    {
+      "conclusion": "success",
+      "id": 43222949585,
+      "jobs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43222949585/jobs",
+      "logs_url": "https://api.github.com/repos/STEYNGROVE/gpu-compute-arbitrage-os-and-connect-it-to-Render./actions/runs/43222949585/logs",
+      "name": "CI / Automated Verification Pipeline",
+      "run_number": 177,
+      "status": "completed",
+      "workflow_id": 406654307
+    }
+  ],
+  "jobs": [
+    {
+      "conclusion": "success",
+      "id": 131198859469,
+      "logs_url": null,
+      "name": "offline",
+      "run_id": 43222949577,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/checkout@v4",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run actions/setup-node@v4",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm ci --no-audit --no-fund",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run typecheck",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run security:check",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm test",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run test:purchase-boundary",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Isolated PostgreSQL, Phase 23 migration and recovery",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Run npm run build",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/setup-node@v4",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@v4",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "conclusion": "skipped",
+      "id": 131198861048,
+      "logs_url": null,
+      "name": "staging",
+      "run_id": 43222949577,
+      "status": "completed",
+      "steps": null
+    },
+    {
+      "conclusion": "success",
+      "id": 131198858428,
+      "logs_url": null,
+      "name": "Lint, Test & Production Build",
+      "run_id": 43222949585,
+      "status": "completed",
+      "steps": [
+        {
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Checkout repository",
+          "number": 2,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Setup Node.js",
+          "number": 3,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Install dependencies",
+          "number": 4,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Typecheck & Static Analysis",
+          "number": 5,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Execute Automated Regression Tests",
+          "number": 6,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Validate supplier billing safety",
+          "number": 7,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Secure Feed Regression Tests",
+          "number": 8,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Isolation Tests",
+          "number": 9,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "HTTPS Transport Security Tests",
+          "number": 10,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Pinning Security Tests",
+          "number": 11,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "DNS Edge Security Tests",
+          "number": 12,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Generate Temporary TLS Test Certificate",
+          "number": 13,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "TLS Certificate Security Tests",
+          "number": 14,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Socket Security Tests",
+          "number": 15,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Final Network Security Tests",
+          "number": 16,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Feed Timeout Security Tests",
+          "number": 17,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 HTTPS Socket Lookup Tests",
+          "number": 18,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Node 24 Production DNS Lookup Tests",
+          "number": 19,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Phase 6 GPU Evidence and Owner Authentication",
+          "number": 20,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Security check",
+          "number": 21,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "TypeScript validation",
+          "number": 22,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Compile Production Bundle",
+          "number": 23,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Setup Node.js",
+          "number": 45,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Post Checkout repository",
+          "number": 46,
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 47,
+          "status": "completed"
+        }
+      ]
+    }
+  ]
+}

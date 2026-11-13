@@ -1,0 +1,7 @@
+npm notice run react-example@0.0.0 npx
+npm notice run 'tsx' test/secureFeedTimeoutSuite.ts
+PASS: Transport timeout rejected
+PASS: Network failure rejected
+PASS: DNS timeout enforced
+PASS: Timeout duration verified
+TIMEOUT SECURITY SUITE: ALL PASSED

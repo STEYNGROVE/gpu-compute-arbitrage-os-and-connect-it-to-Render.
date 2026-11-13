@@ -1,30 +1,9 @@
+import {configuredApplicationDatabase} from './applicationDatabase.js';
 import type { Express, Request, Response } from 'express';
-import { Pool } from 'pg';
+
 import crypto from 'crypto';
-import fs from 'node:fs';
 
-// Separate, untrusted customer-intake channel. Never triggers procurement or payment.
-const databaseHost = process.env.DATABASE_URL
-  ? new URL(process.env.DATABASE_URL).hostname
-  : '';
-
-const isRenderPrivateDb =
-  /^dpg-[a-z0-9-]+-a$/.test(databaseHost);
-
-const pool = process.env.DATABASE_URL
-  ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: databaseHost === 'localhost' || isRenderPrivateDb
-        ? undefined
-        : {
-            rejectUnauthorized: true,
-            ...(process.env.DATABASE_SSL_CA
-              ? { ca: fs.readFileSync(process.env.DATABASE_SSL_CA, 'utf8') }
-              : {})
-          },
-      max: 2
-    })
-  : null;
+const pool=configuredApplicationDatabase();
 let initialized: Promise<void> | undefined;
 async function ready() {
   if (!pool) {
@@ -34,13 +13,7 @@ async function ready() {
     }
     throw new Error('DATABASE_URL_NOT_CONFIGURED');
   }
-  if (!initialized) initialized = pool.query(`CREATE TABLE IF NOT EXISTS commercial_quote_requests (
-    id uuid PRIMARY KEY, created_at timestamptz NOT NULL DEFAULT now(),
-    company text NOT NULL, contact_name text NOT NULL, email text NOT NULL,
-    workload text NOT NULL, gpu_model text NOT NULL, gpu_count integer NOT NULL,
-    hours integer NOT NULL, notes text NOT NULL, status text NOT NULL DEFAULT 'NEW',
-    CONSTRAINT quote_request_status_check CHECK (status IN ('NEW','REVIEWING','QUOTED','CLOSED'))
-  )`).then(() => undefined).catch(e => { initialized = undefined; throw e; });
+  if (!initialized) initialized = pool.query('SELECT id,created_at,company,contact_name,email,workload,gpu_model,gpu_count,hours,notes,status FROM commercial_quote_requests LIMIT 0').then(() => undefined).catch(e => { initialized = undefined; throw e; });
   await initialized;
 }
 export interface CommercialQuoteRecord {

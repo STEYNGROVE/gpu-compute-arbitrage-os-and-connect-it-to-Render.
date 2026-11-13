@@ -24,5 +24,5 @@ export function classifyPostgresError(error: unknown): string {
     'ERR_TLS_CERT_ALTNAME_INVALID': 'TLS_HOSTNAME'
   };
 
-  return categories[code] ?? 'UNCLASSIFIED';
+  return Object.hasOwn(categories,code) ? categories[code] : 'UNCLASSIFIED';
 }

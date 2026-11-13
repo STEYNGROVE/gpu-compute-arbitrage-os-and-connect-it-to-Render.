@@ -1,0 +1,86 @@
+[
+  {
+    "command": "npm run typecheck",
+    "exit_code": 0,
+    "seconds": 23.18,
+    "log": "00-typecheck.log"
+  },
+  {
+    "command": "npm run lint",
+    "exit_code": 0,
+    "seconds": 23.13,
+    "log": "01-lint.log"
+  },
+  {
+    "command": "npm run security:check",
+    "exit_code": 0,
+    "seconds": 1.18,
+    "log": "02-security-check.log"
+  },
+  {
+    "command": "npm run test:security-regression",
+    "exit_code": 0,
+    "seconds": 3.81,
+    "log": "03-test-security-regression.log"
+  },
+  {
+    "command": "npm run test:postgres-tls",
+    "exit_code": 0,
+    "seconds": 7.67,
+    "log": "04-test-postgres-tls.log"
+  },
+  {
+    "command": "npm run test:phase20",
+    "exit_code": 0,
+    "seconds": 4.0,
+    "log": "05-test-phase20.log"
+  },
+  {
+    "command": "npm run test:phase21",
+    "exit_code": 0,
+    "seconds": 4.04,
+    "log": "06-test-phase21.log"
+  },
+  {
+    "command": "npm test",
+    "exit_code": 0,
+    "seconds": 87.5,
+    "log": "07.log"
+  },
+  {
+    "command": "npm run test:phase21-postgres",
+    "exit_code": 0,
+    "seconds": 15.88,
+    "log": "08-test-phase21-postgres.log"
+  },
+  {
+    "command": "npm run test:purchase-boundary",
+    "exit_code": 0,
+    "seconds": 0.91,
+    "log": "09-test-purchase-boundary.log"
+  },
+  {
+    "command": "npm run audit:gpu-execution",
+    "exit_code": 1,
+    "seconds": 0.9,
+    "log": "10-audit-gpu-execution.log"
+  },
+  {
+    "command": "npm run build",
+    "exit_code": 0,
+    "seconds": 15.21,
+    "log": "11-build.log"
+  },
+  {
+    "command": "git diff HEAD --check",
+    "exit_code": 0,
+    "seconds": 0.06,
+    "log": "12.log"
+  },
+  {
+    "command": "git diff --cached --check",
+    "exit_code": 0,
+    "seconds": 0.04,
+    "log": "13.log"
+  }
+]

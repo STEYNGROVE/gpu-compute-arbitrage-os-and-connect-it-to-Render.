@@ -1,0 +1,3 @@
+PASS: Basic tracked-file security checks
+npm notice run react-example@0.0.0 security:check
+npm notice run node scripts/security-check.cjs
